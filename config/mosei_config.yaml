@@ -1,0 +1,6 @@
+db_root: data/db_processed/mosei
+train_size: 15969
+valid_size: 1854
+test_size: 4550
+batch_size: 64
+num_workers: 3

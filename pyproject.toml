@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "personalitylinmult"
+version = "1.0.0"
+description = "PersonalityLinMulT: Transformer-based Big Five Automatic Personality Perception."
+keywords = ["bigfive", "personality", "app", "multimodal", "transformer", "linear-complexity attention"]
+authors = [
+  { name = "fodorad", email = "foauaai@inf.elte.hu" },
+]
+readme = {"file" = "README.md", "content-type" = "text/markdown"}
+requires-python = ">=3.11"
+license = "MIT"
+dynamic = ["dependencies"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Documentation = "https://github.com/fodorad/personalitylinmult#readme"
+Issues = "https://github.com/fodorad/personalitylinmult/issues"
+Source = "https://github.com/fodorad/personalitylinmult"
+
+[tool.hatch.build.targets.wheel]
+packages = ["personalitylinmult"]
+exclude = ["personalitylinmult/test", "personalitylinmult/train", "data/"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["personalitylinmult"]
+exclude = ["personalitylinmult/test", "personalitylinmult/train", "data/"]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]
+
+[project.optional-dependencies]
+train = [
+  "lightning==2.4.0",
+  "matplotlib==3.9.2",
+  "opencv-python==4.10.0.84",
+  "pandas==2.2.3",
+  "exordium[video]"
+]
+all = [
+  "personalitylinmult[train]"
+]

@@ -1,0 +1,12 @@
+accelerator: gpu
+devices:
+- 0
+float32_matmul_precision: highest # only this option was available at the time of publication
+output_dir: output/
+n_epochs: 20
+loss_fn: bell_l2_l1_loss
+base_lr: 0.002
+optimizer: adam
+lr_scheduler: plateau
+plateau_patience: 5
+plateau_factor: 0.1
