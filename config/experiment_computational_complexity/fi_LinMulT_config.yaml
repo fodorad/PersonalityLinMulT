@@ -1,7 +1,0 @@
-db_root: data/db_processed/fi
-train_size: 6000
-valid_size: 2000
-test_size: 2000
-batch_size: 32
-total_steps: 3750 # n_epoch * train_size / batch_size
-num_workers: 3

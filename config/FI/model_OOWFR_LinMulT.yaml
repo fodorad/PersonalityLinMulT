@@ -1,0 +1,28 @@
+model_name: "LinMulT"
+version: "1.5.2"
+
+# input-output params
+input_feature_dim:
+  - 25 # openSMILE eGeMAPS LLD
+  - 41 # OpenGraphAU
+  - 768 # Wav2Vec2
+  - 256 # FAb-Net
+  - 1024 # RoBERTa
+
+output_dim:
+  - 5 # app ocean
+
+# CM and SA transformer params
+d_model: 32
+n_heads: 8
+n_layers: 5
+attention_type: linear
+dropout_qkv: 0.
+dropout_relu: 0.2
+dropout_residual: 0.2
+
+# architecture params
+dropout_input: 0.
+time_dim_reducer: gap
+ffn_fusion: True
+dropout_output: 0.2

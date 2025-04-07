@@ -1,0 +1,38 @@
+# experiment
+output_dir: results/FI
+seed: 42
+
+# hardware
+accelerator: gpu
+devices:
+- 0
+float32_matmul_precision: medium # high, highest
+
+tasks:
+  app:
+    type: regression
+    loss_fn: bell_l2_l1_loss
+    metrics:
+      - racc
+      - r2
+
+# training details
+n_epochs: 30
+
+optimizer:
+  name: adam
+  base_lr: 0.001
+
+lr_scheduler:
+  name: OneCycleLR
+
+checkpoints:
+  - name: checkpoint_valid_loss
+    monitor: valid_loss
+    mode: min
+  - name: checkpoint_valid_racc
+    monitor: valid_racc
+    mode: max
+  - name: checkpoint_valid_r2
+    monitor: valid_r2
+    mode: max

@@ -1,0 +1,15 @@
+db_name: MOSEI
+db_root: data/db_processed/mosei
+seed: 42
+
+feature_list:
+  - wav2vec2 # (T_a, 768) Wav2Vec2
+  - fabnet # (T_v, 256) FAb-Net
+  - roberta # (T_t, 1024) RoBERTa
+
+train_size: 15969
+valid_size: 1854
+test_size: 4550
+
+batch_size: 16
+num_workers: 3

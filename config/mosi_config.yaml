@@ -1,6 +1,0 @@
-db_root: data/db_processed/mosi
-train_size: 1284
-valid_size: 229
-test_size: 686
-batch_size: 64
-num_workers: 3

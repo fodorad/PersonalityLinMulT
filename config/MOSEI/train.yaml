@@ -1,0 +1,39 @@
+# experiment
+output_dir: results/MOSEI
+seed: 42
+
+# hardware
+accelerator: gpu
+devices:
+- 0
+float32_matmul_precision: medium # high, highest
+
+tasks:
+  sentiment:
+    type: regression
+    loss_fn: bell_l2_l1_loss
+    metrics:
+      - acc_7
+      - acc_2
+      - f1_7
+      - f1_2
+      - mae
+      - corr
+
+# training details
+n_epochs: 30
+
+optimizer:
+  name: adam
+  base_lr: 0.001
+
+lr_scheduler:
+  name: OneCycleLR
+
+checkpoints:
+  - name: checkpoint_valid_loss
+    monitor: valid_loss
+    mode: min
+  - name: checkpoint_valid_mae
+    monitor: valid_mae
+    mode: min

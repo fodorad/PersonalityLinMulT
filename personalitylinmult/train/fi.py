@@ -9,40 +9,28 @@ from exordium.utils.padding import pad_or_crop_time_dim
 from exordium.utils.normalize import get_mean_std, standardization
 
 
-def load_gt(db_root: str):
-    gt_dict = {}
-    for subset in ['train', 'valid', 'test']:
-        with open(Path(db_root) / f'hand_features' / f'fi_{subset}_lld_au_bert.pkl', 'rb') as f:
-            data = pickle.load(f)
-            gt_dict[subset] = {k: y for k, x, y in data}
-    return gt_dict
-
-
 class EgemapsDataset(Dataset):
 
     def __init__(self, subset: str, db_root: str):
         self.subset = subset
         self.db_root = Path(db_root)
-        self.names, self.samples, self.gt = self._load_samples(self.db_root / f'fi_{subset}_lld_au_bert.pkl')
+        self.samples = self._load_samples(self.db_root / 'cache' / f'fi_{subset}.pkl')
 
     def _load_samples(self, sample_path: Path):
         with open(sample_path, 'rb') as f:
             records = pickle.load(f)
-        names = [k for k, _, _ in records]
-        x_dict = {k: x for k, x, _ in records}
-        y_dict = {k: y for k, _, y in records}
-        return names, x_dict, y_dict
+        video_ids = list(records.keys())
+        samples = []
+        for video_id in video_ids:
+                samples.append(records[video_id]['egemaps_lld'])
+        return samples
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        sample_id = self.names[idx]
-        x = self.samples[sample_id]
-        lld, au, bert = x
-        x = pad_or_crop_time_dim(lld, 1500)
-        y = self.gt[sample_id]
-        return x, y
+        lld = self.samples[idx]
+        return lld
 
 
 class AuDataset(Dataset):
@@ -50,88 +38,122 @@ class AuDataset(Dataset):
     def __init__(self, subset: str, db_root: str):
         self.subset = subset
         self.db_root = Path(db_root)
-        self.names, self.samples, self.gt = self._load_samples(self.db_root / f'fi_{subset}_lld_au_bert.pkl')
+        self.samples = self._load_samples(self.db_root / 'cache' / f'fi_{subset}.pkl')
 
     def _load_samples(self, sample_path: Path):
         with open(sample_path, 'rb') as f:
             records = pickle.load(f)
-        names = [k for k, _, _ in records]
-        x_dict = {k: x for k, x, _ in records}
-        y_dict = {k: y for k, _, y in records}
-        return names, x_dict, y_dict
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        sample_id = self.names[idx]
-        x = self.samples[sample_id]
-        lld, au, bert = x
-        x = pad_or_crop_time_dim(au, 450)
-        y = self.gt[sample_id]
-        return x, y
-
-
-def calculate_standardization(db_root: Path):
-    egemaps_path = Path(db_root) / 'standardization' / 'egemaps.npz'
-    if not egemaps_path.exists():
-        mean, std = get_mean_std(DataLoader(EgemapsDataset('train', Path(db_root) / 'hand_features'), batch_size=100, shuffle=False), ndim=3)
-        np.savez(str(egemaps_path), mean=mean, std=std)
-
-    au_path = Path(db_root) / 'standardization' / 'au.npz'
-    if not au_path.exists():
-        mean, std = get_mean_std(DataLoader(AuDataset('train', Path(db_root) / 'hand_features'), batch_size=100, shuffle=False), ndim=3)
-        np.savez(str(au_path), mean=mean, std=std)
-
-
-class OOWFRDataset(Dataset):
-
-    def __init__(self, subset: str, config: dict | None = None):
-        self.config = config if config is not None else {}
-        self.subset = subset
-        self.db_root = Path(self.config.get('db_root', 'data/db_processed/fi'))
-        self.samples = self._load_samples(self.db_root / 'oowfr' / f'fi_{subset}_oowfr.pkl')
-        self.sample_ids = list(self.samples.keys())
-        self.target_id = self.config.get('target_id', None)
-        self.standardization_params = self._load_standardization_params()
-
-    def _load_standardization_params(self):
-        d = {}
-        data = np.load(f'{self.db_root}/standardization/egemaps.npz')
-        d['egemaps'] = {}
-        d['egemaps']['mean'] = torch.FloatTensor(data['mean'])
-        d['egemaps']['std'] = torch.FloatTensor(data['std'])
-        data = np.load(f'{self.db_root}/standardization/au.npz')
-        d['au'] = {}
-        d['au']['mean'] = torch.FloatTensor(data['mean'])
-        d['au']['std'] = torch.FloatTensor(data['std'])
-        return d
-
-    def _load_samples(self, sample_path: Path):
-        with open(sample_path, 'rb') as f:
-            samples = pickle.load(f)
+        video_ids = list(records.keys())
+        samples = []
+        for video_id in video_ids:
+                samples.append(records[video_id]['opengraphau'])
         return samples
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        sample_id = self.sample_ids[idx]
-        sample_dict = self.samples[sample_id]
-        x_lld = standardization(sample_dict['lld'], mean=self.standardization_params['egemaps']['mean'], std=self.standardization_params['egemaps']['std'])
-        x_au = standardization(sample_dict['au'], mean=self.standardization_params['au']['mean'], std=self.standardization_params['au']['std'])
-        x_lld = pad_or_crop_time_dim(x_lld, 1500)
-        x_au = pad_or_crop_time_dim(x_au, 450)
-        x_wav2vec = pad_or_crop_time_dim(sample_dict['wav2vec'], 1500)
-        x_fabnet = pad_or_crop_time_dim(sample_dict['fabnet'], 450)
-        x_roberta = pad_or_crop_time_dim(sample_dict['roberta'], 80)
-        x = [x_lld, x_au, x_wav2vec, x_fabnet, x_roberta]
+        au = self.samples[idx]
+        return au
+
+
+class TensorDataset(Dataset):
+
+    def __init__(self, samples):
+        self.samples = samples
+        print('Tensor shape:', self.samples.shape)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        return self.samples[idx], 0
+
+
+def calculate_standardization(db_root: Path):
+
+    egemaps_path = Path(db_root) / 'standardization' / 'egemaps.npz'
+    if not egemaps_path.exists():
+        ds_egemaps = EgemapsDataset('train', Path(db_root))
+        samples_egemaps = np.vstack(ds_egemaps.samples) # (N, F)
+        egemaps_path.parent.mkdir(parents=True, exist_ok=True)
+        mean, std = get_mean_std(DataLoader(TensorDataset(samples_egemaps), batch_size=100, shuffle=False), ndim=2)
+        np.savez(str(egemaps_path), mean=mean, std=std)
+
+    au_path = Path(db_root) / 'standardization' / 'opengraphau.npz'
+    if not au_path.exists():
+        ds_au = AuDataset('train', Path(db_root))
+        samples_au = np.vstack(ds_au.samples) # (N, F)
+        au_path.parent.mkdir(parents=True, exist_ok=True)
+        mean, std = get_mean_std(DataLoader(TensorDataset(samples_au), batch_size=100, shuffle=False), ndim=2)
+        np.savez(str(au_path), mean=mean, std=std)
+
+
+class FiDataset(Dataset):
+
+    def __init__(self, subset: str, config: dict | None = None):
+        self.config = config if config is not None else {}
+        self.subset = subset
+        self.db_root = Path(self.config.get('db_root', 'data/db_processed/fi'))
+        self.samples = self._load_samples(self.db_root / 'cache' / f'fi_{subset}.pkl')
+        self.target_id = self.config.get('target_id', None)
+        self.standardization_params = self._load_standardization_params()
+
+    def _load_standardization_params(self):
+        d = {}
+        data = np.load(f'{self.db_root}/standardization/egemaps_lld.npz')
+        d['egemaps_lld'] = {}
+        d['egemaps_lld']['mean'] = torch.FloatTensor(data['mean'])
+        d['egemaps_lld']['std'] = torch.FloatTensor(data['std'])
+        data = np.load(f'{self.db_root}/standardization/opengraphau.npz')
+        d['opengraphau'] = {}
+        d['opengraphau']['mean'] = torch.FloatTensor(data['mean'])
+        d['opengraphau']['std'] = torch.FloatTensor(data['std'])
+        return d
+
+    def _load_samples(self, sample_path: Path):
+        with open(sample_path, 'rb') as f:
+            records = pickle.load(f)
+        video_ids = list(records.keys())
+        samples = []
+        for video_id in video_ids:
+            samples.append(records[video_id])
+        return samples
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        sample_dict = self.samples[idx]
+        x_lld = standardization(torch.FloatTensor(sample_dict['egemaps_lld']), mean=self.standardization_params['egemaps_lld']['mean'], std=self.standardization_params['egemaps_lld']['std'])
+        x_au = standardization(torch.FloatTensor(sample_dict['opengraphau']), mean=self.standardization_params['opengraphau']['mean'], std=self.standardization_params['opengraphau']['std'])
+        egemaps_lld, egemaps_lld_mask = pad_or_crop_time_dim(x_lld, 1500)
+        opengraphau, opengraphau_mask = pad_or_crop_time_dim(x_au, 450)
+        wav2vec2, wav2vec2_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['wav2vec2']), 1500)
+        fabnet, fabnet_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['fabnet']), 450)
+        roberta, roberta_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['roberta']), 80)
+        bert, bert_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['bert']), 80)
         y = sample_dict['ocean']
-        if self.target_id is not None: y = np.expand_dims(y[self.target_id], -1) # () -> (1,)
-        return x, y
+        if self.target_id is not None: 
+            y = np.expand_dims(y[self.target_id], -1) # () -> (1,)
+        return {
+            'egemaps_lld': egemaps_lld,
+            'egemaps_lld_mask': egemaps_lld_mask,
+            'opengraphau': opengraphau,
+            'opengraphau_mask': opengraphau_mask,
+            'wav2vec2': wav2vec2,
+            'wav2vec2_mask': wav2vec2_mask,
+            'fabnet': fabnet,
+            'fabnet_mask': fabnet_mask,
+            'roberta': roberta,
+            'roberta_mask': roberta_mask,
+            'bert': bert,
+            'bert_mask': bert_mask,
+            'app': y # automatic personality perception
+        }
 
 
-class OOWFRDataModule(L.LightningDataModule):
+class FiDataModule(L.LightningDataModule):
 
     def __init__(self, config: dict | None = None):
         super().__init__()
@@ -140,14 +162,14 @@ class OOWFRDataModule(L.LightningDataModule):
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
-            print('Load OOWFR train data...')
-            self.dataset_train = OOWFRDataset('train', self.config)
-            print('Load OOWFR valid data...')
-            self.dataset_valid = OOWFRDataset('valid', self.config)
+            print('[FI] Load train data...')
+            self.dataset_train = FiDataset('train', self.config)
+            print('[FI] Load valid data...')
+            self.dataset_valid = FiDataset('valid', self.config)
 
         if stage == "test":
-            print('Load OOWFR test data...')
-            self.dataset_test = OOWFRDataset('test', self.config)
+            print('[FI] Load test data...')
+            self.dataset_test = FiDataset('test', self.config)
 
     def train_dataloader(self):
         return DataLoader(self.dataset_train, batch_size=self.batch_size, shuffle=True, num_workers=self.config.get('num_workers', 3))
@@ -161,14 +183,3 @@ class OOWFRDataModule(L.LightningDataModule):
 
 if __name__ == "__main__":
     calculate_standardization('data/db_processed/fi') # calculate and save standardization params
-
-    # Try datamodule
-    data_module = OOWFRDataModule({'target_id': 1})
-    data_module.setup()
-    dl = data_module.train_dataloader()
-    for x, y in tqdm(dl, total=len(dl)):        
-        print('x means:', [torch.mean(seq, 1) for seq in x])
-        print('x stds:', [torch.std(seq, 1) for seq in x])
-        print('x shapes:', [seq.shape for seq in x])
-        print('y shape:', y.shape)
-        exit()

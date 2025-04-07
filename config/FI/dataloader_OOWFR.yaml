@@ -1,0 +1,17 @@
+db_name: FI
+db_root: data/db_processed/fi
+seed: 42
+
+feature_list:
+  - egemaps_lld # (T_a, 25) openSMILE eGeMAPS LLD
+  - opengraphau # (T_v, 41) OpenGraphAU
+  - wav2vec2 # (T_a, 768) Wav2Vec2
+  - fabnet # (T_v, 256) FAb-Net
+  - roberta # (T_t, 1024) RoBERTa
+
+train_size: 6000
+valid_size: 2000
+test_size: 2000
+
+batch_size: 16
+num_workers: 3

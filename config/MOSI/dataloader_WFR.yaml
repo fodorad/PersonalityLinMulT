@@ -1,0 +1,15 @@
+db_name: MOSI
+db_root: data/db_processed/mosi
+seed: 42
+
+feature_list:
+  - wav2vec2 # (T_a, 768) Wav2Vec2
+  - fabnet # (T_v, 256) FAb-Net
+  - roberta # (T_t, 1024) RoBERTa
+
+train_size: 1284
+valid_size: 229
+test_size: 686
+
+batch_size: 16
+num_workers: 3

@@ -1,0 +1,15 @@
+db_name: MOSEI
+db_root: data/db_processed/mosei
+seed: 42
+
+feature_list:
+  - egemaps_lld # (T_a, 25) openSMILE eGeMAPS LLD
+  - opengraphau # (T_v, 41) OpenGraphAU
+  - bert # (T_t, 768) BERT
+
+train_size: 15969
+valid_size: 1854
+test_size: 4550
+
+batch_size: 16
+num_workers: 3

@@ -14,7 +14,7 @@ class EgemapsDataset(Dataset):
     def __init__(self, subset: str, db_root: str):
         self.subset = subset
         self.db_root = Path(db_root)
-        self.samples = self._load_samples(self.db_root / f'mosei_{subset}_oowfr.pkl')
+        self.samples = self._load_samples(self.db_root / 'cache' / f'mosei_{subset}.pkl')
 
     def _load_samples(self, sample_path: Path):
         with open(sample_path, 'rb') as f:
@@ -40,7 +40,7 @@ class AuDataset(Dataset):
     def __init__(self, subset: str, db_root: str):
         self.subset = subset
         self.db_root = Path(db_root)
-        self.samples = self._load_samples(self.db_root / f'mosei_{subset}_oowfr.pkl')
+        self.samples = self._load_samples(self.db_root / 'cache' / f'mosei_{subset}.pkl')
 
     def _load_samples(self, sample_path: Path):
         with open(sample_path, 'rb') as f:
@@ -50,7 +50,7 @@ class AuDataset(Dataset):
         for video_id in video_ids:
             clip_ids = list(records[video_id].keys())
             for clip_id in clip_ids:
-                samples.append(records[video_id][clip_id]['au'])
+                samples.append(records[video_id][clip_id]['opengraphau'])
         return samples
 
     def __len__(self):
@@ -62,11 +62,14 @@ class AuDataset(Dataset):
 
 
 class TensorDataset(Dataset):
+
     def __init__(self, samples):
         self.samples = samples
         print('Tensor shape:', self.samples.shape)
+
     def __len__(self):
         return len(self.samples)
+
     def __getitem__(self, idx):
         return self.samples[idx], 0
 
@@ -75,28 +78,28 @@ def calculate_standardization(db_root: Path):
 
     egemaps_path = Path(db_root) / 'standardization' / 'egemaps.npz'
     if not egemaps_path.exists():
-        ds_egemaps = EgemapsDataset('train', Path(db_root) / 'oowfr')
+        ds_egemaps = EgemapsDataset('train', Path(db_root))
         samples_egemaps = np.vstack(ds_egemaps.samples) # (N, F)
         egemaps_path.parent.mkdir(parents=True, exist_ok=True)
         mean, std = get_mean_std(DataLoader(TensorDataset(samples_egemaps), batch_size=100, shuffle=False), ndim=2)
         np.savez(str(egemaps_path), mean=mean, std=std)
 
-    au_path = Path(db_root) / 'standardization' / 'au.npz'
+    au_path = Path(db_root) / 'standardization' / 'opengraphau.npz'
     if not au_path.exists():
-        ds_au = AuDataset('train', Path(db_root) / 'oowfr')
+        ds_au = AuDataset('train', Path(db_root))
         samples_au = np.vstack(ds_au.samples) # (N, F)
         au_path.parent.mkdir(parents=True, exist_ok=True)
         mean, std = get_mean_std(DataLoader(TensorDataset(samples_au), batch_size=100, shuffle=False), ndim=2)
         np.savez(str(au_path), mean=mean, std=std)
 
 
-class OOWFRDataset(Dataset):
+class MoseiDataset(Dataset):
 
     def __init__(self, subset: str, config: dict | None = None):
         self.config = config if config is not None else {}
         self.subset = subset
         self.db_root = Path(self.config.get('db_root', 'data/db_processed/mosei'))
-        self.samples = self._load_samples(self.db_root / 'oowfr' / f'mosei_{subset}_oowfr.pkl')
+        self.samples = self._load_samples(self.db_root / 'cache' / f'mosei_{subset}.pkl')
         self.standardization_params = self._load_standardization_params()
 
     def _load_standardization_params(self):
@@ -105,10 +108,10 @@ class OOWFRDataset(Dataset):
         d['egemaps'] = {}
         d['egemaps']['mean'] = torch.FloatTensor(data['mean'])
         d['egemaps']['std'] = torch.FloatTensor(data['std'])
-        data = np.load(f'{self.db_root}/standardization/au.npz')
-        d['au'] = {}
-        d['au']['mean'] = torch.FloatTensor(data['mean'])
-        d['au']['std'] = torch.FloatTensor(data['std'])
+        data = np.load(f'{self.db_root}/standardization/opengraphau.npz')
+        d['opengraphau'] = {}
+        d['opengraphau']['mean'] = torch.FloatTensor(data['mean'])
+        d['opengraphau']['std'] = torch.FloatTensor(data['std'])
         return d
 
     def _load_samples(self, sample_path: Path):
@@ -127,19 +130,33 @@ class OOWFRDataset(Dataset):
 
     def __getitem__(self, idx):
         sample_dict = self.samples[idx]
-        x_lld = standardization(sample_dict['egemaps_lld'], mean=self.standardization_params['egemaps']['mean'], std=self.standardization_params['egemaps']['std'])
-        x_au = standardization(sample_dict['au'], mean=self.standardization_params['au']['mean'], std=self.standardization_params['au']['std'])
-        x_lld = pad_or_crop_time_dim(x_lld, 1000)
-        x_au = pad_or_crop_time_dim(x_au, 300)
-        x_wav2vec = pad_or_crop_time_dim(sample_dict['wav2vec2'], 500)
-        x_fabnet = pad_or_crop_time_dim(sample_dict['fabnet'], 300)
-        x_roberta = pad_or_crop_time_dim(sample_dict['roberta'], 80)
-        x = [x_lld, x_au, x_wav2vec, x_fabnet, x_roberta]
+        x_lld = standardization(torch.FloatTensor(sample_dict['egemaps_lld']), mean=self.standardization_params['egemaps']['mean'], std=self.standardization_params['egemaps']['std'])
+        x_au = standardization(torch.FloatTensor(sample_dict['opengraphau']), mean=self.standardization_params['opengraphau']['mean'], std=self.standardization_params['opengraphau']['std'])
+        egemaps_lld, egemaps_lld_mask = pad_or_crop_time_dim(x_lld, 1000)
+        opengraphau, opengraphau_mask = pad_or_crop_time_dim(x_au, 300)
+        wav2vec2, wav2vec2_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['wav2vec2']), 500)
+        fabnet, fabnet_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['fabnet']), 300)
+        roberta, roberta_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['roberta']), 80)
+        bert, bert_mask = pad_or_crop_time_dim(torch.FloatTensor(sample_dict['bert']), 80)
         y = sample_dict['sentiment']
-        return x, y
+        return {
+            'egemaps_lld': egemaps_lld,
+            'egemaps_lld_mask': egemaps_lld_mask,
+            'opengraphau': opengraphau,
+            'opengraphau_mask': opengraphau_mask,
+            'wav2vec2': wav2vec2,
+            'wav2vec2_mask': wav2vec2_mask,
+            'fabnet': fabnet,
+            'fabnet_mask': fabnet_mask,
+            'roberta': roberta,
+            'roberta_mask': roberta_mask,
+            'bert': bert,
+            'bert_mask': bert_mask,
+            'sentiment': y
+        }
 
 
-class OOWFRDataModule(L.LightningDataModule):
+class MoseiDataModule(L.LightningDataModule):
 
     def __init__(self, config: dict | None = None):
         super().__init__()
@@ -148,14 +165,14 @@ class OOWFRDataModule(L.LightningDataModule):
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
-            print('Load OOWFR train data...')
-            self.dataset_train = OOWFRDataset('train', self.config)
-            print('Load OOWFR valid data...')
-            self.dataset_valid = OOWFRDataset('valid', self.config)
+            print('[MOSEI] Load train data...')
+            self.dataset_train = MoseiDataset('train', self.config)
+            print('[MOSEI] Load valid data...')
+            self.dataset_valid = MoseiDataset('valid', self.config)
 
         if stage == "test":
-            print('Load OOWFR test data...')
-            self.dataset_test = OOWFRDataset('test', self.config)
+            print('[MOSEI] Load test data...')
+            self.dataset_test = MoseiDataset('test', self.config)
 
     def train_dataloader(self):
         return DataLoader(self.dataset_train, batch_size=self.batch_size, shuffle=True, num_workers=self.config.get('num_workers', 3))
@@ -169,19 +186,3 @@ class OOWFRDataModule(L.LightningDataModule):
 
 if __name__ == "__main__":
     calculate_standardization('data/db_processed/mosei') # calculate and save standardization params
-
-    # Try datamodule
-    data_module = OOWFRDataModule()
-    data_module.setup('fit')
-    data_module.setup('test')
-
-    [print(f'{ds.subset} length:', len(ds)) for ds in [data_module.dataset_train, data_module.dataset_valid, data_module.dataset_test]]
-
-    exit()
-    dl = data_module.train_dataloader()
-    for x, y in tqdm(dl, total=len(dl)):        
-        print('x means:', [torch.mean(seq, 1) for seq in x])
-        print('x stds:', [torch.std(seq, 1) for seq in x])
-        print('x shapes:', [seq.shape for seq in x])
-        print('y shape:', y.shape)
-        exit()

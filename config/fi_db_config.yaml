@@ -1,6 +1,0 @@
-db_root: data/db_processed/fi
-train_size: 6000
-valid_size: 2000
-test_size: 2000
-batch_size: 32
-num_workers: 3

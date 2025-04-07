@@ -3,8 +3,7 @@ import torch
 
 class WarmupScheduler:
     def __init__(self, optimizer, warmup_steps, base_lr):
-        """
-        Warmup scheduler to increase learning rate linearly during warmup.
+        """Warmup scheduler to increase learning rate linearly during warmup.
         
         Args:
             optimizer: The optimizer being used.
@@ -39,8 +38,7 @@ class WarmupScheduler:
 
 class CosineAnnealingWarmupScheduler:
     def __init__(self, optimizer, warmup_steps, max_lr, total_steps):
-        """
-        Scheduler that combines warmup with cosine annealing.
+        """Scheduler that combines warmup with cosine annealing.
         
         Args:
             optimizer: The optimizer being used.
