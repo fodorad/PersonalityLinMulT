@@ -10,4 +10,4 @@ except Exception:
 PROJECT_ROOT = Path(__file__).parents[1]
 LIBRARY_ROOT = PROJECT_ROOT / 'personalitylinmult'
 WEIGHTS_DIR = Path().home() / '.cache' / 'torch' / 'hub' / 'checkpoints' / 'personality_sentiment'
-MODEL_DIR = PROJECT_ROOT / 'personalitylinmult' / 'model'
+MODEL_DIR = PROJECT_ROOT / 'personalitylinmult' / 'models'
