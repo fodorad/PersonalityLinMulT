@@ -1,8 +1,8 @@
+import yaml
 import torch
 import numpy as np
 from linmult import LinMulT
 from personalitylinmult import MODEL_DIR
-from personalitylinmult.train.parser import load_yaml_config
 
 
 def PersonalityLinMulT() -> tuple[LinMulT, dict]:
@@ -27,3 +27,14 @@ def load_standardization_params():
     d['opengraphau']['mean'] = torch.FloatTensor(data['mean'])
     d['opengraphau']['std'] = torch.FloatTensor(data['std'])
     return d
+
+
+def load_yaml_config(file_path):
+    """Loads a YAML configuration file."""
+    try:
+        with open(file_path, "r") as f:
+            return yaml.safe_load(f) or {}
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Configuration file '{file_path}' not found.")
+    except yaml.YAMLError as e:
+        raise ValueError(f"Error parsing YAML file '{file_path}': {e}")
