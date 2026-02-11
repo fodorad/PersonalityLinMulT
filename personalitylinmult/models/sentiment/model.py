@@ -2,11 +2,11 @@ import yaml
 import torch
 import numpy as np
 from linmult import LinMulT
-from personalitylinmult import MODEL_DIR, PROJECT_ROOT
+from personalitylinmult import MODEL_DIR, LIBRARY_ROOT
 
 
 def SentimentLinMulT() -> tuple[LinMulT, dict]:
-    config = load_yaml_config(PROJECT_ROOT / 'config' / 'MOSEI' / 'model_OOWFR_LinMulT.yaml')
+    config = load_yaml_config(LIBRARY_ROOT / 'config' / 'MOSEI' / 'model_OOWFR_LinMulT.yaml')
     model = LinMulT(config=config)
     weight_path = MODEL_DIR / 'sentiment' / 'checkpoint_sentiment.ckpt'
     weights = torch.load(weight_path, weights_only=True, map_location=torch.device('cpu'))['state_dict']
