@@ -1,0 +1,67 @@
+config:
+  db_name: FI
+  db_root: data/db_processed/fi
+  seed: 42
+  feature_list:
+  - egemaps_lld
+  - opengraphau
+  - wav2vec2
+  - fabnet
+  - roberta
+  train_size: 6000
+  valid_size: 2000
+  test_size: 2000
+  batch_size: 16
+  num_workers: 3
+  model_name: LinMulT
+  version: 1.5.2
+  input_feature_dim:
+  - 25
+  - 41
+  - 768
+  - 256
+  - 1024
+  output_dim:
+  - 1
+  d_model: 32
+  n_heads: 8
+  n_layers: 5
+  attention_type: linear
+  dropout_qkv: 0.0
+  dropout_relu: 0.2
+  dropout_residual: 0.2
+  dropout_input: 0.0
+  time_dim_reducer: gap
+  ffn_fusion: true
+  dropout_output: 0.2
+  output_dir: results/FI
+  accelerator: gpu
+  devices:
+  - 0
+  float32_matmul_precision: medium
+  tasks:
+    app:
+      type: regression
+      loss_fn: bell_l2_l1_loss
+      metrics:
+      - racc
+      - r2
+  n_epochs: 30
+  optimizer:
+    name: adam
+    base_lr: 0.001
+  lr_scheduler:
+    name: OneCycleLR
+  checkpoints:
+  - name: checkpoint_valid_loss
+    monitor: valid_loss
+    mode: min
+  - name: checkpoint_valid_racc
+    monitor: valid_racc
+    mode: max
+  - name: checkpoint_valid_r2
+    monitor: valid_r2
+    mode: max
+  experiment_name: OOWFR_LinMulT_TW
+  target_id: 3
+  experiment_dir: results/FI/OOWFR_LinMulT_TW/A

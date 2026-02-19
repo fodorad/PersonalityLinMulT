@@ -1,8 +1,9 @@
 # Project files
 .DS_Store
+.vscode
+.claude
 data/
 tools/
-results/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
