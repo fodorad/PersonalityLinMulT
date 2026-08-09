@@ -1,0 +1,45 @@
+# Big Five apparent-personality regression.
+#
+# Targets default to the five traits with emotional_stability in place of
+# neuroticism, so every trait points the same way (higher = more of the named
+# quality). Naming 'neuroticism' here is rejected by TrainConfig.
+task: bigfive
+targets:
+  - openness
+  - conscientiousness
+  - extraversion
+  - agreeableness
+  - emotional_stability
+
+loss: bell_l2_l1
+max_epochs: 2
+
+accelerator: auto
+devices: auto
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results/FI
+
+optimizer:
+  name: adamw
+  lr: 0.001
+  weight_decay: 0.01
+  scheduler: onecycle
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+# Model selection tracks the primary metric: the mean of the five independent
+# trait-wise CCC scores (see bigfive.yaml's comment for why CCC, not 1-MAE).
+early_stopping:
+  enabled: false
+  monitor: valid/mean_ccc
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: FI-Smoke
+  run_name: null
+  log_model: true

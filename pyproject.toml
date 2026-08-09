@@ -1,53 +1,257 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "personalitylinmult"
-version = "2.1.4"
-description = "PersonalityLinMulT: Transformer-based Big Five Automatic Personality Perception."
-keywords = ["bigfive", "personality", "app", "multimodal", "transformer", "linear-complexity attention"]
+dynamic = ["version"]
+description = "PersonalityLinMulT: Transformer-based Big Five Automatic Personality Perception and interview-variable estimation."
+keywords = ["bigfive", "personality", "multimodal", "transformer", "linear-complexity attention"]
 authors = [
-  { name = "fodorad", email = "foauaai@inf.elte.hu" },
+  { name = "fodorad", email = "fodorad201@gmail.com" },
 ]
 readme = {"file" = "README.md", "content-type" = "text/markdown"}
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-
-[project.urls]
-Documentation = "https://github.com/fodorad/personalitylinmult#readme"
-Issues = "https://github.com/fodorad/personalitylinmult/issues"
-Source = "https://github.com/fodorad/personalitylinmult"
-
-[tool.hatch.build.targets.wheel]
-packages = ["personalitylinmult"]
-exclude = ["personalitylinmult/test", "personalitylinmult/train", "data/"]
-
-[tool.hatch.build.targets.sdist]
-packages = ["personalitylinmult"]
-exclude = ["personalitylinmult/test", "personalitylinmult/train", "data/"]
-
-dependencies=[
+dependencies = [
   "numpy",
-  "torch",
+  "torch>=2.11",
   "lightning",
-  "linmult==1.5.2",
+  "torchmetrics",
+  "linmult>=2.1.2",
+  # The data layer (h5 dataset + dataloader) is part of the library, not a
+  # research script: reading the training artifact and its configs must work
+  # from a plain install, without the heavyweight `train` extra.
+  "h5py",
+  "pyyaml",
+  # A lightweight, pure-Python client: `PersonalityModel.from_pretrained(...)`
+  # downloads champion weights from the public HF model repo, so a bare `pip
+  # install personalitylinmult` (no extras) can do inference end to end.
+  "huggingface-hub",
 ]
 
 [project.optional-dependencies]
+# Training the models: the Lightning loop, MLflow tracking, the h5 builder, and
+# the plots. Everything needed to *produce* a model. Note `data.dataset` and
+# `data.collate` deliberately need none of this: reading a built h5 and feeding
+# a model works from a core install alone.
 train = [
-  "lightning==2.4.0",
-  "matplotlib==3.9.2",
-  "opencv-python==4.10.0.84",
-  "pandas==2.2.3",
-  "exordium[video]",
-  "torch==2.5.1",
-  "torchaudio==2.5.1",
-  "torchvision==0.20.1",
-  "tqdm==4.66.5",
-  "linmult==1.5.1",
-  "prettytable",
+  "mlflow",
+  # Hyperparameter search: TPE (Bayesian, tree-structured Parzen estimator)
+  # sampler + ASHA/Hyperband pruning on partial training curves -- the current
+  # field-standard default combination for small (<10 dim) search spaces,
+  # avoiding grid search's combinatorial blowup and full-GP Bayesian's per-trial
+  # overhead (unneeded below ~10-15 dimensions).
+  "optuna",
+  "optuna-integration[pytorch-lightning]",
+  # huggingface-hub is a core dependency (see `dependencies` above) since
+  # inference needs it too; DVC is intentionally absent regardless: it cannot
+  # push to a Hugging Face remote and its payoff is a paid cloud remote we do
+  # not use. fi.h5 is versioned by publishing it to a public HF dataset repo
+  # (`make push-fi-h5`), rebuilt by `make pipeline-fi`, and traced by the git
+  # SHA + builder config embedded in its attrs.
+  "matplotlib",
+  # The h5 builder reads the extractors' output formats (safetensors) and the
+  # label CSV (pandas), and reports progress over a multi-hour build (tqdm).
+  "pandas",
+  "tqdm",
+  "safetensors",
 ]
+
+# Extracting features from raw video/audio/text. Heavyweight and GPU-bound; only
+# needed to rebuild data/processed/FI from data/raw/FI.
+preprocess = [
+  # exordium is fast-moving; track its latest release and let its own
+  # torchaudio/torchvision/torchcodec pins drive the resolved versions
+  # (text extra = whisperx). Floor prevents uv from backtracking to an old
+  # exordium release when it conflicts elsewhere in the graph.
+  # >=2.9.1: VisualModelWrapper.track_to_feature shares/batches the torchcodec
+  # decoder (face encoders were ~18x decode-bound before), and 2.9.0 added
+  # `densify=` which replaced this repo's hand-rolled copy.
+  # >=2.11.0: adds mmBERT (jhu-clsp/mmBERT-base) and a `pooling=` output contract
+  # on the multilingual text wrappers (XlmRobertaWrapper, MmbertWrapper): the FI
+  # text features use `pooling="none"` for token-level (T, 768) sequences, the
+  # literature-correct representation for a cross-modal sequence model like
+  # LinMulT (a pooled sentence vector under-uses cross-modal attention).
+  "exordium[video,text]>=2.11.0",
+  "opencv-python",
+  "safetensors",
+  "pandas",
+  "tqdm",
+]
+# The Gradio demo / Hugging Face Space. Loads a registered model and, for the
+# audio (A) model, extracts features from an uploaded clip live -- so it needs
+# gradio plus the inference stack (mlflow) and the acoustic extractors (exordium).
+demo = [
+  "gradio",
+  "mlflow",
+  "exordium[video,text]>=2.11.0",
+]
+# The REST serving app (deploy/serve.py): a minimal FastAPI wrapper around
+# PersonalityModel, built as its own Docker image (deploy/Dockerfile) for
+# Cloud Run. Deliberately not `mlflow models build-docker` -- that image
+# spawns a second, isolated virtualenv at container startup purely to run
+# the model server, which silently defeats any fix applied to the outer
+# Python's site-packages, and its nginx layer produced no diagnosable log
+# output under Cloud Run. This app avoids both: no mlflow dependency, no
+# nginx, one process, HF Hub-backed like the rest of the inference stack.
+serve = [
+  "fastapi",
+  "uvicorn[standard]",
+  "python-multipart",  # required by FastAPI's UploadFile (POST /predict_audio)
+]
+# ONNX export (personalitylinmult/inference/onnx_export.py, a post-training,
+# post-champion-selection step) and inference (PersonalityModelONNX, a
+# separate class from PersonalityModel -- not a backend= flag -- so that a
+# plain `pip install personalitylinmult` for PyTorch-native work never pulls
+# in onnxruntime). `onnx` is needed for torch.onnx.export's own graph
+# validation/serialization; `onnxruntime` is the separate package that
+# actually runs an exported graph.
+onnx = [
+  "onnx",
+  "onnxruntime",
+  # torch>=2.11's torch.onnx.export defaults to dynamo=True (its own stated
+  # "recommended and default way"), which requires onnxscript to translate
+  # the traced graph -- not needed for onnxruntime to *run* an already
+  # exported graph, only for torch to *produce* one.
+  "onnxscript",
+  # Needed by personalitylinmult.inference.onnx_export's export_* functions
+  # at *export* time (they download and trace the raw source models --
+  # WavLM, DINOv2, mmBERT, XLM-RoBERTa, EmotiEffNet, FaRL), and by
+  # PersonalityModelONNX.predict_from_media at *inference* time (mmBERT/
+  # XLM-RoBERTa tokenization via transformers.AutoTokenizer). Declared
+  # explicitly rather than left as an undeclared transitive dependency that
+  # only happened to be present because [preprocess]/[demo] were also
+  # installed -- predict_from_audio (the audio-only champion's path) never
+  # imports either, but PersonalityModelONNX as a whole (both champions)
+  # does, so they live on this one extra rather than a narrower one.
+  "transformers",
+  # NOTE: exordium's own unigaze dependency pins timm==0.3.2 (predates
+  # torch._six's removal -- ImportError on any current torch). Do NOT add a
+  # bare "timm>=1.0" requirement here -- it directly conflicts with
+  # unigaze's exact pin and makes this extra unresolvable
+  # (ResolutionImpossible) rather than fixing anything. The real fix is
+  # [tool.uv].override-dependencies below (for `uv sync`) and
+  # deploy/Dockerfile's `uv pip install --override` (for a plain-pip-style
+  # install) -- an override *replaces* a transitive pin instead of adding a
+  # second, conflicting requirement.
+  # predict_from_media's face detection/tracking (EmotiEffNet/FaRL need a
+  # face crop, not a raw frame) and Whisper ASR fallback (transcript=None)
+  # both go through exordium -- see onnx.py's module docstring for why
+  # these two steps stay torch/exordium-based rather than ONNX.
+  "exordium[video,text]>=2.11.3",
+]
+dev = [
+  "ruff",
+  "ty",
+  "coverage",
+  "pre-commit",
+  "jupyter>=1.1.1",
+  "nbconvert>=7.17.1",
+]
+docs = [
+  "sphinx>=8.0",
+  "furo",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "myst-parser",
+]
+
+[project.urls]
+Documentation = "https://fodorad.github.io/PersonalityLinMulT/"
+Issues = "https://github.com/fodorad/PersonalityLinMulT/issues"
+Source = "https://github.com/fodorad/PersonalityLinMulT"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["personalitylinmult"]
+# The preprocess scripts are standalone research CLIs needing the heavy
+# extraction stack (whisperx, torchcodec, …). The data layer and the training
+# code are library API and ship.
+exclude = ["personalitylinmult/preprocess", "data/"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["personalitylinmult"]
+# The preprocess scripts are standalone research CLIs needing the heavy
+# extraction stack (whisperx, torchcodec, …). The data layer and the training
+# code are library API and ship.
+exclude = ["personalitylinmult/preprocess", "data/"]
+
+[tool.uv]
+override-dependencies = [
+  "timm>=1.0",  # exordium's unigaze pins timm==0.3.2; override it (matches exordium)
+  "linmult>=2.1.2",  # blinklinmult 1.0.4 pins linmult==1.1.0; override to keep linmult 2.x
+  "setuptools>=83.0.0",  # torch/ctranslate2 pull 81.0.0 (PYSEC-2026-3447); force the fixed release
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "TCH", "ARG", "PIE", "D"]
+ignore = ["D107", "D203", "D213"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104"]
+"tests/**/*.py" = ["D", "S", "ARG"]
+"examples/**/*.ipynb" = ["D"]
+"docs/conf.py" = ["D", "ARG"]
+# The preprocess scripts are standalone research CLIs, not library API, and are
+# excluded from the wheel. `data/` and `train/` are held to the full standard.
+"personalitylinmult/preprocess/**" = ["D", "E501", "E701", "ARG", "F821", "F841", "UP"]
+# Lightning fixes its hook signatures (trainer, pl_module, batch_idx, ...); a
+# hook that ignores one still has to accept it.
+"personalitylinmult/train/callbacks.py" = ["ARG002"]
+"personalitylinmult/train/module.py" = ["ARG002"]
+
+[tool.coverage.run]
+# app/app.py and deploy/serve.py sit outside the personalitylinmult package
+# (a Space entry point and a standalone Docker server, neither ever imported
+# as a library), but they hold real dispatch/validation logic worth covering
+# -- included explicitly rather than left invisible to the coverage gate.
+source = ["personalitylinmult", "app", "deploy"]
+omit = [
+  "*/tests/*",
+  "*/__init__.py",
+  # Standalone extraction CLIs: driven by GPUs and multi-GB model weights, so
+  # they are exercised by running the pipeline rather than by unit tests.
+  "personalitylinmult/preprocess/*",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "coverage_html"
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[tool.ty.src]
+# The preprocess scripts are standalone research CLIs that import the heavy
+# optional extraction stack; they are not part of the published library API.
+exclude = [
+  "personalitylinmult/preprocess",
+]
+

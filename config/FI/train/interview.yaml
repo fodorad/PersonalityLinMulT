@@ -1,0 +1,41 @@
+# Interview-variable regression.
+#
+# A separate task from big-five perception: the interview variable is a
+# hireability judgement, not a personality trait. It shares the feature pipeline
+# and the training machinery, but gets its own run, its own head (output_dim is
+# derived as len(targets) = 1), and its own MLflow experiment.
+task: interview
+targets:
+  - interview
+
+loss: bell_l2_l1
+max_epochs: 30
+
+accelerator: auto
+devices: auto
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results/FI
+
+optimizer:
+  name: adamw
+  lr: 0.001
+  weight_decay: 0.01
+  scheduler: onecycle
+  warmup_ratio: 0.1
+  gradient_clip_val: 1.0
+
+# With one target, mean_ccc is just the interview CCC.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_ccc
+  mode: max
+  patience: 10
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: FI-Interview
+  run_name: null
+  log_model: true

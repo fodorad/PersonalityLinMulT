@@ -1,0 +1,13 @@
+# A tiny dataset for smoke tests: audio + visual only, short window.
+h5_path: data/processed/FI/h5/fi_smoke.h5
+label_csv: data/processed/FI/label.csv
+features:
+  - wavlm
+  - dinov2
+window_seconds: 5.0
+crop_mode: head
+batch_size: 2
+num_workers: 0
+pin_memory: false
+persistent_workers: false
+seed: 42

@@ -1,0 +1,13 @@
+# FaRL (ep64, ViT-B/16 face representation) over the protagonist's face track.
+# Track-based like EmotiEffNet, so the mask is genuinely mixed: frames with no
+# protagonist detection hold a zero vector and mask=False.
+name: farl
+source_dir: data/processed/FI/farl_ep64
+source_format: safetensors
+# 512: FaRL projects to CLIP's embedding width, narrower than the 768 of the
+# other ViT encoders here.
+dim: 512
+# Same 25 fps grid as DINOv2 and EmotiEffNet.
+rate_hz: 25.0
+max_time_dim: 375
+dtype: float16

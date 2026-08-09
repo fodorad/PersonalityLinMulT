@@ -1,0 +1,15 @@
+---
+license: other
+license_name: chalearn-fi-derived
+license_link: https://chalearnlap.cvc.uab.cat/dataset/24/description/
+pretty_name: PersonalityLinMulT — FI Big Five champion weights
+library_name: pytorch
+pipeline_tag: other
+tags:
+- personality
+- big-five
+- multimodal
+- affective-computing
+- lightning
+- linmult
+---

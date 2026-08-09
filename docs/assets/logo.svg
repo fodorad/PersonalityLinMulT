@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 100" width="460" height="100"
+     role="img" aria-labelledby="title desc">
+  <title id="title">PersonalityLinMulT</title>
+  <desc id="desc">A Big Five radar-chart pentagon beside the PersonalityLinMulT wordmark.</desc>
+
+  <!-- Background -->
+  <rect width="420" height="100" rx="12" fill="#1a1a2e"/>
+
+  <!-- Big Five radar: pentagon outline (the five trait axes) + an irregular
+       inner profile (a sample prediction), echoing the radar plots used to
+       visualize Big Five trait scores. -->
+  <g transform="translate(48,50)">
+    <polygon points="0,-28 26.6,-8.7 16.5,22.7 -16.5,22.7 -26.6,-8.7"
+             fill="none" stroke="#3a3a5c" stroke-width="2"/>
+    <polygon points="0,-20 17,-6 12,16 -10,13 -18,-5"
+             fill="#4f8ef7" fill-opacity="0.35" stroke="#7bb0ff" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wordmark: Personality/Mul/T in ink, Lin in accent blue -->
+  <text x="92" y="58" font-family="'Segoe UI', Arial, sans-serif" font-size="30" font-weight="700">
+    <tspan fill="#e8eaf6">Personality</tspan><tspan fill="#4f8ef7">Lin</tspan><tspan fill="#e8eaf6">Mul</tspan><tspan fill="#4f8ef7">T</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="93" y="76" font-family="'Segoe UI', Arial, sans-serif" font-size="11"
+        fill="#7986cb" letter-spacing="0.3">Big Five personality perception · acoustic · visual · textual</text>
+</svg>

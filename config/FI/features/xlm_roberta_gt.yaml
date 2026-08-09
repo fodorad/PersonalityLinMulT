@@ -1,0 +1,14 @@
+# XLM-RoBERTa token-level embeddings over the ground-truth transcripts.
+#
+# Token-level (T, 768), not pooled: LinMulT is a cross-modal sequence model and
+# attends token-by-token, which a single pooled sentence vector cannot support.
+name: xlm_roberta_gt
+source_dir: data/processed/FI
+source_format: hdf5_per_id
+source_file: xlm_roberta_gt.h5
+dim: 768
+rate_hz: null
+# 128 tokens: shared cap across both text models and both sources; truncates
+# nothing (measured max 128 over all 10000 transcripts).
+max_time_dim: 128
+dtype: float16

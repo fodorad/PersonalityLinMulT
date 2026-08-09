@@ -1,0 +1,26 @@
+# WavLM Base+ acoustic features, layer 9.
+#
+# Layer 9 is the usual sweet spot for paralinguistic/affect tasks. The extractor
+# now stores only the layers it is asked for (see preprocess/fi/acoustic_wavlm.py
+# --layers), so this tree is ~12 GB rather than the 263 GB an all-12-layer fp32
+# dump costs. That is what makes the h5 build ~15 min instead of ~6 h: the old
+# tree forced a 28 MB read per clip to keep 2.3 MB, over a 35 MB/s USB HDD.
+#
+# `layers` names MODEL layer ids, not positions in the file, so this config reads
+# both the current one-layer pickles and any legacy all-layer ones. Listing
+# several layers stores a (N, L, T, D) array and enables linmult's learned
+# weighted-sum -- but they must have been extracted: re-run acoustic-wavlm-fi
+# with --layers to add more.
+name: wavlm
+source_dir: data/processed/FI/wavlm_baseplus_l9
+source_format: pickle_layers
+dim: 768
+# The extractor's 20 ms stride yields 764 frames over the 15.345 s clips, i.e. a
+# measured 49.79 Hz. Both are rounded here to the nominal 50 Hz / 750 frames: the
+# stride is exactly 20 ms by construction, the surplus 14 frames are the clip
+# overrun past 15 s, and rounding makes every analysis window a whole number
+# (15 s = 750, 10 s = 500, 5 s = 250) instead of 747/498/249.
+rate_hz: 50.0
+max_time_dim: 750
+layers: [9]
+dtype: float16

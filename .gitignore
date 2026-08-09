@@ -2,8 +2,34 @@
 .DS_Store
 .vscode
 .claude
-data/
+
+# Raw FI media (video and any audio extracted from it) is never redistributed,
+# per docs/dataset.md's license note -- only derived, non-reversible artifacts
+# (fi.h5's feature vectors) are published. tests/fixtures/ ships only
+# ground-truth annotation JSON; any raw clip a notebook extracts there for
+# local use must never be committed.
+tests/fixtures/*.mp4
+tests/fixtures/*.wav
+tests/fixtures/*.mp3
+# data/processed/FI and data/raw/FI are symlinks to an external volume, so git
+# cannot track anything beneath them ("pathspec is beyond a symbolic link").
+# Nothing is lost: fi.h5 is published to a public Hugging Face dataset repo
+# (see README's Data preparation section; DVC is intentionally not used).
+# Anchored to the repo root (leading /) so this does not also match
+# tests/data/ -- a real package (tests/data/__init__.py, test fixtures),
+# not raw data, which a bare "data/" pattern would otherwise swallow.
+/data/
 tools/
+
+# Training run outputs and the MLflow tracking store are local, not source.
+results/
+mlruns/
+mlflow.db
+mlflow.db-journal
+
+# Scratch notes and investigation write-ups: useful locally, not part of the
+# source tree (matches the exordium repo's convention).
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -165,3 +191,17 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Sphinx documentation build output
+site/
+coverage_html/
+
+# ruff
+.ruff_cache/
+
+# hatch-vcs generated version file
+personalitylinmult/_version.py
+.build/
+
+# Personal notes -- not part of the public docs, never committed
+notes/

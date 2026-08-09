@@ -1,0 +1,19 @@
+# Hugging Face Space dependencies. The Space loads its model from the public
+# HF Hub model repo (PersonalityModel.from_pretrained / PersonalityModelONNX
+# .from_pretrained), not the MLflow registry, so mlflow is not needed here --
+# installed directly rather than via the [demo] extra (which still includes
+# mlflow, for local registry-based testing). exordium pulls the WavLM /
+# emotion2vec extractors for the PyTorch backend's live audio path, plus
+# face detection/tracking (YOLO/AdaFace) and Whisper ASR for the AVT
+# champion's predict_from_media.
+# onnxruntime backs the onnx backend (see app.py's dropdown) -- torch-free,
+# full audio-to-prediction pipeline for the audio-only champion, and the
+# only backend predict_from_media (the AVT champion) supports.
+# transformers is needed at inference time by predict_from_media's mmBERT/
+# XLM-RoBERTa tokenizer step -- declared explicitly rather than relying on
+# exordium pulling it in transitively.
+personalitylinmult @ git+https://github.com/fodorad/PersonalityLinMulT
+gradio
+exordium[video,text]>=2.11.3
+onnxruntime
+transformers
