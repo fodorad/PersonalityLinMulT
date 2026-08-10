@@ -2,4 +2,4 @@
 # mirroring pyproject.toml's [tool.uv].override-dependencies for `uv sync`.
 # `uv pip install` does not read [tool.uv] automatically -- this file is
 # how the same override reaches a Docker build.
-timm>=1.0
+timm>=1.0.28
