@@ -1,0 +1,254 @@
+personalitylinmult.data.sources
+===============================
+
+.. py:module:: personalitylinmult.data.sources
+
+.. autoapi-nested-parse::
+
+   Readers for each on-disk feature format produced by ``preprocess/fi``.
+
+   Every reader returns the same thing — a :class:`FeatureSample` of
+   ``features`` plus a ``mask`` — so the builder can treat WavLM pickles, DINOv2
+   safetensors and RoBERTa HDF5 datasets identically.
+
+   **Masks.** Only the track-based extractors (EmotiEffNet, FaRL, MARLIN) record
+   a real mask, because the protagonist is not detected on every frame. The other
+   formats are dense by construction and get an all-``True`` mask synthesised here.
+   Producing a mask unconditionally is what lets the rest of the pipeline hold a
+   single contract: every sequence feature has a mask, ``True`` = valid.
+
+   **AppleDouble files.** This repository lives on a non-native filesystem where
+   macOS writes ``._{name}`` resource-fork sidecars next to real files. A naive
+   ``glob("*.st")`` returns twice as many paths as there are clips, and reading one
+   raises ``SafetensorError: header too large``. :func:`iter_feature_files` filters
+   them; use it rather than globbing directly.
+
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.sources.SourceError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.data.sources.FeatureSample
+   personalitylinmult.data.sources.FeatureReader
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.data.sources.is_hidden_sidecar
+   personalitylinmult.data.sources.iter_feature_files
+   personalitylinmult.data.sources.read_pickle_layers
+   personalitylinmult.data.sources.read_npy
+   personalitylinmult.data.sources.read_safetensors
+   personalitylinmult.data.sources.read_hdf5_entry
+
+
+Module Contents
+---------------
+
+.. py:class:: FeatureSample
+
+   One clip's features for one modality.
+
+   :param features: ``(T, D)`` for a sequence, or ``(L, T, D)`` for a
+                    multi-layer sequence.
+   :type features: np.ndarray
+   :param mask: ``(T,)`` bool, ``True`` where the timestep is valid.
+   :type mask: np.ndarray
+
+
+   .. py:property:: time_dim
+      :type: int
+
+
+      Length of the time axis.
+
+      :returns: ``T``.
+      :rtype: int
+
+
+.. py:exception:: SourceError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when a feature file is missing, unreadable, or malformed.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: is_hidden_sidecar(path: pathlib.Path) -> bool
+
+   Whether a path is a macOS AppleDouble resource fork.
+
+   :param path: Candidate path.
+   :type path: Path
+
+   :returns: ``True`` for ``._*`` sidecars, which are not real feature files.
+   :rtype: bool
+
+
+.. py:function:: iter_feature_files(directory: pathlib.Path, suffix: str) -> list[pathlib.Path]
+
+   List real feature files in a directory, skipping AppleDouble sidecars.
+
+   :param directory: Directory to scan.
+   :type directory: Path
+   :param suffix: File suffix including the dot, e.g. ``".st"``.
+   :type suffix: str
+
+   :returns: Sorted real files.
+   :rtype: list[Path]
+
+   :raises SourceError: If the directory does not exist.
+
+
+.. py:function:: read_pickle_layers(path: pathlib.Path, layers: tuple[int, Ellipsis]) -> FeatureSample
+
+   Read selected transformer layers from a pickled list of per-layer arrays.
+
+   Used for WavLM. ``layers`` always names *model* layers (9 means WavLM's
+   layer 9), never positions in the file, so the same config reads both
+   supported on-disk formats:
+
+   * ``{"layers": [...], "features": [...]}`` — what
+     :mod:`personalitylinmult.preprocess.fi.acoustic_wavlm` writes now: only
+     the extracted layers, each tagged with its model layer id.
+   * a bare ``list`` of every layer — the older, fatter format, where position
+     happens to equal the layer id.
+
+   The distinction matters because the current extractor stores one layer per
+   clip: in a bare list that array would sit at index 0 and be indistinguishable
+   from layer 0. Carrying the ids makes the file self-describing instead.
+
+   The pickles are produced locally by :mod:`personalitylinmult.preprocess.fi`
+   from the operator's own audio, so they are trusted input.
+
+   :param path: Path to the ``.pkl`` file.
+   :type path: Path
+   :param layers: Model layer ids to keep, in order.
+   :type layers: tuple[int, ...]
+
+   :returns: ``(T, D)`` when one layer is selected, ``(L, T, D)``
+             when several. The mask is dense.
+   :rtype: FeatureSample
+
+   :raises SourceError: If the file is unreadable or a requested layer is absent.
+
+
+.. py:function:: read_npy(path: pathlib.Path) -> FeatureSample
+
+   Read a plain ``(T, D)`` array.
+
+   :param path: Path to the ``.npy`` file.
+   :type path: Path
+
+   :returns: The array with a dense mask.
+   :rtype: FeatureSample
+
+   :raises SourceError: If the file is unreadable or not 2-D.
+
+
+.. py:function:: read_safetensors(path: pathlib.Path) -> FeatureSample
+
+   Read a safetensors feature file, honouring its mask when present.
+
+   DINOv2 runs on full frames and emits no ``mask`` key; the track-based
+   extractors emit one. Both are normalised to a mask here.
+
+   :param path: Path to the ``.st`` file.
+   :type path: Path
+
+   :returns: ``(T, D)`` features and a ``(T,)`` mask.
+   :rtype: FeatureSample
+
+   :raises SourceError: If the file is unreadable, lacks ``features``, or its mask
+       length disagrees with its feature length.
+
+
+.. py:function:: read_hdf5_entry(h5_file: h5py.File, video_id: str) -> FeatureSample
+
+   Read one clip's ``(T, D)`` sequence entry from a per-id HDF5 feature file.
+
+   :param h5_file: Open feature file, keyed by ``video_id``.
+   :type h5_file: h5py.File
+   :param video_id: Clip identifier.
+   :type video_id: str
+
+   :returns: The entry, with a dense all-valid mask.
+   :rtype: FeatureSample
+
+   :raises SourceError: If the id is absent or the entry is not a 2-D ``(T, D)``
+       sequence.
+
+
+.. py:class:: FeatureReader(spec: personalitylinmult.data.schema.FeatureSpec, root: pathlib.Path)
+
+   Reads one feature for arbitrary clips, holding open handles as needed.
+
+   ``hdf5_per_id`` features live in a single file keyed by ``video_id``, so the
+   handle is opened once and reused; the per-clip formats are opened on demand.
+   Use as a context manager so the handle is always released.
+
+   :param spec: The feature to read.
+   :type spec: FeatureSpec
+   :param root: Repository root that ``spec.source_dir`` is relative to.
+   :type root: Path
+
+
+   .. py:method:: __enter__() -> FeatureReader
+
+      Open any shared handle.
+
+      :returns: This reader.
+      :rtype: FeatureReader
+
+
+
+   .. py:method:: __exit__(*exc_info: object) -> None
+
+      Release any shared handle.
+
+
+
+   .. py:method:: available_ids() -> set[str]
+
+      Clip ids this feature actually has on disk.
+
+      The builder compares this against ``label.csv`` and fails loudly on a
+      shortfall, rather than silently zero-filling clips whose features were
+      never extracted.
+
+      :returns: Available ``video_id`` values.
+      :rtype: set[str]
+
+      :raises SourceError: If the source directory or file is missing.
+
+
+
+   .. py:method:: read(video_id: str) -> FeatureSample
+
+      Read one clip's feature.
+
+      :param video_id: Clip identifier.
+      :type video_id: str
+
+      :returns: Features plus mask.
+      :rtype: FeatureSample
+
+      :raises SourceError: If the clip's feature cannot be read.
+
+
+

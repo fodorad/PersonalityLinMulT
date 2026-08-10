@@ -1,0 +1,148 @@
+personalitylinmult.inference.audio_features
+===========================================
+
+.. py:module:: personalitylinmult.inference.audio_features
+
+.. autoapi-nested-parse::
+
+   Extract the audio features the A / AT / AVT models consume, from a media file.
+
+   The trained models take pre-extracted per-modality features, not raw audio. To
+   predict on a *new* clip a caller must first run the same extractors used to build
+   ``fi.h5``. This module wraps the two acoustic ones — WavLM and emotion2vec — so a
+   demo (notebook or Space) can go from an uploaded file to a features dict the
+   predictor accepts, without importing the batch preprocessing scripts.
+
+   exordium (the extractor stack) is imported lazily inside the functions so this
+   module stays importable where those heavy deps are absent (e.g. a unit-test
+   environment that only exercises the predictor).
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features.logger
+   personalitylinmult.inference.audio_features.WAVLM_LAYER
+   personalitylinmult.inference.audio_features.AUDIO_SUFFIXES
+   personalitylinmult.inference.audio_features.AUDIO_SAMPLE_RATE
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features.AudioExtractionError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features.ensure_audio
+   personalitylinmult.inference.audio_features.extract_wavlm
+   personalitylinmult.inference.audio_features.extract_emotion2vec
+   personalitylinmult.inference.audio_features.extract_audio_features
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: WAVLM_LAYER
+   :value: 9
+
+
+   WavLM transformer layer used everywhere in this project (matches fi.h5).
+
+.. py:data:: AUDIO_SUFFIXES
+
+   Extensions treated as audio; anything else is decoded through ffmpeg first.
+
+.. py:data:: AUDIO_SAMPLE_RATE
+   :value: 44100
+
+
+   Sample rate the training audio was extracted at.
+
+.. py:exception:: AudioExtractionError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when audio cannot be decoded from an input file.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: ensure_audio(input_path: str | pathlib.Path) -> tuple[pathlib.Path, bool]
+
+   Return a WAV path for the input, extracting audio from video if needed.
+
+   Audio files are passed through unchanged; any other container (video) is
+   decoded to a temporary mono 44.1 kHz WAV with the same ffmpeg settings the
+   training pipeline used.
+
+   :param input_path: An audio or video file.
+   :type input_path: str | Path
+
+   :returns: ``(wav_path, is_temporary)`` -- the caller deletes the
+             WAV when ``is_temporary`` is True.
+   :rtype: tuple[Path, bool]
+
+   :raises AudioExtractionError: If ffmpeg fails or the input has no audio stream.
+
+
+.. py:function:: extract_wavlm(audio_path: str | pathlib.Path, device_id: int = -1) -> numpy.ndarray
+
+   Extract the WavLM layer-9 feature sequence for one clip.
+
+   :param audio_path: Path to an audio/video file exordium can read.
+   :type audio_path: str | Path
+   :param device_id: Device index; ``-1`` for CPU (portable default).
+   :type device_id: int
+
+   :returns: ``(T, 768)`` float32 features.
+   :rtype: np.ndarray
+
+
+.. py:function:: extract_emotion2vec(audio_path: str | pathlib.Path, device_id: int = -1) -> numpy.ndarray
+
+   Extract the emotion2vec+ feature sequence for one clip.
+
+   :param audio_path: Path to an audio/video file exordium can read.
+   :type audio_path: str | Path
+   :param device_id: Device index; ``-1`` for CPU.
+   :type device_id: int
+
+   :returns: ``(T, 768)`` float32 features.
+   :rtype: np.ndarray
+
+
+.. py:function:: extract_audio_features(audio_path: str | pathlib.Path, device_id: int = -1) -> dict[str, numpy.ndarray]
+
+   Extract both acoustic features for the audio (A) model.
+
+   Accepts audio *or video*: a video's audio track is extracted to a temporary
+   mono 44.1 kHz WAV (matching the training pipeline) before feature extraction,
+   then cleaned up.
+
+   :param audio_path: Path to an audio or video file.
+   :type audio_path: str | Path
+   :param device_id: Device index; ``-1`` for CPU.
+   :type device_id: int
+
+   :returns: ``{"wavlm": (T, 768), "emotion2vec": (T, 768)}``,
+             the exact input the ``A`` model's predictor expects.
+   :rtype: dict[str, np.ndarray]
+
+   :raises AudioExtractionError: If the input is a video with no decodable audio.
+
+

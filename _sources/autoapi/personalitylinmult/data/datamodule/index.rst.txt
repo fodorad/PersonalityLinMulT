@@ -1,0 +1,120 @@
+personalitylinmult.data.datamodule
+==================================
+
+.. py:module:: personalitylinmult.data.datamodule
+
+.. autoapi-nested-parse::
+
+   Lightning ``DataModule`` over the built FI HDF5 file.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.datamodule.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.data.datamodule.FiDataModule
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.data.datamodule.seed_worker
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:function:: seed_worker(worker_id: int) -> None
+
+   Seed a dataloader worker's RNGs from torch's per-worker seed.
+
+   Without this, every worker inherits the parent's numpy seed and augmentation
+   draws repeat across workers.
+
+   :param worker_id: Worker index, unused but required by the hook.
+   :type worker_id: int
+
+
+.. py:class:: FiDataModule(config: personalitylinmult.train.config.DataConfig, target_names: list[str])
+
+   Bases: :py:obj:`lightning.LightningDataModule`
+
+
+   Serves the FI splits from the single HDF5 artifact.
+
+   :param config: Dataloader configuration.
+   :type config: DataConfig
+   :param target_names: Label columns for the active task, in head
+                        order.
+   :type target_names: list[str]
+
+   .. attribute:: prepare_data_per_node
+
+      If True, each LOCAL_RANK=0 will call prepare data.
+      Otherwise only NODE_RANK=0, LOCAL_RANK=0 will prepare data.
+
+   .. attribute:: allow_zero_length_dataloader_with_multiple_devices
+
+      If True, dataloader with zero length within local rank is allowed.
+      Default value is False.
+
+
+   .. py:method:: setup(stage: str | None = None) -> None
+
+      Construct the datasets needed for a stage.
+
+      :param stage: ``"fit"``, ``"validate"``, ``"test"``, or
+                    ``None`` for all.
+      :type stage: str | None
+
+
+
+   .. py:method:: train_dataloader() -> torch.utils.data.DataLoader
+
+      Training loader.
+
+      :returns: Shuffled, drop-last loader over the train split.
+      :rtype: DataLoader
+
+      :raises RuntimeError: If called before ``setup``.
+
+
+
+   .. py:method:: val_dataloader() -> torch.utils.data.DataLoader
+
+      Validation loader.
+
+      :returns: Deterministic loader over the valid split.
+      :rtype: DataLoader
+
+      :raises RuntimeError: If called before ``setup``.
+
+
+
+   .. py:method:: test_dataloader() -> torch.utils.data.DataLoader
+
+      Test loader.
+
+      :returns: Deterministic loader over the test split.
+      :rtype: DataLoader
+
+      :raises RuntimeError: If called before ``setup``.
+
+
+

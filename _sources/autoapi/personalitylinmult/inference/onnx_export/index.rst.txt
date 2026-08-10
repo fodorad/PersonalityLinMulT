@@ -1,0 +1,370 @@
+personalitylinmult.inference.onnx_export
+========================================
+
+.. py:module:: personalitylinmult.inference.onnx_export
+
+.. autoapi-nested-parse::
+
+   Export a trained checkpoint's model, and its feature extractors, to ONNX.
+
+   Three independent exports live here:
+
+   - :func:`export_to_onnx` -- the *trained regression model*, LinT (single
+     feature) or LinMulT (multiple features, e.g. the AVT champion).
+   - :func:`export_wavlm_to_onnx` -- WavLM itself (via ``transformers``, the same
+     model :class:`exordium.audio.wavlm.WavlmWrapper` wraps), so the full
+     audio -> features -> prediction pipeline can run on ONNX Runtime alone, with
+     no ``torch``/``transformers``/``exordium`` at inference time.
+
+   ``export_to_onnx`` handles both model families with two different wrapper
+   classes, since ONNX graphs have a fixed input signature:
+
+   - LinT's ``forward(x, mask, name)`` takes two tensors and one constant
+     string, which traces directly (:class:`_LinTExportWrapper`).
+   - LinMulT's ``forward(inputs, masks, names)`` takes a *list* of tensors, one
+     per modality -- ONNX/``torch.onnx.export`` do not accept a Python
+     ``list[Tensor]`` as a traced input the way LinMulT's own signature does, so
+     :class:`_LinMulTExportWrapper` unpacks a fixed-arity ``*args`` (built once
+     per checkpoint, sized to that checkpoint's ``len(feature_names)``) into two
+     equal halves -- the first half is ``inputs``, the second is ``masks``, in
+     ``feature_names`` order. The consumer (:class:`~personalitylinmult.onnx
+     .PersonalityModelONNX`) already knows this order from the ``.onnx.json``
+     sidecar, so the graph's input names (``x_0``, ``mask_0``, ``x_1``, ...) need
+     no further metadata to interpret correctly.
+
+   Both branches are exported via the legacy TorchScript tracer
+   (``dynamo=False``): both LinT's and LinMulT's forward passes branch on a mask
+   tensor's *content* (LinT: ``if mask is not None and not mask.any()``;
+   LinMulT's ``_normalize_masks``: ``mask.all()``), which torch's newer
+   ``torch.export``-based exporter (``dynamo=True``, the default since torch
+   2.9) cannot trace -- it requires a fully static graph. The tracer instead
+   bakes in whichever branch the trace-time input took. For LinT, every current
+   caller passes an all-``True`` mask (:meth:`FiPredictor._to_batch` never
+   pads), so tracing with an all-``True`` dummy mask is safe in practice, but a
+   caller feeding a genuinely padded (some-``False``) mask through the ONNX
+   graph would silently get the all-valid-mask behavior regardless of the
+   mask's real content. For LinMulT, the same caveat applies to *partial*
+   per-timestep masking -- but a **whole-modality** all-``False`` mask (the
+   "skip this feature entirely" case, e.g. no transcript available) is a
+   different, verified-safe code path: see
+   ``tests/inference/test_linmult_mask_validation.py``, which confirms with a
+   real forward pass (not just by reading the source) that neither attention
+   type this project supports produces NaN for a fully-masked branch --
+   ``linmult.core.transformer``'s ``TransformerLayer.forward`` has an explicit
+   guard for exactly this case, independent of ``attention_type``. Document
+   these limitations wherever the ONNX path is offered as an alternative to the
+   PyTorch path, which has no such restriction.
+
+   The exported artifact is two files, not one: the ``.onnx`` graph itself does
+   not carry Python-level metadata like trait names, so a ``.onnx.json`` sidecar
+   travels with it -- the same information
+   :class:`~personalitylinmult.inference.predictor.FiPredictor` reads from a
+   checkpoint's hyperparameters, made explicit here since the ONNX graph cannot
+   hold it. The sidecar schema is always plural (``feature_names``,
+   ``input_dims``) regardless of family, so
+   :class:`~personalitylinmult.onnx.PersonalityModelONNX` never has to branch on
+   which family produced a given graph -- a LinT sidecar simply has
+   length-1 lists.
+
+   Note: ``linmult`` versions before 2.1.1 cached
+   ``linmult.core.pe.PositionalEncoding``'s table across a
+   ``TransformerEncoder``'s query and key/value calls, which could bake a
+   shared, trace-time sequence length into both calls of an ONNX-exported
+   LinMulT graph -- breaking inference for features with genuinely different
+   lengths (WavLM ~50 Hz vs. DINOv2 ~25 fps vs. one row per token for text).
+   Fixed upstream in ``linmult`` 2.1.1; this project requires ``linmult>=2.1.1``
+   accordingly.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.onnx_export.logger
+   personalitylinmult.inference.onnx_export.ONNX_OPSET
+   personalitylinmult.inference.onnx_export.WAVLM_MODEL_ID
+   personalitylinmult.inference.onnx_export.WAVLM_LAYER
+   personalitylinmult.inference.onnx_export.DINOV2_MODEL_ID
+   personalitylinmult.inference.onnx_export.MMBERT_MODEL_ID
+   personalitylinmult.inference.onnx_export.XLM_ROBERTA_MODEL_ID
+   personalitylinmult.inference.onnx_export.EMOTIEFFNET_MODEL_NAME
+   personalitylinmult.inference.onnx_export.FARL_MODEL_NAME
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.onnx_export.export_to_onnx
+   personalitylinmult.inference.onnx_export.export_wavlm_to_onnx
+   personalitylinmult.inference.onnx_export.export_dinov2_to_onnx
+   personalitylinmult.inference.onnx_export.export_mmbert_to_onnx
+   personalitylinmult.inference.onnx_export.export_xlm_roberta_to_onnx
+   personalitylinmult.inference.onnx_export.export_emotieffnet_to_onnx
+   personalitylinmult.inference.onnx_export.export_farl_to_onnx
+   personalitylinmult.inference.onnx_export.export_emotion2vec_to_onnx
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: ONNX_OPSET
+   :value: 17
+
+
+   ONNX opset version to export against; 17 is broadly supported by current
+   onnxruntime releases and covers every op LinT's forward pass uses.
+
+.. py:function:: export_to_onnx(module: personalitylinmult.train.module.FiLightningModule, output_path: str | pathlib.Path) -> pathlib.Path
+
+   Export a trained checkpoint's model (LinT or LinMulT) to ONNX.
+
+   :param module: A loaded module (e.g. via
+                  ``FiLightningModule.load_from_checkpoint``), in eval mode or not
+                  -- this function calls ``.eval()`` itself.
+   :type module: FiLightningModule
+   :param output_path: Destination ``.onnx`` path. A sidecar
+                       ``.onnx.json`` is written alongside it with the same stem.
+   :type output_path: str | Path
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:data:: WAVLM_MODEL_ID
+   :value: 'microsoft/wavlm-base-plus'
+
+
+   HF model id matching ``WavlmWrapper(model_name="base+")``, the variant
+   every feature in this project's ``fi.h5`` was extracted with.
+
+.. py:data:: WAVLM_LAYER
+   :value: 9
+
+
+   Which transformer layer's hidden state to export -- matches
+   ``personalitylinmult.inference.audio_features.WAVLM_LAYER``. Indexes into
+   ``WavlmWrapper``'s already-sliced ``hidden_states[1:]`` (12 transformer
+   layers, CNN feature-extractor output excluded), so the raw HF model's
+   ``hidden_states[WAVLM_LAYER + 1]`` is the equivalent index -- verified
+   numerically equal to ``WavlmWrapper(...)(waveform)[WAVLM_LAYER]`` before
+   this export was written.
+
+.. py:function:: export_wavlm_to_onnx(output_path: str | pathlib.Path, model_id: str = WAVLM_MODEL_ID, layer_index: int = WAVLM_LAYER + 1) -> pathlib.Path
+
+   Export WavLM (one hidden-state layer) to ONNX.
+
+   Downloads the model from HF Hub (``transformers``) once, at export time
+   -- the resulting ``.onnx`` graph is self-contained and needs neither
+   ``transformers`` nor a network connection to run afterward.
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_id: HF model id to export. Defaults to
+                    :data:`WAVLM_MODEL_ID` (WavLM base+, matching every feature this
+                    project's ``fi.h5`` was built with).
+   :type model_id: str
+   :param layer_index: Index into the *raw* model's ``hidden_states``
+                       tuple (13 entries: CNN output + 12 transformer layers). Defaults
+                       to :data:`WAVLM_LAYER` ``+ 1``, the raw-model equivalent of
+                       :data:`WAVLM_LAYER` in ``WavlmWrapper``'s already-sliced list --
+                       see :data:`WAVLM_LAYER`'s docstring for how that offset was
+                       confirmed.
+   :type layer_index: int
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:data:: DINOV2_MODEL_ID
+   :value: 'facebook/dinov2-base'
+
+
+   HF model id matching ``DINOv2Wrapper(model_name="base")``, the variant
+   this project's ``fi.h5`` was built with (768-d).
+
+.. py:function:: export_dinov2_to_onnx(output_path: str | pathlib.Path, model_id: str = DINOV2_MODEL_ID) -> pathlib.Path
+
+   Export DINOv2 (CLS token, L2-normalized) to ONNX.
+
+   Downloads the model from HF Hub (``transformers``) once, at export time
+   -- the resulting ``.onnx`` graph is self-contained and needs neither
+   ``transformers`` nor a network connection to run afterward. Unlike
+   WavLM (one call per whole clip), a live pipeline calls this graph once
+   per video frame (or batches several frames into one call via the
+   dynamic batch axis) -- DINOv2 runs on full, unmodified frames, no face
+   detection or tracking involved (see
+   :mod:`personalitylinmult.inference.audio_features_onnx`'s WavLM-decode
+   pattern for the analogous "preprocessing stays outside the graph"
+   convention this export also follows).
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_id: HF model id to export. Defaults to
+                    :data:`DINOV2_MODEL_ID` (DINOv2 base, matching every feature this
+                    project's ``fi.h5`` was built with).
+   :type model_id: str
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:data:: MMBERT_MODEL_ID
+   :value: 'jhu-clsp/mmBERT-base'
+
+
+   HF model id matching ``MmbertWrapper()``, the variant this project's
+   ``fi.h5`` (``mmbert_gt`` feature) was built with.
+
+.. py:data:: XLM_ROBERTA_MODEL_ID
+   :value: 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
+
+
+   HF model id matching ``XlmRobertaWrapper()``'s default ``backbone="mpnet"``
+   -- confirmed (not assumed) to be what this project's ``fi.h5``
+   (``xlm_roberta_gt`` feature) was built with by reading
+   ``personalitylinmult/preprocess/fi/textual_xlm_roberta.py``, which calls
+   ``XlmRobertaWrapper(device_id=device_id)`` with no ``backbone=`` override, so
+   the wrapper's default applies. Not ``"e5"`` (``intfloat/multilingual-e5-base``),
+   the wrapper's other supported backbone.
+
+.. py:function:: export_mmbert_to_onnx(output_path: str | pathlib.Path, model_id: str = MMBERT_MODEL_ID) -> pathlib.Path
+
+   Export mmBERT (token-level hidden states) to ONNX.
+
+   Downloads the model from HF Hub (``transformers``) once, at export time.
+   Tokenization stays outside the graph -- see :class:`_TokenLevelTextWrapper`.
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_id: HF model id to export. Defaults to
+                    :data:`MMBERT_MODEL_ID`.
+   :type model_id: str
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:function:: export_xlm_roberta_to_onnx(output_path: str | pathlib.Path, model_id: str = XLM_ROBERTA_MODEL_ID) -> pathlib.Path
+
+   Export XLM-RoBERTa (``mpnet`` backbone, token-level) to ONNX.
+
+   Downloads the model from HF Hub (``transformers``) once, at export time.
+   Tokenization stays outside the graph -- see :class:`_TokenLevelTextWrapper`.
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_id: HF model id to export. Defaults to
+                    :data:`XLM_ROBERTA_MODEL_ID` (the ``mpnet`` backbone, confirmed to
+                    be what this project's ``xlm_roberta_gt`` feature actually uses).
+   :type model_id: str
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:data:: EMOTIEFFNET_MODEL_NAME
+   :value: 'enet_b0_8_best_vgaf'
+
+
+   Variant matching ``EmotiEffNetWrapper()``'s default -- ``timm``
+   ``tf_efficientnet_b0.ns_jft_in1k``, 224x224 input, 1280-d penultimate
+   features. Matches every feature this project's ``fi.h5`` was built with.
+
+.. py:function:: export_emotieffnet_to_onnx(output_path: str | pathlib.Path, model_name: str = EMOTIEFFNET_MODEL_NAME) -> pathlib.Path
+
+   Export EmotiEffNet (penultimate-layer features) to ONNX.
+
+   Instantiates the real :class:`exordium.video.deep.emotieffnet
+   .EmotiEffNetWrapper` at export time (downloads and correctly remaps its
+   legacy-pickle checkpoint -- see that wrapper's module docstring for why
+   a fresh ``timm`` model plus a remapped ``state_dict`` is needed rather
+   than loading the pickle directly) and traces its ``.model`` -- already
+   has ``classifier = nn.Identity()`` applied, so the traced graph itself
+   needs no special output selection, unlike WavLM (must select one
+   ``hidden_states`` layer) or DINOv2 (must select+normalize the CLS token).
+
+   Like DINOv2, a live pipeline calls this graph once per face crop (or
+   batches several into one call via the dynamic batch axis); preprocessing
+   (resize + ImageNet normalize) stays outside the graph.
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_name: EmotiEffNet variant to export. Defaults to
+                      :data:`EMOTIEFFNET_MODEL_NAME` (matching every feature this
+                      project's ``fi.h5`` was built with).
+   :type model_name: str
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:data:: FARL_MODEL_NAME
+   :value: 'ep64'
+
+
+   Variant matching ``FarlWrapper()``'s default -- CLIP ViT-B/16, LAION-Face
+   20M, 64 epochs, 512-d projected embedding. Matches every feature this
+   project's ``fi.h5`` was built with.
+
+.. py:function:: export_farl_to_onnx(output_path: str | pathlib.Path, model_name: str = FARL_MODEL_NAME) -> pathlib.Path
+
+   Export FaRL (L2-normalized projected embedding) to ONNX.
+
+   Instantiates the real :class:`exordium.video.deep.farl.FarlWrapper` at
+   export time -- FaRL ships raw OpenAI-CLIP weights with no HF Hub repo to
+   pull an architecture from, so the wrapper's own
+   ``_build_vision_tower()`` + ``_convert_openai_to_hf(...)`` construction
+   is reused rather than re-implemented here (the same export-time-only
+   heavy-dependency precedent WavLM's export set: this only runs once, at
+   export time, never at inference time).
+
+   Like DINOv2 and EmotiEffNet, a live pipeline calls this graph once per
+   face crop (or batches several into one call via the dynamic batch
+   axis); preprocessing (resize + **CLIP** mean/std -- not ImageNet's --
+   normalize) stays outside the graph.
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+   :param model_name: FaRL variant to export. Defaults to
+                      :data:`FARL_MODEL_NAME` (matching every feature this project's
+                      ``fi.h5`` was built with).
+   :type model_name: str
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+
+.. py:function:: export_emotion2vec_to_onnx(output_path: str | pathlib.Path) -> pathlib.Path
+
+   Export emotion2vec+ (frame-level features) to ONNX.
+
+   Instantiates the real :class:`exordium.audio.emotion2vec
+   .Emotion2vecWrapper` at export time -- emotion2vec+ is a fully custom,
+   vendored architecture (``_Emotion2vecModel``, not a thin wrapper over a
+   library model), so its own checkpoint download and key-remapping logic
+   is reused rather than re-implemented here.
+
+   ALiBi's relative position bias (``_get_alibi_bias``) is recomputed from
+   the input's time dimension on every call, using ``torch.arange`` over a
+   shape-derived count -- traced correctly under a dynamic time axis (see
+   ``test_onnx_export_emotion2vec.py``'s explicit different-length check,
+   added specifically because a shape-dependent internal computation like
+   this is a plausible way for the tracer to silently bake in a constant
+   instead of staying dynamic, the same class of risk already documented
+   for LinMulT's mask-content branching in this module's docstring).
+
+   :param output_path: Destination ``.onnx`` path.
+   :type output_path: str | Path
+
+   :returns: The written ``.onnx`` path.
+   :rtype: Path
+
+

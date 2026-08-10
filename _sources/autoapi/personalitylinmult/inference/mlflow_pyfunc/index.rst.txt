@@ -1,0 +1,144 @@
+personalitylinmult.inference.mlflow_pyfunc
+==========================================
+
+.. py:module:: personalitylinmult.inference.mlflow_pyfunc
+
+.. autoapi-nested-parse::
+
+   Wrap an FI checkpoint as an MLflow ``pyfunc`` model and register it.
+
+   Training logs raw ``.ckpt`` artifacts, which ``mlflow models serve`` cannot load
+   on their own. This module wraps a checkpoint in the standard ``pyfunc`` flavour —
+   a self-contained model MLflow can serve as a REST endpoint or bake into a Docker
+   image — and registers it in the Model Registry so it carries a version.
+
+   Promotion uses **aliases** (:func:`set_champion`), not the deprecated Staging /
+   Production stage mechanism: an alias is scoped to one registered-model *name*,
+   so each model family (e.g. the AVT fusion model and the audio-only model) keeps
+   its own independent ``@champion`` without any conflict, and moving the alias to
+   a new version is a single, deliberate call -- never automatic on registration.
+
+   The wrapped model consumes the same per-modality features as
+   :class:`~personalitylinmult.inference.predictor.FiPredictor`: at serving time the
+   JSON payload is ``{"inputs": {"wavlm": [[...]], "emotion2vec": [[...]]}}`` — one
+   ``(T, F)`` array per feature the model expects.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.mlflow_pyfunc.logger
+   personalitylinmult.inference.mlflow_pyfunc.REGISTRATION_EXPERIMENT
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.mlflow_pyfunc.FiPyfunc
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.mlflow_pyfunc.log_and_register
+   personalitylinmult.inference.mlflow_pyfunc.set_champion
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:class:: FiPyfunc
+
+   An ``mlflow.pyfunc.PythonModel`` around an FI checkpoint.
+
+   Not typed as a subclass at import time so this module stays importable
+   without mlflow installed; :func:`log_and_register` binds it to
+   ``mlflow.pyfunc.PythonModel`` where mlflow is guaranteed present.
+
+
+   .. py:method:: load_context(context: Any) -> None
+
+      Load the checkpoint packaged with the model.
+
+      :param context: MLflow context; ``context.artifacts['checkpoint']`` is the
+                      packaged ``.ckpt`` path.
+
+
+
+   .. py:method:: predict(context: Any, model_input: Any, params: Any = None) -> list[dict[str, float]]
+
+      Predict Big Five scores for one or more samples.
+
+      :param context: MLflow context (unused; the model is already loaded).
+      :param model_input: A ``{feature_name: (T, F) array}`` mapping for one
+                          sample, or a list of such mappings for a batch.
+      :param params: Optional inference params (unused).
+
+      :returns: One ``{trait: score}`` dict per input sample.
+      :rtype: list[dict[str, float]]
+
+
+
+.. py:data:: REGISTRATION_EXPERIMENT
+   :value: 'FI-Model-Registry'
+
+
+   Experiment the pyfunc registration runs log under.
+
+   Set explicitly so registration never falls back to the default experiment
+   (id 0), which may be in a ``deleted`` state and would reject a new run.
+
+.. py:function:: log_and_register(checkpoint: str | pathlib.Path, registered_model_name: str, run_id: str | None = None, artifact_path: str = 'pyfunc_model', experiment: str = REGISTRATION_EXPERIMENT) -> str
+
+   Log the checkpoint as a pyfunc model and register it.
+
+   :param checkpoint: Path to the ``.ckpt`` to wrap.
+   :type checkpoint: str | Path
+   :param registered_model_name: Name in the Model Registry (e.g.
+                                 ``"fi-bigfive-avt"``).
+   :type registered_model_name: str
+   :param run_id: Existing run to log under; a new run is started
+                  under ``experiment`` when ``None``.
+   :type run_id: str | None
+   :param artifact_path: Artifact subpath for the model.
+   :type artifact_path: str
+   :param experiment: Experiment to log the registration run under when
+                      ``run_id`` is ``None``.
+   :type experiment: str
+
+   :returns: The registered model version.
+   :rtype: str
+
+   :raises FileNotFoundError: If the checkpoint does not exist.
+
+
+.. py:function:: set_champion(registered_model_name: str, version: str, alias: str = 'champion') -> None
+
+   Promote a registered version to an alias.
+
+   A deliberate, separate step from registration: a new version is never
+   auto-promoted, so a run finishing (or even being registered) never
+   silently changes what a deployment currently serves. Aliases are per
+   registered-model name, so multiple model families (AVT, audio-only, ...)
+   each carry their own independent ``@champion`` with no conflict.
+
+   :param registered_model_name: The registered model name.
+   :type registered_model_name: str
+   :param version: The version to promote.
+   :type version: str
+   :param alias: Alias to set. Defaults to ``"champion"``; a second alias
+                 (e.g. ``"candidate"``) can stage a version before promoting it.
+   :type alias: str
+
+

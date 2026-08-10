@@ -1,0 +1,232 @@
+personalitylinmult.data.builder
+===============================
+
+.. py:module:: personalitylinmult.data.builder
+
+.. autoapi-nested-parse::
+
+   Build the single HDF5 training artifact from extracted FI features.
+
+   The builder reads a data config, and writes **only** the features that config
+   names. Nothing else is opened, read, or written: if the config lists WavLM and
+   DINOv2, the resulting file contains WavLM and DINOv2 and no trace of the other
+   extractors. The config that produced a file is embedded verbatim in its root
+   attributes, so a built file is always traceable back to its recipe.
+
+   The resulting file is the reproducibility boundary for training: it is published
+   to a public Hugging Face dataset repo so a run reproduces without re-extraction,
+   and the training loop reads it and nothing else.
+
+   .. rubric:: Example
+
+   ``uv run python -m personalitylinmult.data.builder --config config/FI/data/wedrx.yaml``
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.builder.logger
+   personalitylinmult.data.builder.DEFAULT_ROOT
+   personalitylinmult.data.builder.COMPRESSION
+   personalitylinmult.data.builder.COMPRESSION_LEVEL
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.builder.BuildError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.data.builder.git_sha
+   personalitylinmult.data.builder.file_sha256
+   personalitylinmult.data.builder.load_labels
+   personalitylinmult.data.builder.resolve_coverage
+   personalitylinmult.data.builder.probe_feature
+   personalitylinmult.data.builder.build
+   personalitylinmult.data.builder.dataset_spec_from_config
+   personalitylinmult.data.builder.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: DEFAULT_ROOT
+
+   Repository root; all config paths are interpreted relative to it.
+
+.. py:data:: COMPRESSION
+   :value: 'gzip'
+
+
+   Compression filter. Paired with the shuffle filter for float data.
+
+.. py:data:: COMPRESSION_LEVEL
+   :value: 4
+
+
+   a deliberate middle ground between size and read CPU.
+
+   :type: Compression level
+
+.. py:exception:: BuildError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when the dataset cannot be built as configured.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: git_sha(root: pathlib.Path) -> str
+
+   Return the current commit SHA, for traceability of a built file.
+
+   A ``-dirty`` suffix is appended when the working tree has uncommitted
+   changes, so an artifact built from an uncommitted state is never mistaken
+   for one that a clean checkout of that SHA would reproduce.
+
+   :param root: Repository root.
+   :type root: Path
+
+   :returns: The commit SHA (with a ``-dirty`` suffix when the tree is dirty),
+             or ``"unknown"`` outside a git checkout.
+   :rtype: str
+
+
+.. py:function:: file_sha256(path: pathlib.Path) -> str
+
+   Hash a file's contents.
+
+   :param path: File to hash.
+   :type path: Path
+
+   :returns: Hex digest.
+   :rtype: str
+
+
+.. py:function:: load_labels(label_csv: pathlib.Path) -> tuple[list[str], list[str], dict[str, numpy.ndarray]]
+
+   Read ``label.csv`` into ids, subsets, and per-trait arrays.
+
+   :param label_csv: Path to the preprocess stage's ``label.csv``.
+   :type label_csv: Path
+
+   :returns: ``(video_ids, subsets, labels)`` where ``labels`` maps each trait
+             in :data:`~personalitylinmult.data.schema.ALL_TRAITS` to an ``(N,)``
+             float32 array.
+   :rtype: tuple
+
+   :raises BuildError: If the file is missing a required column or a subset name
+       is unrecognised.
+
+
+.. py:function:: resolve_coverage(spec: personalitylinmult.data.schema.FeatureSpec, root: pathlib.Path, video_ids: list[str]) -> None
+
+   Assert a feature exists for every clip, or fail with the missing ids.
+
+   A partially-extracted feature must never be zero-filled into the dataset:
+   that would train and evaluate on silence while looking perfectly healthy.
+   EmotiEffNet and FaRL are only ~7% extracted at the time of writing, and this
+   check is what keeps them out until they are finished.
+
+   :param spec: Feature to check.
+   :type spec: FeatureSpec
+   :param root: Repository root.
+   :type root: Path
+   :param video_ids: Clips the dataset requires.
+   :type video_ids: list[str]
+
+   :raises BuildError: If any clip's feature is missing.
+
+
+.. py:function:: probe_feature(spec: personalitylinmult.data.schema.FeatureSpec, root: pathlib.Path, video_ids: list[str], time_dim_hint: int | None = None) -> tuple[int, int]
+
+   Determine a feature's stored time dimension and verify its width.
+
+   Reading every clip here would double the build's I/O — and for WavLM, whose
+   pickles hold all 12 layers at ~0.34 s per clip, that is nearly an hour of
+   pure waste. Instead:
+
+   * ``max_time_dim`` is taken from ``time_dim_hint`` when the caller can
+     derive it (any feature with a ``rate_hz`` has a known frame count), or
+     probed from a sample otherwise.
+   * Every clip's width and length is still checked exactly, during the write
+     pass, where the data is being read anyway. A clip that disagrees fails the
+     build; nothing is silently truncated.
+
+   :param spec: Feature to probe.
+   :type spec: FeatureSpec
+   :param root: Repository root.
+   :type root: Path
+   :param video_ids: Clips to sample.
+   :type video_ids: list[str]
+   :param time_dim_hint: Known stored time dimension, if any.
+   :type time_dim_hint: int | None
+
+   :returns: ``(max_time_dim, dim)``.
+   :rtype: tuple[int, int]
+
+   :raises BuildError: If a sampled clip's width contradicts the configured ``dim``.
+
+
+.. py:function:: build(spec: personalitylinmult.data.schema.DatasetSpec, root: pathlib.Path, config_yaml: str, limit: int | None = None, overwrite: bool = False) -> personalitylinmult.data.schema.BuildStats
+
+   Build the HDF5 dataset described by ``spec``.
+
+   :param spec: What to build. **Only** its features are read.
+   :type spec: DatasetSpec
+   :param root: Repository root for resolving relative paths.
+   :type root: Path
+   :param config_yaml: The config source, embedded for traceability.
+   :type config_yaml: str
+   :param limit: Build only the first N clips, for tests and CI.
+   :type limit: int | None
+   :param overwrite: Rebuild even if an identical file already exists.
+   :type overwrite: bool
+
+   :returns: Counters describing the run.
+   :rtype: BuildStats
+
+   :raises BuildError: If labels or features are missing or inconsistent.
+
+
+.. py:function:: dataset_spec_from_config(config_path: pathlib.Path) -> tuple[personalitylinmult.data.schema.DatasetSpec, str]
+
+   Load a data config into a :class:`DatasetSpec`.
+
+   The config names its features by file stem; each is loaded from
+   ``<config_dir>/../features/<name>.yaml``. Only the named features are read.
+   Paths on the returned spec (``h5_path``, ``label_csv``) stay relative --
+   resolving them against a repository root is the caller's job (see
+   :func:`build`), not this function's.
+
+   :param config_path: Path to the data config YAML.
+   :type config_path: Path
+
+   :returns: The spec and the verbatim config text.
+   :rtype: tuple[DatasetSpec, str]
+
+   :raises BuildError: If the config or a referenced feature file is missing or
+       malformed.
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+

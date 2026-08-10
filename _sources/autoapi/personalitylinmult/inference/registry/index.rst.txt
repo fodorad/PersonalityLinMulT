@@ -1,0 +1,114 @@
+personalitylinmult.inference.registry
+=====================================
+
+.. py:module:: personalitylinmult.inference.registry
+
+.. autoapi-nested-parse::
+
+   Resolve a model *name* to its checkpoint and load a predictor.
+
+   Deployment surfaces (a Gradio dropdown, a CLI ``--model`` flag) select a model by
+   a short name — ``"AVT"`` or ``"A"`` — rather than a checkpoint path. This module
+   holds that name-to-checkpoint mapping and hands back a ready
+   :class:`~personalitylinmult.inference.predictor.FiPredictor`, caching each so a
+   repeated selection does not reload from disk.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.registry.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.registry.ModelSpec
+   personalitylinmult.inference.registry.ModelRegistry
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:class:: ModelSpec
+
+   One registered model.
+
+   :param name: Short selector, e.g. ``"AVT"`` or ``"A"``.
+   :type name: str
+   :param checkpoint: Path to its ``.ckpt``.
+   :type checkpoint: Path
+   :param description: One-line human summary shown in a UI.
+   :type description: str
+
+
+.. py:class:: ModelRegistry(specs: list[ModelSpec])
+
+   A name-keyed set of models, loaded on demand and cached.
+
+   :param specs: The registered models.
+   :type specs: list[ModelSpec]
+
+   :raises ValueError: If two specs share a name.
+
+
+   .. py:property:: names
+      :type: list[str]
+
+
+      The registered model names, in insertion order.
+
+
+   .. py:method:: spec(name: str) -> ModelSpec
+
+      Return the spec for a name.
+
+      :param name: A registered model name.
+      :type name: str
+
+      :returns: Its spec.
+      :rtype: ModelSpec
+
+      :raises KeyError: If the name is not registered.
+
+
+
+   .. py:method:: load(name: str) -> personalitylinmult.inference.predictor.FiPredictor
+
+      Load (or return the cached) predictor for a name.
+
+      :param name: A registered model name.
+      :type name: str
+
+      :returns: The predictor.
+      :rtype: FiPredictor
+
+      :raises KeyError: If the name is not registered.
+      :raises FileNotFoundError: If its checkpoint is missing.
+
+
+
+   .. py:method:: from_checkpoints(checkpoints: dict[str, pathlib.Path | str]) -> ModelRegistry
+      :classmethod:
+
+
+      Build a registry from a ``{name: checkpoint_path}`` mapping.
+
+      :param checkpoints: Name-to-path mapping.
+      :type checkpoints: dict[str, Path | str]
+
+      :returns: The registry (paths are not opened until
+                :meth:`load`, so a missing file surfaces at load time, not here).
+      :rtype: ModelRegistry
+
+
+

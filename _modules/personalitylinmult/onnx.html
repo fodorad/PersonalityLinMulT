@@ -1,0 +1,1112 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+        <link rel="canonical" href="https://fodorad.github.io/PersonalityLinMulT/_modules/personalitylinmult/onnx.html">
+        <link rel="prefetch" href="../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>personalitylinmult.onnx - PersonalityLinMulT documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">PersonalityLinMulT  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">PersonalityLinMulT  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Dataset</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset.html">PersonalityLinMulT — First Impressions V2 extracted features (<code class="docutils literal notranslate"><span class="pre">fi.h5</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/personalitylinmult/index.html">personalitylinmult</a><input aria-label="Toggle navigation of personalitylinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/personalitylinmult/data/index.html">personalitylinmult.data</a><input aria-label="Toggle navigation of personalitylinmult.data" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/builder/index.html">personalitylinmult.data.builder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/collate/index.html">personalitylinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/datamodule/index.html">personalitylinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/dataset/index.html">personalitylinmult.data.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/schema/index.html">personalitylinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/data/sources/index.html">personalitylinmult.data.sources</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/index.html">personalitylinmult.inference</a><input aria-label="Toggle navigation of personalitylinmult.inference" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/audio_features/index.html">personalitylinmult.inference.audio_features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/audio_features_onnx/index.html">personalitylinmult.inference.audio_features_onnx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/cli/index.html">personalitylinmult.inference.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html">personalitylinmult.inference.mlflow_pyfunc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/onnx_benchmark/index.html">personalitylinmult.inference.onnx_benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/onnx_export/index.html">personalitylinmult.inference.onnx_export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/predictor/index.html">personalitylinmult.inference.predictor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/register_models/index.html">personalitylinmult.inference.register_models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/personalitylinmult/inference/registry/index.html">personalitylinmult.inference.registry</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/personalitylinmult/model/index.html">personalitylinmult.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/personalitylinmult/onnx/index.html">personalitylinmult.onnx</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for personalitylinmult.onnx</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The ONNX Runtime-backed counterpart to :class:`~personalitylinmult.model.PersonalityModel`.</span>
+
+<span class="sd">A separate class, not a ``backend=`` flag on ``PersonalityModel``: the two</span>
+<span class="sd">back ends have genuinely different runtimes (``torch``/``lightning`` vs.</span>
+<span class="sd">``onnxruntime``) and this keeps a plain ``pip install personalitylinmult``</span>
+<span class="sd">free of ``onnxruntime`` for callers who only want the PyTorch-native path</span>
+<span class="sd">(e.g. loading the trained weights as an ``nn.Module`` inside another PyTorch</span>
+<span class="sd">project). Install the ``onnx`` extra to use this class::</span>
+
+<span class="sd">    pip install personalitylinmult[onnx]</span>
+
+<span class="sd">Both single-feature (LinT) and multi-feature (LinMulT, e.g. the AVT champion)</span>
+<span class="sd">checkpoints have an ONNX export path -- see</span>
+<span class="sd">:mod:`personalitylinmult.inference.onnx_export` for how each is traced.</span>
+<span class="sd">:meth:`predict` handles any number of features transparently, reading</span>
+<span class="sd">``feature_names`` from the ``.onnx.json`` sidecar (always plural, regardless</span>
+<span class="sd">of family -- a LinT sidecar simply has length-1 lists). Model ids for this</span>
+<span class="sd">class carry a ``.onnx`` suffix by HF Hub filename convention (see</span>
+<span class="sd">:func:`_onnx_filenames`), the same repo as the ``.ckpt`` files</span>
+<span class="sd">:class:`~personalitylinmult.model.PersonalityModel` downloads.</span>
+
+<span class="sd">Two full raw-media pipelines are offered, matched to the champion they serve:</span>
+
+<span class="sd">- :meth:`predict_from_audio` -- audio only (``wavlm``-only champions): raw</span>
+<span class="sd">  audio/video in, Big Five out, on ONNX Runtime **alone**, no</span>
+<span class="sd">  ``torch``/``transformers``/``exordium`` at inference time. WavLM&#39;s own</span>
+<span class="sd">  ONNX export (:data:`WAVLM_ONNX_FILENAME`) downloads lazily.</span>
+<span class="sd">- :meth:`predict_from_media` -- the full multimodal (AVT) champion: every</span>
+<span class="sd">  learned feature extractor (WavLM, emotion2vec, DINOv2, EmotiEffNet, FaRL,</span>
+<span class="sd">  mmBERT, XLM-RoBERTa) and the trained head itself run on ONNX Runtime, with</span>
+<span class="sd">  two narrowly-scoped, explicitly-documented exceptions that stay</span>
+<span class="sd">  ``torch``/``exordium``-based: face detection/tracking (EmotiEffNet/FaRL</span>
+<span class="sd">  need a face crop, not a raw frame -- exordium&#39;s existing offline-pipeline</span>
+<span class="sd">  detector/tracker, reused for a single already-complete video file, not a</span>
+<span class="sd">  live/streaming input) and Whisper ASR (an encoder-decoder model with no</span>
+<span class="sd">  ONNX export in this project, used only when ``transcript=None``). Both</span>
+<span class="sd">  are dependencies of this method specifically, not of the class or of</span>
+<span class="sd">  ``predict``/``predict_from_audio`` -- a caller who never calls</span>
+<span class="sd">  ``predict_from_media`` never needs ``torch``/``exordium`` installed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">HF_MODEL_REPO</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Module-level logger.&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_onnx_filenames</span><span class="p">(</span><span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Map a model id to its ONNX graph and metadata filenames in the HF repo.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model_id (str): e.g. ``&quot;wavlm_best-ccc&quot;``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[str, str]: ``(graph_filename, metadata_filename)``, e.g.</span>
+<span class="sd">        ``(&quot;wavlm_best-ccc.onnx&quot;, &quot;wavlm_best-ccc.onnx.json&quot;)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">.onnx&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">.onnx.json&quot;</span>
+
+
+<span class="n">WAVLM_ONNX_FILENAME</span> <span class="o">=</span> <span class="s2">&quot;wavlm-base-plus.onnx&quot;</span>
+<span class="sd">&quot;&quot;&quot;Shared WavLM ONNX graph filename in the HF model repo -- one file, reused</span>
+<span class="sd">by every champion whose feature is ``wavlm``, not tied to a specific</span>
+<span class="sd">champion id (unlike the trained-model graphs, which are one file per</span>
+<span class="sd">champion).&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_wavlm_onnx</span><span class="p">(</span><span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download (or reuse the cached) shared WavLM ONNX graph.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        revision (str | None): HF Hub revision; ``None`` uses the default</span>
+<span class="sd">            branch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: Local path to the ``.onnx`` graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_download_shared_onnx</span><span class="p">(</span><span class="n">WAVLM_ONNX_FILENAME</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+
+
+<span class="n">EXTRACTOR_ONNX_FILENAMES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;wavlm&quot;</span><span class="p">:</span> <span class="n">WAVLM_ONNX_FILENAME</span><span class="p">,</span>
+    <span class="s2">&quot;emotion2vec&quot;</span><span class="p">:</span> <span class="s2">&quot;emotion2vec-plus-seed.onnx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dinov2&quot;</span><span class="p">:</span> <span class="s2">&quot;dinov2-base.onnx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;emotieffnet&quot;</span><span class="p">:</span> <span class="s2">&quot;emotieffnet-enet-b0-8-best-vgaf.onnx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;farl&quot;</span><span class="p">:</span> <span class="s2">&quot;farl-ep64.onnx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">:</span> <span class="s2">&quot;xlm-roberta-mpnet.onnx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mmbert_gt&quot;</span><span class="p">:</span> <span class="s2">&quot;mmbert-base.onnx&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;Shared ONNX graph filename per AVT feature, matching the Makefile&#39;s</span>
+<span class="sd">``push-&lt;name&gt;-onnx`` targets exactly -- one file per extractor, reused</span>
+<span class="sd">across every champion that consumes that feature, not tied to one champion</span>
+<span class="sd">id (unlike the trained-model graph, which is).&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_shared_onnx</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download (or reuse the cached) a shared extractor ONNX graph.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename (str): The graph&#39;s filename in the HF model repo, e.g.</span>
+<span class="sd">            :data:`WAVLM_ONNX_FILENAME` or one of</span>
+<span class="sd">            :data:`EXTRACTOR_ONNX_FILENAMES`&#39;s values.</span>
+<span class="sd">        revision (str | None): HF Hub revision; ``None`` uses the default</span>
+<span class="sd">            branch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: Local path to the ``.onnx`` graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">huggingface_hub</span><span class="w"> </span><span class="kn">import</span> <span class="n">hf_hub_download</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult</span><span class="w"> </span><span class="kn">import</span> <span class="n">WEIGHTS_DIR</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">hf_hub_download</span><span class="p">(</span>
+        <span class="n">repo_id</span><span class="o">=</span><span class="n">HF_MODEL_REPO</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+        <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">,</span>
+        <span class="n">cache_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">WEIGHTS_DIR</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloaded shared ONNX graph: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download</span><span class="p">(</span><span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download an exported ONNX graph and its metadata sidecar from HF Hub.</span>
+
+<span class="sd">    A separate function (not inlined into</span>
+<span class="sd">    :meth:`PersonalityModelONNX.from_pretrained`) so tests can substitute</span>
+<span class="sd">    local paths without a network call -- see ``tests/test_onnx.py``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model_id (str): The champion id to download.</span>
+<span class="sd">        revision (str | None): HF Hub revision (branch/tag/commit); ``None``</span>
+<span class="sd">            uses the repo&#39;s default branch.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[Path, Path]: ``(onnx_path, metadata_path)``, both cached under</span>
+<span class="sd">        :data:`personalitylinmult.WEIGHTS_DIR` across calls.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">huggingface_hub</span><span class="w"> </span><span class="kn">import</span> <span class="n">hf_hub_download</span>
+
+    <span class="c1"># Imported lazily so this module places no import-time requirement on the</span>
+    <span class="c1"># package&#39;s top-level __init__ beyond what PersonalityModel already needs.</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult</span><span class="w"> </span><span class="kn">import</span> <span class="n">WEIGHTS_DIR</span>
+
+    <span class="n">graph_filename</span><span class="p">,</span> <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">_onnx_filenames</span><span class="p">(</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">onnx_path</span> <span class="o">=</span> <span class="n">hf_hub_download</span><span class="p">(</span>
+        <span class="n">repo_id</span><span class="o">=</span><span class="n">HF_MODEL_REPO</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">graph_filename</span><span class="p">,</span>
+        <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">,</span>
+        <span class="n">cache_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">WEIGHTS_DIR</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">metadata_path</span> <span class="o">=</span> <span class="n">hf_hub_download</span><span class="p">(</span>
+        <span class="n">repo_id</span><span class="o">=</span><span class="n">HF_MODEL_REPO</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">metadata_filename</span><span class="p">,</span>
+        <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">,</span>
+        <span class="n">cache_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">WEIGHTS_DIR</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="c1"># lgtm[py/log-injection] -- repr(), not str(): model_id is a public API</span>
+    <span class="c1"># argument (caller-supplied), and repr() escapes newlines/control</span>
+    <span class="c1"># characters so it cannot forge extra log lines.</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_id</span><span class="si">!r}</span><span class="s2">: downloaded </span><span class="si">{</span><span class="n">onnx_path</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">metadata_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">onnx_path</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="n">metadata_path</span><span class="p">)</span>
+
+
+<span class="n">_IMAGENET_MEAN</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;ImageNet RGB channel means, matching ``exordium.video.deep.base</span>
+<span class="sd">._IMAGENET_MEAN`` -- used by DINOv2 and EmotiEffNet&#39;s preprocessing.&quot;&quot;&quot;</span>
+
+<span class="n">_IMAGENET_STD</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;ImageNet RGB channel standard deviations, matching ``exordium.video.deep</span>
+<span class="sd">.base._IMAGENET_STD``.&quot;&quot;&quot;</span>
+
+<span class="n">_CLIP_MEAN</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.48145466</span><span class="p">,</span> <span class="mf">0.4578275</span><span class="p">,</span> <span class="mf">0.40821073</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;CLIP RGB channel means, matching ``exordium.video.deep.farl._CLIP_MEAN``</span>
+<span class="sd">-- FaRL inherits OpenAI CLIP&#39;s normalization, not ImageNet&#39;s.&quot;&quot;&quot;</span>
+
+<span class="n">_CLIP_STD</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.26862954</span><span class="p">,</span> <span class="mf">0.26130258</span><span class="p">,</span> <span class="mf">0.27577711</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;CLIP RGB channel standard deviations, matching ``exordium.video.deep</span>
+<span class="sd">.farl._CLIP_STD``.&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_preprocess_frame_224</span><span class="p">(</span>
+    <span class="n">frame</span><span class="p">,</span>
+    <span class="n">mean</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">std</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resize a ``(3, H, W)`` uint8 frame to 224x224 and normalize it.</span>
+
+<span class="sd">    Replicates the resize+normalize half of each vision wrapper&#39;s own</span>
+<span class="sd">    ``preprocess()`` (:class:`~exordium.video.deep.dinov2.DINOv2Wrapper`,</span>
+<span class="sd">    :class:`~exordium.video.deep.emotieffnet.EmotiEffNetWrapper`,</span>
+<span class="sd">    :class:`~exordium.video.deep.farl.FarlWrapper`) exactly -- the three</span>
+<span class="sd">    differ in interpolation mode (DINOv2/FaRL: bicubic; EmotiEffNet:</span>
+<span class="sd">    bilinear) and normalization constants (DINOv2/EmotiEffNet: ImageNet;</span>
+<span class="sd">    FaRL: CLIP), so both must be passed explicitly per call rather than</span>
+<span class="sd">    assumed, matching the module-level warning in ``onnx_export.py`` about</span>
+<span class="sd">    these three being an easy copy-paste footgun.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        frame: ``(3, H, W)`` uint8 array or tensor (channel-first, matching</span>
+<span class="sd">            both ``exordium.video.core.io.load_video``&#39;s and</span>
+<span class="sd">            ``Detection.crop()``&#39;s output convention).</span>
+<span class="sd">        mean (list[float]): Per-channel normalization mean.</span>
+<span class="sd">        std (list[float]): Per-channel normalization standard deviation.</span>
+<span class="sd">        interpolation (str): ``&quot;bicubic&quot;`` or ``&quot;bilinear&quot;``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: ``(1, 3, 224, 224)`` float32, ready for an ONNX session.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">TF</span>
+
+    <span class="c1"># torchvision (not PIL directly) to match the real wrappers&#39;</span>
+    <span class="c1"># DINOv2Wrapper/EmotiEffNetWrapper/FarlWrapper.preprocess() exactly,</span>
+    <span class="c1"># including antialias=True -- already a required dependency for this</span>
+    <span class="c1"># method&#39;s face-detection/tracking step, so no new dependency is added</span>
+    <span class="c1"># by using it here too.</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span>
+    <span class="n">resample</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">TF</span><span class="o">.</span><span class="n">InterpolationMode</span><span class="o">.</span><span class="n">BICUBIC</span>
+        <span class="k">if</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s2">&quot;bicubic&quot;</span>
+        <span class="k">else</span> <span class="n">TF</span><span class="o">.</span><span class="n">InterpolationMode</span><span class="o">.</span><span class="n">BILINEAR</span>
+    <span class="p">)</span>
+    <span class="n">resized</span> <span class="o">=</span> <span class="n">TF</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">],</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">resample</span><span class="p">,</span> <span class="n">antialias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">chw</span> <span class="o">=</span> <span class="n">resized</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">mean_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">std_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">std</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="p">(</span><span class="n">chw</span> <span class="o">-</span> <span class="n">mean_arr</span><span class="p">)</span> <span class="o">/</span> <span class="n">std_arr</span>
+    <span class="k">return</span> <span class="n">normalized</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>  <span class="c1"># (1, 3, 224, 224)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_densify_face_features</span><span class="p">(</span><span class="n">protagonist</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">emotieffnet_session</span><span class="p">,</span> <span class="n">farl_session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run EmotiEffNet + FaRL on a protagonist track, densified to every frame.</span>
+
+<span class="sd">    A face track (:class:`exordium.video.core.detection.Track`) commonly has</span>
+<span class="sd">    gaps -- occlusion, brief exits, scene cuts -- so it can have fewer</span>
+<span class="sd">    detections than the clip has frames. This computes each extractor&#39;s</span>
+<span class="sd">    *sparse* per-detection features (one row per real detection, matching</span>
+<span class="sd">    :meth:`~exordium.video.deep.base.VisualModelWrapper.track_to_feature`&#39;s</span>
+<span class="sd">    own sparse-by-default output), then scatters them onto the full frame</span>
+<span class="sd">    grid via exordium&#39;s own :func:`~exordium.video.core.densify.densify` --</span>
+<span class="sd">    the same function every frame-wise exordium vision wrapper</span>
+<span class="sd">    (EmotiEffNet, FaRL, DINOv2, ...) already uses internally for</span>
+<span class="sd">    ``track_to_feature(..., densify=True)``. Reused here rather than</span>
+<span class="sd">    reimplemented because the real ``EmotiEffNetWrapper``/``FarlWrapper``</span>
+<span class="sd">    objects run PyTorch inference, while this class runs ONNX Runtime</span>
+<span class="sd">    sessions on the same crops -- the densify *step* is architecture-</span>
+<span class="sd">    independent, so only that part is reused, not the whole wrapper.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        protagonist: A :class:`~exordium.video.core.detection.Track`-like</span>
+<span class="sd">            object exposing ``frame_ids() -&gt; list[int]`` and</span>
+<span class="sd">            ``get_detection(frame_id) -&gt; Detection``, or ``None``/empty if no</span>
+<span class="sd">            protagonist was found.</span>
+<span class="sd">        num_frames (int): Total frames in the clip -- the full frame grid to</span>
+<span class="sd">            densify onto.</span>
+<span class="sd">        emotieffnet_session: ONNX Runtime session for EmotiEffNet.</span>
+<span class="sd">        farl_session: ONNX Runtime session for FaRL.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[np.ndarray, np.ndarray, np.ndarray]: ``(emotieffnet_features,</span>
+<span class="sd">        farl_features, mask)`` -- the first two ``(num_frames, D)`` float32</span>
+<span class="sd">        (``D`` = 1280 / 512), ``mask`` a shared ``(num_frames,)`` bool array,</span>
+<span class="sd">        ``True`` where a real detection was used (both extractors share one</span>
+<span class="sd">        mask since they run on the same crops, at the same frame ids).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.densify</span><span class="w"> </span><span class="kn">import</span> <span class="n">densify</span>
+
+    <span class="k">if</span> <span class="n">protagonist</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">protagonist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">empty_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_frames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_frames</span><span class="p">,</span> <span class="mi">1280</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_frames</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span>
+            <span class="n">empty_mask</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+    <span class="n">frame_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">emotieffnet_rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">farl_rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame_id</span> <span class="ow">in</span> <span class="n">protagonist</span><span class="o">.</span><span class="n">frame_ids</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">frame_id</span> <span class="o">&gt;=</span> <span class="n">num_frames</span><span class="p">:</span>
+            <span class="k">continue</span>  <span class="c1"># detector-reported index outside the decoded frame range</span>
+        <span class="n">detection</span> <span class="o">=</span> <span class="n">protagonist</span><span class="o">.</span><span class="n">get_detection</span><span class="p">(</span><span class="n">frame_id</span><span class="p">)</span>
+        <span class="n">crop</span> <span class="o">=</span> <span class="n">detection</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extra_space</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># (3, H, W) uint8</span>
+
+        <span class="c1"># EmotiEffNetWrapper.preprocess uses bilinear resize + ImageNet</span>
+        <span class="c1"># normalization; FarlWrapper.preprocess uses bicubic resize + CLIP</span>
+        <span class="c1"># normalization -- replicated exactly, not copy-pasted from one</span>
+        <span class="c1"># another (see onnx_export.py&#39;s export functions for the same</span>
+        <span class="c1"># distinction, and the easy-footgun note in their docstrings about</span>
+        <span class="c1"># these three vision extractors&#39; preprocessing differing in ways</span>
+        <span class="c1"># that look interchangeable but are not).</span>
+        <span class="n">emotieffnet_input</span> <span class="o">=</span> <span class="n">_preprocess_frame_224</span><span class="p">(</span>
+            <span class="n">crop</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">_IMAGENET_MEAN</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">_IMAGENET_STD</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;bilinear&quot;</span>
+        <span class="p">)</span>
+        <span class="p">(</span><span class="n">emotieffnet_out</span><span class="p">,)</span> <span class="o">=</span> <span class="n">emotieffnet_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span> <span class="p">{</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="n">emotieffnet_input</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">farl_input</span> <span class="o">=</span> <span class="n">_preprocess_frame_224</span><span class="p">(</span>
+            <span class="n">crop</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">_CLIP_MEAN</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">_CLIP_STD</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;bicubic&quot;</span>
+        <span class="p">)</span>
+        <span class="p">(</span><span class="n">farl_out</span><span class="p">,)</span> <span class="o">=</span> <span class="n">farl_session</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;embedding&quot;</span><span class="p">],</span> <span class="p">{</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="n">farl_input</span><span class="p">})</span>
+
+        <span class="n">frame_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame_id</span><span class="p">)</span>
+        <span class="n">emotieffnet_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">emotieffnet_out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">farl_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">farl_out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">frame_ids_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <span class="n">emotieffnet_sparse</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">emotieffnet_rows</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
+    <span class="n">farl_sparse</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">farl_rows</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">))</span>
+
+    <span class="n">emotieffnet_dense</span> <span class="o">=</span> <span class="n">densify</span><span class="p">(</span><span class="n">frame_ids_t</span><span class="p">,</span> <span class="n">emotieffnet_sparse</span><span class="p">,</span> <span class="n">end_frame_id</span><span class="o">=</span><span class="n">num_frames</span><span class="p">)</span>
+    <span class="n">farl_dense</span> <span class="o">=</span> <span class="n">densify</span><span class="p">(</span><span class="n">frame_ids_t</span><span class="p">,</span> <span class="n">farl_sparse</span><span class="p">,</span> <span class="n">end_frame_id</span><span class="o">=</span><span class="n">num_frames</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">emotieffnet_dense</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+        <span class="n">farl_dense</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+        <span class="n">emotieffnet_dense</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_metadata</span><span class="p">(</span><span class="n">metadata_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a ``.onnx.json`` sidecar, normalizing old and new schemas.</span>
+
+<span class="sd">    Sidecars written by the current :func:`~personalitylinmult.inference</span>
+<span class="sd">    .onnx_export.export_to_onnx` always use the plural schema</span>
+<span class="sd">    (``feature_names``, ``input_dims``), for both LinT and LinMulT graphs.</span>
+<span class="sd">    Older sidecars (published before the LinMulT export existed) use the</span>
+<span class="sd">    singular ``feature_name``/``input_dim`` keys -- read transparently here</span>
+<span class="sd">    so a previously-published graph (e.g. ``wavlm_best-ccc.onnx.json``)</span>
+<span class="sd">    keeps working without a re-export, and the rest of this class never has</span>
+<span class="sd">    to branch on which schema was on disk.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        metadata_path (Path): Path to a ``.onnx.json`` sidecar.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[list[str], list[str]]: ``(feature_names, traits)``, in the</span>
+<span class="sd">        checkpoint&#39;s original order.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">metadata_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;feature_names&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;feature_names&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;feature_name&quot;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">feature_names</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;traits&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="PersonalityModelONNX">
+<a class="viewcode-back" href="../../autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PersonalityModelONNX</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A champion FI model, running on ONNX Runtime instead of PyTorch.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        session: An ``onnxruntime.InferenceSession`` over the exported graph.</span>
+<span class="sd">        feature_names (list[str]): Features this model consumes, in input</span>
+<span class="sd">            order (length 1 for a LinT graph, more for a LinMulT graph).</span>
+<span class="sd">        traits (list[str]): Trait names, in output-column order.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">traits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">traits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavlm_session</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavlm_revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_sessions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_whisper</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PersonalityModelONNX.from_pretrained">
+<a class="viewcode-back" href="../../autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX.from_pretrained">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_pretrained</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PersonalityModelONNX</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download (or reuse the cached) ONNX graph and load it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_id (str): A champion id, e.g. ``&quot;wavlm_best-ccc&quot;``. See the</span>
+<span class="sd">                module docstring for which ids have an ONNX export available.</span>
+<span class="sd">            revision (str | None): HF Hub revision (branch/tag/commit);</span>
+<span class="sd">                ``None`` uses the repo&#39;s default branch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PersonalityModelONNX: Ready to predict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ort</span>
+
+        <span class="n">onnx_path</span><span class="p">,</span> <span class="n">metadata_path</span> <span class="o">=</span> <span class="n">_download</span><span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">feature_names</span><span class="p">,</span> <span class="n">traits</span> <span class="o">=</span> <span class="n">_read_metadata</span><span class="p">(</span><span class="n">metadata_path</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">ort</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">onnx_path</span><span class="p">),</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">])</span>
+        <span class="c1"># lgtm[py/log-injection] -- repr(), not str(): model_id is a public</span>
+        <span class="c1"># API argument (caller-supplied), and repr() escapes newlines/control</span>
+        <span class="c1"># characters so it cannot forge extra log lines. feature_names/traits</span>
+        <span class="c1"># come from _read_metadata&#39;s downloaded .onnx.json sidecar, not from</span>
+        <span class="c1"># this call&#39;s caller.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded ONNX </span><span class="si">{</span><span class="n">model_id</span><span class="si">!r}</span><span class="s2"> (features=</span><span class="si">{</span><span class="n">feature_names</span><span class="si">}</span><span class="s2">, traits=</span><span class="si">{</span><span class="n">traits</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="n">traits</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PersonalityModelONNX.predict">
+<a class="viewcode-back" href="../../autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">features</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">masks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict Big Five scores for one sample.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            features (dict[str, np.ndarray]): ``{feature_name: (T, F) array}``</span>
+<span class="sd">                -- one entry per :attr:`feature_names`.</span>
+<span class="sd">            masks (dict[str, np.ndarray] | None): Optional per-feature</span>
+<span class="sd">                ``(T,)`` bool override mask (``True`` = valid). Features not</span>
+<span class="sd">                present here default to an all-``True`` mask, matching every</span>
+<span class="sd">                caller before this parameter existed. Used by</span>
+<span class="sd">                :meth:`predict_from_media` to mark a whole feature as</span>
+<span class="sd">                genuinely missing (all-``False``) when, e.g., no transcript</span>
+<span class="sd">                is available and ASR/skip-text mode was requested -- verified</span>
+<span class="sd">                NaN-safe end-to-end for this project&#39;s champion architecture,</span>
+<span class="sd">                see ``tests/inference/test_linmult_mask_validation.py`` and</span>
+<span class="sd">                ``tests/inference/test_onnx_export.py``&#39;s</span>
+<span class="sd">                ``test_onnx_all_false_text_masks_match_pytorch``. The</span>
+<span class="sd">                feature&#39;s own *content* does not matter once masked</span>
+<span class="sd">                all-``False`` -- only the mask does.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, float]: ``{trait: score}``, clamped to ``[0, 1]``, in</span>
+<span class="sd">            the model&#39;s trait order.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If ``features`` is missing a required feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">masks</span> <span class="ow">or</span> <span class="p">{}</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_mask_for</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">masks</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (1, T)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>  <span class="c1"># (1, T), all-True default</span>
+
+        <span class="n">onnx_inputs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># (1, T, F)</span>
+            <span class="n">onnx_inputs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">onnx_inputs</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mask_for</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">):</span>
+                <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># (1, T, F)</span>
+                <span class="n">onnx_inputs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;x_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">onnx_inputs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mask_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mask_for</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="p">(</span><span class="n">raw</span><span class="p">,)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;predictions&quot;</span><span class="p">],</span> <span class="n">onnx_inputs</span><span class="p">)</span>
+        <span class="n">clamped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">,</span> <span class="n">clamped</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PersonalityModelONNX.predict_from_audio">
+<a class="viewcode-back" href="../../autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX.predict_from_audio">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_from_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict Big Five scores directly from an audio/video file.</span>
+
+<span class="sd">        The full pipeline (decode -&gt; WavLM -&gt; LinT -&gt; scores) on ONNX Runtime</span>
+<span class="sd">        alone -- no ``torch``, ``transformers``, or ``exordium`` needed.</span>
+<span class="sd">        ``ffmpeg`` is still required as an external binary for decoding</span>
+<span class="sd">        (a subprocess call, not a Python dependency).</span>
+
+<span class="sd">        The shared WavLM ONNX graph (:data:`WAVLM_ONNX_FILENAME`) downloads</span>
+<span class="sd">        on first use and is cached on this instance for later calls.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            audio_path (str): An audio or video file.</span>
+<span class="sd">            revision (str | None): HF Hub revision for the WavLM graph</span>
+<span class="sd">                download; ``None`` uses the default branch. Ignored on</span>
+<span class="sd">                subsequent calls once the WavLM session is cached.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, float]: ``{trait: score}``, in the model&#39;s trait order.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If this model&#39;s only feature is not ``&quot;wavlm&quot;`` -- the</span>
+<span class="sd">                only feature this method currently knows how to extract from</span>
+<span class="sd">                raw audio. A multi-feature (AVT) champion needs</span>
+<span class="sd">                ``predict_from_media`` instead (in progress).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">&quot;wavlm&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;predict_from_audio only supports a wavlm-only champion, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got feature_names=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavlm_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ort</span>
+
+            <span class="n">wavlm_path</span> <span class="o">=</span> <span class="n">_download_wavlm_onnx</span><span class="p">(</span><span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavlm_session</span> <span class="o">=</span> <span class="n">ort</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">wavlm_path</span><span class="p">),</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.inference.audio_features_onnx</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_wavlm_onnx</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="n">extract_wavlm_onnx</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavlm_session</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">({</span><span class="s2">&quot;wavlm&quot;</span><span class="p">:</span> <span class="n">features</span><span class="p">})</span></div>
+
+
+    <span class="n">AVT_FEATURE_NAMES</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;wavlm&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;emotion2vec&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dinov2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;emotieffnet&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;farl&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mmbert_gt&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Feature order the full multimodal (AVT) champion expects -- matches</span>
+<span class="sd">    ``config/FI/data/avt.yaml``&#39;s ``features:`` list, which is what</span>
+<span class="sd">    ``avt_best-ccc``&#39;s checkpoint was actually trained and exported with.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extractor_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily download and cache one extractor&#39;s ONNX session.</span>
+
+<span class="sd">        Mirrors :meth:`predict_from_audio`&#39;s ``self._wavlm_session`` lazy</span>
+<span class="sd">        pattern, generalized to any of :data:`EXTRACTOR_ONNX_FILENAMES` --</span>
+<span class="sd">        a caller who never touches a given feature (e.g. always supplies a</span>
+<span class="sd">        transcript, skipping the text extractors) never pays that</span>
+<span class="sd">        extractor&#39;s download/session-build cost.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">feature_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_sessions</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ort</span>
+
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">EXTRACTOR_ONNX_FILENAMES</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">_download_shared_onnx</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_sessions</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ort</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_sessions</span><span class="p">[</span><span class="n">feature_name</span><span class="p">]</span>
+
+<div class="viewcode-block" id="PersonalityModelONNX.predict_from_media">
+<a class="viewcode-back" href="../../autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX.predict_from_media">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_from_media</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">transcript</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict Big Five scores from a video file, for the full AVT champion.</span>
+
+<span class="sd">        Runs every extractor this champion needs (:attr:`feature_names`,</span>
+<span class="sd">        expected to be :data:`AVT_FEATURE_NAMES`) on ONNX Runtime, except for</span>
+<span class="sd">        two narrowly-scoped, explicitly-documented exceptions that stay</span>
+<span class="sd">        ``torch``/``exordium``-based -- see this method&#39;s own steps below and</span>
+<span class="sd">        the module docstring&#39;s &quot;Dependencies&quot; note:</span>
+
+<span class="sd">        - **Face detection/tracking** (for ``emotieffnet``/``farl``, which</span>
+<span class="sd">          need a face crop, not a full frame): exordium&#39;s</span>
+<span class="sd">          ``YoloFace11Detector`` + ``FaceClusterTracker`` + ``AdaFaceWrapper``</span>
+<span class="sd">          stack, the same one this project&#39;s own offline dataset-build</span>
+<span class="sd">          (``personalitylinmult/preprocess/fi/create_vdets.py``,</span>
+<span class="sd">          ``create_tracks.py``) already uses per-clip -- this is a *batch*</span>
+<span class="sd">          call over one already-complete video file, not a live/streaming</span>
+<span class="sd">          use case, so the existing offline-oriented API is exactly the</span>
+<span class="sd">          right fit, not a mismatch to work around.</span>
+<span class="sd">        - **ASR** (when ``transcript is None``): exordium&#39;s</span>
+<span class="sd">          ``WhisperWrapper``, lazily loaded, since Whisper&#39;s encoder-decoder</span>
+<span class="sd">          architecture with beam-search ``generate()`` has no ONNX export in</span>
+<span class="sd">          this project (see ``onnx_export.py``&#39;s module docstring).</span>
+
+<span class="sd">        The video is only decoded/detected/tracked once and every extractor</span>
+<span class="sd">        reuses that single pass -- not once per feature.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            video_path (str): A video file (audio + visual features are both</span>
+<span class="sd">                extracted from it).</span>
+<span class="sd">            transcript (str | None): Controls how the two text features</span>
+<span class="sd">                (``xlm_roberta_gt``, ``mmbert_gt``) are resolved:</span>
+
+<span class="sd">                - A non-empty string -- used directly, no ASR.</span>
+<span class="sd">                - ``None`` (default) -- run Whisper ASR on the video&#39;s audio</span>
+<span class="sd">                  track to obtain a transcript.</span>
+<span class="sd">                - ``&quot;&quot;`` (empty string) -- skip text entirely: both text</span>
+<span class="sd">                  features get a zero placeholder tensor with an all-``False``</span>
+<span class="sd">                  mask, verified NaN-safe and content-independent for this</span>
+<span class="sd">                  champion&#39;s architecture (see :meth:`predict`&#39;s docstring).</span>
+<span class="sd">            revision (str | None): HF Hub revision for every extractor graph</span>
+<span class="sd">                download; ``None`` uses the default branch. Ignored for</span>
+<span class="sd">                already-cached sessions.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, float]: ``{trait: score}``, in the model&#39;s trait order.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If this model&#39;s features are not exactly</span>
+<span class="sd">                :data:`AVT_FEATURE_NAMES` (in any order) -- this method is</span>
+<span class="sd">                specific to the full multimodal champion, not the audio-only</span>
+<span class="sd">                one (use :meth:`predict_from_audio` there instead).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AVT_FEATURE_NAMES</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;predict_from_media only supports the full AVT champion &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(features=</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AVT_FEATURE_NAMES</span><span class="p">)</span><span class="si">}</span><span class="s2">), got &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;feature_names=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.inference.audio_features_onnx</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">extract_emotion2vec_onnx</span><span class="p">,</span>
+            <span class="n">extract_wavlm_onnx</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">features</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">masks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># -- Audio features: reuse the existing WavLM/emotion2vec ONNX decode</span>
+        <span class="c1"># path unchanged, one ffmpeg decode each (matching predict_from_audio;</span>
+        <span class="c1"># not deduplicated into a single shared waveform since the two</span>
+        <span class="c1"># extractors&#39; sample-rate/format contracts are already independently</span>
+        <span class="c1"># correct and this keeps each extractor function self-contained).</span>
+        <span class="n">wavlm_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="s2">&quot;wavlm&quot;</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s2">&quot;wavlm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_wavlm_onnx</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">wavlm_session</span><span class="p">)</span>
+
+        <span class="n">emotion2vec_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="s2">&quot;emotion2vec&quot;</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s2">&quot;emotion2vec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_emotion2vec_onnx</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">emotion2vec_session</span><span class="p">)</span>
+
+        <span class="c1"># -- Visual features: DINOv2 (full frames) + EmotiEffNet/FaRL (face</span>
+        <span class="c1"># crops, via exordium&#39;s face detection/tracking -- a torch/exordium</span>
+        <span class="c1"># dependency by design, see this method&#39;s docstring).</span>
+        <span class="n">features</span><span class="p">[</span><span class="s2">&quot;dinov2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_dinov2</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">emotieffnet_features</span><span class="p">,</span> <span class="n">farl_features</span><span class="p">,</span> <span class="n">face_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_face_features</span><span class="p">(</span>
+            <span class="n">video_path</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span>
+        <span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s2">&quot;emotieffnet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">emotieffnet_features</span>
+        <span class="n">features</span><span class="p">[</span><span class="s2">&quot;farl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">farl_features</span>
+        <span class="n">masks</span><span class="p">[</span><span class="s2">&quot;emotieffnet&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">face_mask</span>
+        <span class="n">masks</span><span class="p">[</span><span class="s2">&quot;farl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">face_mask</span>
+
+        <span class="c1"># -- Text features: the 3-way transcript contract.</span>
+        <span class="k">if</span> <span class="n">transcript</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">text_dim</span> <span class="o">=</span> <span class="mi">768</span>  <span class="c1"># both xlm_roberta_gt and mmbert_gt are 768-d</span>
+            <span class="n">placeholder</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+            <span class="n">features</span><span class="p">[</span><span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">placeholder</span>
+            <span class="n">features</span><span class="p">[</span><span class="s2">&quot;mmbert_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">placeholder</span>
+            <span class="n">masks</span><span class="p">[</span><span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">masks</span><span class="p">[</span><span class="s2">&quot;mmbert_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resolved_transcript</span> <span class="o">=</span> <span class="n">transcript</span>
+            <span class="k">if</span> <span class="n">resolved_transcript</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">resolved_transcript</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transcribe</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+            <span class="n">xlm_features</span><span class="p">,</span> <span class="n">mmbert_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_text_features</span><span class="p">(</span>
+                <span class="n">resolved_transcript</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span>
+            <span class="p">)</span>
+            <span class="n">features</span><span class="p">[</span><span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xlm_features</span>
+            <span class="n">features</span><span class="p">[</span><span class="s2">&quot;mmbert_gt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mmbert_features</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">masks</span><span class="o">=</span><span class="n">masks</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_dinov2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract L2-normalized DINOv2 CLS-token features for every frame.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            video_path (str): A video file.</span>
+<span class="sd">            revision (str | None): HF Hub revision for the DINOv2 graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.ndarray: ``(T, 768)`` float32 features, one per frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_video</span>
+
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="s2">&quot;dinov2&quot;</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">frames</span><span class="p">,</span> <span class="n">_actual_fps</span> <span class="o">=</span> <span class="n">load_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># (T, 3, H, W) uint8</span>
+
+        <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
+            <span class="n">pixel_values</span> <span class="o">=</span> <span class="n">_preprocess_frame_224</span><span class="p">(</span>
+                <span class="n">frame</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">mean</span><span class="o">=</span><span class="n">_IMAGENET_MEAN</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">_IMAGENET_STD</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;bicubic&quot;</span>
+            <span class="p">)</span>
+            <span class="p">(</span><span class="n">embedding</span><span class="p">,)</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;cls_embedding&quot;</span><span class="p">],</span> <span class="p">{</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="n">pixel_values</span><span class="p">})</span>
+            <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_face_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect and track the protagonist, then run EmotiEffNet + FaRL.</span>
+
+<span class="sd">        A single detection/tracking pass over ``video_path`` feeds both</span>
+<span class="sd">        extractors -- exordium&#39;s own offline dataset-build pipeline</span>
+<span class="sd">        (``create_vdets.py`` + ``create_tracks.py``) does the same two steps</span>
+<span class="sd">        per clip; this reuses that pattern for a single ad hoc call rather</span>
+<span class="sd">        than a whole-dataset batch job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            video_path (str): A video file.</span>
+<span class="sd">            revision (str | None): HF Hub revision for the EmotiEffNet/FaRL</span>
+<span class="sd">                graphs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[np.ndarray, np.ndarray, np.ndarray]: ``(emotieffnet_features,</span>
+<span class="sd">            farl_features, mask)``, the first two ``(num_frames, D)`` float32,</span>
+<span class="sd">            densified onto the full frame grid: a frame where the protagonist</span>
+<span class="sd">            track has a detection gets that detection&#39;s real feature; a frame</span>
+<span class="sd">            with no detection (occlusion, brief exit, or no protagonist found</span>
+<span class="sd">            at all) gets an all-zero placeholder row. ``mask`` is a shared</span>
+<span class="sd">            ``(num_frames,)`` bool array -- ``True`` where a real detection</span>
+<span class="sd">            was used, ``False`` for the zero-filled gaps -- passed by the</span>
+<span class="sd">            caller to :meth:`predict`&#39;s ``masks`` override so a placeholder</span>
+<span class="sd">            frame is genuinely excluded from attention, not just zeroed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaceClusterTracker</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_video</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.deep.adaface</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdaFaceWrapper</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.face.detector.yolo11</span><span class="w"> </span><span class="kn">import</span> <span class="n">YoloFace11Detector</span>
+
+        <span class="n">detector</span> <span class="o">=</span> <span class="n">YoloFace11Detector</span><span class="p">(</span><span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vdets</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+
+        <span class="n">frames</span><span class="p">,</span> <span class="n">_actual_fps</span> <span class="o">=</span> <span class="n">load_video</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>  <span class="c1"># (T, 3, H, W) uint8</span>
+        <span class="n">num_frames</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">encoder</span> <span class="o">=</span> <span class="n">AdaFaceWrapper</span><span class="p">(</span><span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">tracker</span> <span class="o">=</span> <span class="n">FaceClusterTracker</span><span class="p">(</span><span class="n">encoder</span><span class="o">=</span><span class="n">encoder</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">protagonist</span> <span class="o">=</span> <span class="n">tracker</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">vdets</span><span class="p">,</span> <span class="n">min_score</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="n">emotieffnet_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="s2">&quot;emotieffnet&quot;</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+        <span class="n">farl_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="s2">&quot;farl&quot;</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">protagonist</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">protagonist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">video_path</span><span class="si">}</span><span class="s2">: no protagonist face track found; using zero features.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_densify_face_features</span><span class="p">(</span><span class="n">protagonist</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="n">emotieffnet_session</span><span class="p">,</span> <span class="n">farl_session</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_text_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tokenize and run mmBERT + XLM-RoBERTa on a transcript.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): The transcript to encode.</span>
+<span class="sd">            revision (str | None): HF Hub revision for the text extractor</span>
+<span class="sd">                graphs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[np.ndarray, np.ndarray]: ``(xlm_roberta_features,</span>
+<span class="sd">            mmbert_features)``, each ``(T, 768)`` float32 token-level</span>
+<span class="sd">            embeddings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.inference.onnx_export</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">MMBERT_MODEL_ID</span><span class="p">,</span>
+            <span class="n">XLM_ROBERTA_MODEL_ID</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="n">feature_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor_session</span><span class="p">(</span><span class="n">feature_name</span><span class="p">,</span> <span class="n">revision</span><span class="o">=</span><span class="n">revision</span><span class="p">)</span>
+            <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_id</span><span class="p">)</span>
+            <span class="c1"># AutoTokenizer.from_pretrained&#39;s stub allows None for exotic</span>
+            <span class="c1"># backend-selection edge cases that do not apply to a concrete,</span>
+            <span class="c1"># known-good model id -- same class of false ambiguity as</span>
+            <span class="c1"># onnx_export.py&#39;s emotion2vec wrapper, see its comment.</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;np&quot;</span><span class="p">)</span>  <span class="c1"># ty: ignore[call-non-callable]</span>
+            <span class="n">onnx_inputs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;input_ids&quot;</span><span class="p">:</span> <span class="n">tokens</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="s2">&quot;attention_mask&quot;</span><span class="p">:</span> <span class="n">tokens</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="p">}</span>
+            <span class="p">(</span><span class="n">hidden</span><span class="p">,)</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">],</span> <span class="n">onnx_inputs</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">hidden</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (T, 768)</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+
+        <span class="n">xlm_features</span> <span class="o">=</span> <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;xlm_roberta_gt&quot;</span><span class="p">,</span> <span class="n">XLM_ROBERTA_MODEL_ID</span><span class="p">)</span>
+        <span class="n">mmbert_features</span> <span class="o">=</span> <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;mmbert_gt&quot;</span><span class="p">,</span> <span class="n">MMBERT_MODEL_ID</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xlm_features</span><span class="p">,</span> <span class="n">mmbert_features</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transcribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily load Whisper and transcribe a video&#39;s audio track.</span>
+
+<span class="sd">        ``torch``/``transformers``-based (see the module docstring&#39;s</span>
+<span class="sd">        Dependencies note) -- only loaded the first time ``transcript=None``</span>
+<span class="sd">        is actually hit, so a caller who always supplies a transcript (or</span>
+<span class="sd">        ``&quot;&quot;``) never pays this cost.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            video_path (str): A video file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The transcribed text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whisper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.text.whisper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WhisperWrapper</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_whisper</span> <span class="o">=</span> <span class="n">WhisperWrapper</span><span class="p">(</span><span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded Whisper for predict_from_media&#39;s ASR fallback.&quot;</span><span class="p">)</span>
+
+        <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whisper</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

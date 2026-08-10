@@ -1,0 +1,313 @@
+personalitylinmult.data.schema
+==============================
+
+.. py:module:: personalitylinmult.data.schema
+
+.. autoapi-nested-parse::
+
+   Typed contract shared by the HDF5 builder and the training dataloader.
+
+   This module is deliberately dependency-light (no torch, no h5py) so that the
+   same :class:`FeatureSpec` objects can describe a feature on the way *into* the
+   HDF5 file and on the way *out* of it. One schema, no drift.
+
+   **Layout of the built file** (see :mod:`personalitylinmult.data.builder`)::
+
+       /                        attrs: schema_version, created_utc, git_sha,
+                                       source_label_csv_sha256, builder_config_yaml
+       /video_id                (N,)     variable-length utf-8, row order == index order
+       /subset                  (N,)     uint8, see SUBSET_CODES
+       /labels/<trait>          (N,)     float32
+       /features/<name>/data    (N,T,D)  float16, chunks=(1,T,D)
+       /features/<name>/mask    (N,T)    bool,    chunks=(1,T)
+       /features/<name>/length  (N,)     int32, the clip's length before padding
+           attrs on /features/<name>: dim, max_time_dim, source_dir, source_format,
+                                      dtype_orig, layers, rate_hz
+
+   **Padding is post-padding.** A clip's real frames occupy ``[0, length)`` and the
+   zeros fill ``[length, max_time_dim)`` -- never the other way round. So
+   ``data[i, :length[i]]`` is the clip, ``mask[i]`` is ``True`` exactly on
+   ``[0, length[i])``, and a longer clip is truncated from the tail. Anything
+   reading this file may rely on that.
+
+   Masks are written for *every* sequence feature, including ones that are dense
+   for every sample today. The network contract is feature + mask per feature, and
+   a uniform contract survives windowing (where density is a property of the source
+   clip, not of the cropped batch) at a storage cost of roughly 0.05%.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.schema.SCHEMA_VERSION
+   personalitylinmult.data.schema.BIG_FIVE_TRAITS
+   personalitylinmult.data.schema.INTERVIEW_TRAITS
+   personalitylinmult.data.schema.ALL_TRAITS
+   personalitylinmult.data.schema.SUBSETS
+   personalitylinmult.data.schema.SUBSET_CODES
+   personalitylinmult.data.schema.SOURCE_FORMATS
+   personalitylinmult.data.schema.CROP_MODES
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.schema.SchemaError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.data.schema.FeatureSpec
+   personalitylinmult.data.schema.DatasetSpec
+   personalitylinmult.data.schema.BuildStats
+
+
+Module Contents
+---------------
+
+.. py:data:: SCHEMA_VERSION
+   :value: 1
+
+
+   Bumped whenever the on-disk HDF5 layout changes incompatibly.
+
+.. py:data:: BIG_FIVE_TRAITS
+   :type:  tuple[str, Ellipsis]
+   :value: ('openness', 'conscientiousness', 'extraversion', 'agreeableness', 'emotional_stability')
+
+
+   Targets of the big-five regression task.
+
+   ``emotional_stability`` (= ``1 - neuroticism``) is used rather than
+   ``neuroticism`` so that all five traits point the same way: higher is more of
+   the named quality. :class:`~personalitylinmult.train.config.TrainConfig`
+   rejects ``neuroticism`` as a big-five target.
+
+.. py:data:: INTERVIEW_TRAITS
+   :type:  tuple[str, Ellipsis]
+   :value: ('interview',)
+
+
+   Target of the interview-variable regression task.
+
+   A distinct task from big-five regression: the interview variable is a
+   hireability judgement, not a personality trait, and is trained separately.
+
+.. py:data:: ALL_TRAITS
+   :type:  tuple[str, Ellipsis]
+   :value: ('openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism',...
+
+
+   Every label column stored in the HDF5.
+
+   All seven are stored regardless of task, because storing a scalar per clip is
+   free and it means a task change never requires a rebuild. ``neuroticism`` is
+   retained as the raw annotation for traceability even though training uses
+   ``emotional_stability``.
+
+.. py:data:: SUBSETS
+   :type:  tuple[str, Ellipsis]
+   :value: ('train', 'valid', 'test')
+
+
+   Dataset splits, in code order.
+
+.. py:data:: SUBSET_CODES
+   :type:  dict[str, int]
+
+   Maps a split name to the ``uint8`` code stored in ``/subset``.
+
+.. py:data:: SOURCE_FORMATS
+   :type:  frozenset[str]
+
+   Recognised on-disk feature formats.
+
+   * ``pickle_layers`` — a pickled ``list`` of per-layer ``(T, D)`` arrays (WavLM).
+   * ``npy`` — a single ``(T, D)`` array (emotion2vec+).
+   * ``safetensors`` — ``features``/``frame_ids`` and optionally ``mask`` (DINOv2,
+     EmotiEffNet, FaRL).
+   * ``hdf5_per_id`` — one HDF5 holding a ``(T, D)`` sequence dataset per
+     ``video_id`` (the token-level text features).
+
+.. py:data:: CROP_MODES
+   :type:  frozenset[str]
+
+   Analysis-window crop strategies.
+
+   ``head`` takes ``[0, window)``; ``center`` takes the middle window; ``random``
+   takes a uniformly random offset and is only applied to the training split
+   (``center`` is substituted elsewhere) so evaluation stays deterministic.
+
+.. py:exception:: SchemaError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when a feature or dataset configuration is self-inconsistent.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: FeatureSpec
+
+   Describes one feature: where it comes from and how it is stored.
+
+   The same object drives extraction (builder) and consumption (dataset), so a
+   feature can never be written under one interpretation and read under
+   another.
+
+   :param name: Feature name. Becomes the HDF5 group name and the key the
+                model sees in ``names=``, so it must be unique within a dataset.
+   :type name: str
+   :param source_dir: Directory of per-clip files, or the containing
+                      directory for ``hdf5_per_id``. Relative to the repository root.
+   :type source_dir: str
+   :param source_format: One of :data:`SOURCE_FORMATS`.
+   :type source_format: str
+   :param dim: Feature dimensionality ``D``.
+   :type dim: int
+   :param rate_hz: Nominal sampling rate, used to convert
+                   ``window_seconds`` into a frame count. ``None`` means the time axis
+                   is not wall-clock (e.g. text tokens) and the feature is never
+                   cropped by the analysis window.
+   :type rate_hz: float | None
+   :param max_time_dim: Stored time dimension. Clips longer than this
+                        are truncated and shorter ones are zero-padded (with the mask marking
+                        the padding invalid), so the stored length is uniform. ``None`` means
+                        "measure it from the data", which is only appropriate when the length
+                        is not known in advance.
+   :type max_time_dim: int | None
+   :param layers: For ``pickle_layers`` only: which transformer
+                  layers to keep. One layer stores ``(N, T, D)``; several store
+                  ``(N, L, T, D)`` for linmult's learned ``weighted_sum``.
+   :type layers: tuple[int, ...]
+   :param source_file: For ``hdf5_per_id``: the HDF5 filename inside
+                       ``source_dir``.
+   :type source_file: str | None
+   :param dtype: On-disk dtype. ``float16`` halves size and I/O; measured
+                 across the real features the largest magnitude is ~31 against fp16's
+                 65504 ceiling, so the range is safe.
+   :type dtype: str
+
+   :raises SchemaError: If the spec is internally inconsistent.
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the spec's internal consistency.
+
+      :raises SchemaError: If any field combination is invalid.
+
+
+
+   .. py:property:: is_multi_layer
+      :type: bool
+
+
+      Whether this feature stores several transformer layers per sample.
+
+      :returns: ``True`` when the stored array carries a layer axis, which
+                linmult consumes as a 4-D ``(B, L, T, F)`` weighted-sum input.
+      :rtype: bool
+
+
+   .. py:method:: window_frames(window_seconds: float | None) -> int | None
+
+      Frames spanned by an analysis window for this feature.
+
+      :param window_seconds: Window length in seconds, or ``None``
+                             for no windowing.
+      :type window_seconds: float | None
+
+      :returns: Frame count, or ``None`` when this feature is not
+                windowed (no ``rate_hz``, or no window requested).
+      :rtype: int | None
+
+
+
+   .. py:method:: from_dict(d: dict[str, Any]) -> FeatureSpec
+      :classmethod:
+
+
+      Build a spec from a plain dict, e.g. parsed YAML.
+
+      :param d: Feature configuration values.
+      :type d: dict
+
+      :returns: The validated spec.
+      :rtype: FeatureSpec
+
+      :raises SchemaError: If required keys are missing or the spec is invalid.
+
+
+
+.. py:class:: DatasetSpec
+
+   The full description of one built HDF5 dataset.
+
+   :param features: Features to include. **Only these are
+                    read from disk and written to the file** — the selection is the
+                    contract, not a filter applied later.
+   :type features: list[FeatureSpec]
+   :param h5_path: Destination path of the built file.
+   :type h5_path: str
+   :param label_csv: Source ``label.csv`` produced by the preprocess stage.
+   :type label_csv: str
+
+   :raises SchemaError: If no features are given or names collide.
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate the dataset spec.
+
+      :raises SchemaError: If the feature list is empty or contains duplicates.
+
+
+
+   .. py:property:: feature_names
+      :type: list[str]
+
+
+      Feature names in configured order.
+
+      :returns: Names, in the order the model receives its inputs.
+      :rtype: list[str]
+
+
+   .. py:method:: feature(name: str) -> FeatureSpec
+
+      Look up a feature by name.
+
+      :param name: Feature name.
+      :type name: str
+
+      :returns: The matching spec.
+      :rtype: FeatureSpec
+
+      :raises KeyError: If no feature has that name.
+
+
+
+.. py:class:: BuildStats
+
+   Counters describing one builder run, for logging and tests.
+
+   :param n_samples: Rows written.
+   :type n_samples: int
+   :param n_features: Features written.
+   :type n_features: int
+   :param bytes_written: Size of the resulting file.
+   :type bytes_written: int
+   :param per_feature_time_dim: Stored ``T`` per feature.
+   :type per_feature_time_dim: dict[str, int]
+
+

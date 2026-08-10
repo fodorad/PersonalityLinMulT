@@ -1,0 +1,188 @@
+personalitylinmult.data.dataset
+===============================
+
+.. py:module:: personalitylinmult.data.dataset
+
+.. autoapi-nested-parse::
+
+   Random-access reads from the built FI HDF5 file.
+
+   This dataset touches the HDF5 file and nothing else — no feature directories,
+   no label CSV, no pickles. That is what makes a training run reproducible from a
+   single published artifact, and what keeps ``__getitem__`` down to one chunk
+   read per feature.
+
+   **Analysis window.** The file stores whole clips; the window is applied here, on
+   read, using each feature's ``rate_hz``. Changing ``window_seconds`` from 15 to
+   10 to 5 is a config edit, not a rebuild, and the crop is pushed into the HDF5
+   read itself so windowed-away data never crosses the bus.
+
+   **Worker safety.** h5py handles do not survive ``fork``. The handle is therefore
+   opened lazily inside whichever process first calls ``__getitem__``, and stripped
+   from the pickled state so ``spawn``-based workers construct their own.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.dataset.logger
+   personalitylinmult.data.dataset.NO_RATE_SENTINEL
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.dataset.DatasetError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.data.dataset.FeatureView
+   personalitylinmult.data.dataset.FiHdf5Dataset
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: NO_RATE_SENTINEL
+   :value: -1.0
+
+
+   ``rate_hz`` attribute value meaning "no wall-clock time axis".
+
+.. py:exception:: DatasetError
+
+   Bases: :py:obj:`RuntimeError`
+
+
+   Raised when the HDF5 file cannot serve the requested configuration.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: FeatureView(name: str, dim: int, stored_time_dim: int, window_time_dim: int, rate_hz: float | None, n_layers: int)
+
+   Resolved read plan for one feature within one dataset.
+
+   :param name: Feature name.
+   :type name: str
+   :param dim: Feature width.
+   :type dim: int
+   :param stored_time_dim: Time dimension as stored in the file.
+   :type stored_time_dim: int
+   :param window_time_dim: Time dimension after windowing.
+   :type window_time_dim: int
+   :param rate_hz: Native rate, or ``None`` if not wall-clock.
+   :type rate_hz: float | None
+   :param n_layers: Layer count, ``0`` when there is no layer axis.
+   :type n_layers: int
+
+
+   .. py:property:: is_multi_layer
+      :type: bool
+
+
+      Whether reads carry a layer axis.
+
+      :returns: ``True`` when the model should see ``(B, L, T, F)``.
+      :rtype: bool
+
+
+   .. py:property:: is_windowed
+      :type: bool
+
+
+      Whether the analysis window crops this feature.
+
+      :returns: ``True`` when the stored clip is longer than the window.
+      :rtype: bool
+
+
+.. py:class:: FiHdf5Dataset(h5_path: str | pathlib.Path, subset: str, feature_names: collections.abc.Sequence[str], target_names: collections.abc.Sequence[str], window_seconds: float | None = None, crop_mode: str = 'head', seed: int = 42)
+
+   Bases: :py:obj:`torch.utils.data.Dataset`
+
+
+   Reads FI samples for one split out of the built HDF5 file.
+
+   :param h5_path: The built dataset.
+   :type h5_path: str | Path
+   :param subset: One of ``"train"``, ``"valid"``, ``"test"``.
+   :type subset: str
+   :param feature_names: Features to return, in model input order.
+   :type feature_names: Sequence[str]
+   :param target_names: Label columns to return, in head order.
+   :type target_names: Sequence[str]
+   :param window_seconds: Analysis window. ``None`` reads whole
+                          clips.
+   :type window_seconds: float | None
+   :param crop_mode: ``"head"``, ``"center"``, or ``"random"``. ``"random"``
+                     is honoured only on the training split; evaluation always uses
+                     ``"center"`` so it stays deterministic.
+   :type crop_mode: str
+   :param seed: Base seed for ``"random"`` cropping.
+   :type seed: int
+
+   :raises DatasetError: If the file is missing, has the wrong schema version, or
+       lacks a requested feature or target.
+   :raises SchemaError: If ``subset`` or ``crop_mode`` is not recognised.
+
+
+   .. py:property:: handle
+      :type: h5py.File
+
+
+      The process-local HDF5 handle, opened on first use.
+
+      Opening lazily is what makes the dataset fork-safe: each worker creates
+      its own handle rather than inheriting a parent's, which HDF5 does not
+      support and which corrupts reads.
+
+      :returns: The open file.
+      :rtype: h5py.File
+
+
+   .. py:method:: __getstate__() -> dict[str, Any]
+
+      Drop the file handle so the dataset can be pickled to a worker.
+
+      :returns: Picklable state.
+      :rtype: dict
+
+
+
+   .. py:method:: __len__() -> int
+
+      Number of clips in this split.
+
+      :returns: Clip count.
+      :rtype: int
+
+
+
+   .. py:method:: __getitem__(index: int) -> dict[str, Any]
+
+      Read one clip.
+
+      :param index: Row within this split.
+      :type index: int
+
+      :returns: ``{name}`` and ``{name}_mask`` per feature, plus ``targets``
+                and ``video_id``. Every feature is paired with a mask, ``True`` =
+                valid.
+      :rtype: dict
+
+
+

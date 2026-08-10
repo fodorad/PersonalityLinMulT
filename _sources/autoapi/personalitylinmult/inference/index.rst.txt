@@ -1,0 +1,35 @@
+personalitylinmult.inference
+============================
+
+.. py:module:: personalitylinmult.inference
+
+.. autoapi-nested-parse::
+
+   Inference for the trained FI Big Five models.
+
+   The reusable predictor every deployment surface (CLI, MLflow pyfunc, HF Space,
+   notebook) wraps: :class:`~personalitylinmult.inference.predictor.FiPredictor`
+   loads a self-describing checkpoint and maps per-modality features to Big Five
+   scores. :mod:`~personalitylinmult.inference.registry` resolves a model *name*
+   (``"AVT"``, ``"A"``) to its checkpoint so callers select a model without knowing
+   paths.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/personalitylinmult/inference/audio_features/index
+   /autoapi/personalitylinmult/inference/audio_features_onnx/index
+   /autoapi/personalitylinmult/inference/cli/index
+   /autoapi/personalitylinmult/inference/mlflow_pyfunc/index
+   /autoapi/personalitylinmult/inference/onnx_benchmark/index
+   /autoapi/personalitylinmult/inference/onnx_export/index
+   /autoapi/personalitylinmult/inference/predictor/index
+   /autoapi/personalitylinmult/inference/register_models/index
+   /autoapi/personalitylinmult/inference/registry/index
+
+

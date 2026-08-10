@@ -1,0 +1,129 @@
+personalitylinmult.inference.audio_features_onnx
+================================================
+
+.. py:module:: personalitylinmult.inference.audio_features_onnx
+
+.. autoapi-nested-parse::
+
+   Extract WavLM features via ONNX Runtime -- no ``torch``/``transformers``.
+
+   The ONNX Runtime-backed counterpart to
+   :func:`~personalitylinmult.inference.audio_features.extract_wavlm`. Decoding
+   still shells out to ``ffmpeg`` (a subprocess, not a Python dependency) to
+   produce mono 16 kHz PCM WAV directly -- WavLM's own required sample rate --
+   avoiding ``torchaudio``, which would otherwise pull ``torch`` back in just for
+   resampling. Reading the WAV uses only the standard library's :mod:`wave`
+   module plus ``numpy``, both already required.
+
+   **Known limitation**: ffmpeg's resampler and ``torchaudio``'s
+   ``Resample`` transform (used by the PyTorch path, via
+   :class:`exordium.audio.wavlm.WavlmWrapper`) use different filter
+   implementations, so they do not produce bit-identical 16 kHz waveforms from
+   the same source file (~3e-4 mean, ~2.5e-2 max absolute sample difference,
+   measured on a real clip). WavLM's transformer layers can amplify this at a
+   handful of frames, but the final Big Five predictions shift only ~0.001-0.004
+   per trait end to end -- small and bounded, not exact. Accepted deliberately
+   to keep this module genuinely ``torch``-free.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features_onnx.logger
+   personalitylinmult.inference.audio_features_onnx.WAVLM_ONNX_SAMPLE_RATE
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features_onnx.AudioDecodeError
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.audio_features_onnx.load_waveform_16k
+   personalitylinmult.inference.audio_features_onnx.extract_wavlm_onnx
+   personalitylinmult.inference.audio_features_onnx.extract_emotion2vec_onnx
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: WAVLM_ONNX_SAMPLE_RATE
+   :value: 16000
+
+
+   WavLM's required input sample rate, matching ``exordium``'s
+   ``WAVLM_SAMPLE_RATE`` -- see ``onnx_export.py``'s ``WAVLM_MODEL_ID``.
+
+.. py:exception:: AudioDecodeError
+
+   Bases: :py:obj:`Exception`
+
+
+   Raised when ffmpeg cannot decode the input into a WAV.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:function:: load_waveform_16k(input_path: str | pathlib.Path) -> numpy.ndarray
+
+   Load any audio/video file as a mono 16 kHz waveform, via ffmpeg.
+
+   :param input_path: An audio or video file.
+   :type input_path: str | Path
+
+   :returns: ``(samples,)`` float32 waveform in ``[-1, 1]``, at
+             :data:`WAVLM_ONNX_SAMPLE_RATE`.
+   :rtype: np.ndarray
+
+
+.. py:function:: extract_wavlm_onnx(input_path: str | pathlib.Path, session: onnxruntime.InferenceSession) -> numpy.ndarray
+
+   Extract WavLM layer features using an ONNX Runtime session.
+
+   :param input_path: An audio or video file.
+   :type input_path: str | Path
+   :param session: A session over the graph
+                   :func:`~personalitylinmult.inference.onnx_export.export_wavlm_to_onnx`
+                   produced.
+   :type session: onnxruntime.InferenceSession
+
+   :returns: ``(T, 768)`` float32 features, matching
+             :func:`~personalitylinmult.inference.audio_features.extract_wavlm`'s
+             output for the same input.
+   :rtype: np.ndarray
+
+
+.. py:function:: extract_emotion2vec_onnx(input_path: str | pathlib.Path, session: onnxruntime.InferenceSession) -> numpy.ndarray
+
+   Extract emotion2vec+ features using an ONNX Runtime session.
+
+   Reuses :func:`load_waveform_16k` -- emotion2vec+, like WavLM, expects a
+   16 kHz mono waveform, so the same decode step covers both.
+
+   :param input_path: An audio or video file.
+   :type input_path: str | Path
+   :param session: A session over the graph
+                   :func:`~personalitylinmult.inference.onnx_export.export_emotion2vec_to_onnx`
+                   produced.
+   :type session: onnxruntime.InferenceSession
+
+   :returns: ``(T, 768)`` float32 features, matching
+             ``exordium.audio.emotion2vec.Emotion2vecWrapper``'s output for the
+             same input.
+   :rtype: np.ndarray
+
+

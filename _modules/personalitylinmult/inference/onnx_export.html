@@ -1,0 +1,1215 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+        <link rel="canonical" href="https://fodorad.github.io/PersonalityLinMulT/_modules/personalitylinmult/inference/onnx_export.html">
+        <link rel="prefetch" href="../../../_static/logo.svg" as="image">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>personalitylinmult.inference.onnx_export - PersonalityLinMulT documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">PersonalityLinMulT  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">PersonalityLinMulT  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Dataset</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset.html">PersonalityLinMulT — First Impressions V2 extracted features (<code class="docutils literal notranslate"><span class="pre">fi.h5</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../autoapi/personalitylinmult/index.html">personalitylinmult</a><input aria-label="Toggle navigation of personalitylinmult" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/index.html">personalitylinmult.data</a><input aria-label="Toggle navigation of personalitylinmult.data" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/builder/index.html">personalitylinmult.data.builder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/collate/index.html">personalitylinmult.data.collate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/datamodule/index.html">personalitylinmult.data.datamodule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/dataset/index.html">personalitylinmult.data.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/schema/index.html">personalitylinmult.data.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/data/sources/index.html">personalitylinmult.data.sources</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/index.html">personalitylinmult.inference</a><input aria-label="Toggle navigation of personalitylinmult.inference" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/audio_features/index.html">personalitylinmult.inference.audio_features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/audio_features_onnx/index.html">personalitylinmult.inference.audio_features_onnx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/cli/index.html">personalitylinmult.inference.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html">personalitylinmult.inference.mlflow_pyfunc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/onnx_benchmark/index.html">personalitylinmult.inference.onnx_benchmark</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html">personalitylinmult.inference.onnx_export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/predictor/index.html">personalitylinmult.inference.predictor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/register_models/index.html">personalitylinmult.inference.register_models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../autoapi/personalitylinmult/inference/registry/index.html">personalitylinmult.inference.registry</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/personalitylinmult/model/index.html">personalitylinmult.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../autoapi/personalitylinmult/onnx/index.html">personalitylinmult.onnx</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for personalitylinmult.inference.onnx_export</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Export a trained checkpoint&#39;s model, and its feature extractors, to ONNX.</span>
+
+<span class="sd">Three independent exports live here:</span>
+
+<span class="sd">- :func:`export_to_onnx` -- the *trained regression model*, LinT (single</span>
+<span class="sd">  feature) or LinMulT (multiple features, e.g. the AVT champion).</span>
+<span class="sd">- :func:`export_wavlm_to_onnx` -- WavLM itself (via ``transformers``, the same</span>
+<span class="sd">  model :class:`exordium.audio.wavlm.WavlmWrapper` wraps), so the full</span>
+<span class="sd">  audio -&gt; features -&gt; prediction pipeline can run on ONNX Runtime alone, with</span>
+<span class="sd">  no ``torch``/``transformers``/``exordium`` at inference time.</span>
+
+<span class="sd">``export_to_onnx`` handles both model families with two different wrapper</span>
+<span class="sd">classes, since ONNX graphs have a fixed input signature:</span>
+
+<span class="sd">- LinT&#39;s ``forward(x, mask, name)`` takes two tensors and one constant</span>
+<span class="sd">  string, which traces directly (:class:`_LinTExportWrapper`).</span>
+<span class="sd">- LinMulT&#39;s ``forward(inputs, masks, names)`` takes a *list* of tensors, one</span>
+<span class="sd">  per modality -- ONNX/``torch.onnx.export`` do not accept a Python</span>
+<span class="sd">  ``list[Tensor]`` as a traced input the way LinMulT&#39;s own signature does, so</span>
+<span class="sd">  :class:`_LinMulTExportWrapper` unpacks a fixed-arity ``*args`` (built once</span>
+<span class="sd">  per checkpoint, sized to that checkpoint&#39;s ``len(feature_names)``) into two</span>
+<span class="sd">  equal halves -- the first half is ``inputs``, the second is ``masks``, in</span>
+<span class="sd">  ``feature_names`` order. The consumer (:class:`~personalitylinmult.onnx</span>
+<span class="sd">  .PersonalityModelONNX`) already knows this order from the ``.onnx.json``</span>
+<span class="sd">  sidecar, so the graph&#39;s input names (``x_0``, ``mask_0``, ``x_1``, ...) need</span>
+<span class="sd">  no further metadata to interpret correctly.</span>
+
+<span class="sd">Both branches are exported via the legacy TorchScript tracer</span>
+<span class="sd">(``dynamo=False``): both LinT&#39;s and LinMulT&#39;s forward passes branch on a mask</span>
+<span class="sd">tensor&#39;s *content* (LinT: ``if mask is not None and not mask.any()``;</span>
+<span class="sd">LinMulT&#39;s ``_normalize_masks``: ``mask.all()``), which torch&#39;s newer</span>
+<span class="sd">``torch.export``-based exporter (``dynamo=True``, the default since torch</span>
+<span class="sd">2.9) cannot trace -- it requires a fully static graph. The tracer instead</span>
+<span class="sd">bakes in whichever branch the trace-time input took. For LinT, every current</span>
+<span class="sd">caller passes an all-``True`` mask (:meth:`FiPredictor._to_batch` never</span>
+<span class="sd">pads), so tracing with an all-``True`` dummy mask is safe in practice, but a</span>
+<span class="sd">caller feeding a genuinely padded (some-``False``) mask through the ONNX</span>
+<span class="sd">graph would silently get the all-valid-mask behavior regardless of the</span>
+<span class="sd">mask&#39;s real content. For LinMulT, the same caveat applies to *partial*</span>
+<span class="sd">per-timestep masking -- but a **whole-modality** all-``False`` mask (the</span>
+<span class="sd">&quot;skip this feature entirely&quot; case, e.g. no transcript available) is a</span>
+<span class="sd">different, verified-safe code path: see</span>
+<span class="sd">``tests/inference/test_linmult_mask_validation.py``, which confirms with a</span>
+<span class="sd">real forward pass (not just by reading the source) that neither attention</span>
+<span class="sd">type this project supports produces NaN for a fully-masked branch --</span>
+<span class="sd">``linmult.core.transformer``&#39;s ``TransformerLayer.forward`` has an explicit</span>
+<span class="sd">guard for exactly this case, independent of ``attention_type``. Document</span>
+<span class="sd">these limitations wherever the ONNX path is offered as an alternative to the</span>
+<span class="sd">PyTorch path, which has no such restriction.</span>
+
+<span class="sd">The exported artifact is two files, not one: the ``.onnx`` graph itself does</span>
+<span class="sd">not carry Python-level metadata like trait names, so a ``.onnx.json`` sidecar</span>
+<span class="sd">travels with it -- the same information</span>
+<span class="sd">:class:`~personalitylinmult.inference.predictor.FiPredictor` reads from a</span>
+<span class="sd">checkpoint&#39;s hyperparameters, made explicit here since the ONNX graph cannot</span>
+<span class="sd">hold it. The sidecar schema is always plural (``feature_names``,</span>
+<span class="sd">``input_dims``) regardless of family, so</span>
+<span class="sd">:class:`~personalitylinmult.onnx.PersonalityModelONNX` never has to branch on</span>
+<span class="sd">which family produced a given graph -- a LinT sidecar simply has</span>
+<span class="sd">length-1 lists.</span>
+
+<span class="sd">Note: ``linmult`` versions before 2.1.1 cached</span>
+<span class="sd">``linmult.core.pe.PositionalEncoding``&#39;s table across a</span>
+<span class="sd">``TransformerEncoder``&#39;s query and key/value calls, which could bake a</span>
+<span class="sd">shared, trace-time sequence length into both calls of an ONNX-exported</span>
+<span class="sd">LinMulT graph -- breaking inference for features with genuinely different</span>
+<span class="sd">lengths (WavLM ~50 Hz vs. DINOv2 ~25 fps vs. one row per token for text).</span>
+<span class="sd">Fixed upstream in ``linmult`` 2.1.1; this project requires ``linmult&gt;=2.1.1``</span>
+<span class="sd">accordingly.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.train.module</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiLightningModule</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Module-level logger.&quot;&quot;&quot;</span>
+
+<span class="n">ONNX_OPSET</span> <span class="o">=</span> <span class="mi">17</span>
+<span class="sd">&quot;&quot;&quot;ONNX opset version to export against; 17 is broadly supported by current</span>
+<span class="sd">onnxruntime releases and covers every op LinT&#39;s forward pass uses.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_LinTExportWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Closes over the fixed ``name`` argument LinT&#39;s forward needs.</span>
+
+<span class="sd">    ``torch.onnx.export`` traces a module called with tensor arguments only;</span>
+<span class="sd">    ``name`` is a constant string carried by the checkpoint, not a per-call</span>
+<span class="sd">    input, so it is bound here rather than exposed as a graph input. Returns</span>
+<span class="sd">    the single head tensor directly (not the ``{head_name: tensor}`` dict</span>
+<span class="sd">    :meth:`FiLightningModule.forward` returns), since a bare tensor output is</span>
+<span class="sd">    what ONNX/onnxruntime expects for a plain regression graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">head_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_head_name</span> <span class="o">=</span> <span class="n">head_name</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the wrapped model and select its single output head.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.Tensor): ``(B, T, F)`` input features.</span>
+<span class="sd">            mask (torch.Tensor): ``(B, T)`` bool mask, ``True`` = valid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, output_dim)`` raw (unclamped) predictions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_name</span><span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_LinMulTExportWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Closes over the fixed ``names`` list LinMulT&#39;s forward needs.</span>
+
+<span class="sd">    ``torch.onnx.export`` traces a module called with a fixed tuple of tensor</span>
+<span class="sd">    arguments, not a Python ``list[Tensor]`` the way ``LinMulT.forward``</span>
+<span class="sd">    itself accepts -- ``forward`` here takes ``2 * n_features`` separate</span>
+<span class="sd">    positional tensors instead (first half ``inputs``, second half ``masks``,</span>
+<span class="sd">    both in ``names`` order) and reassembles them into the lists LinMulT</span>
+<span class="sd">    expects before calling it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">head_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_head_name</span> <span class="o">=</span> <span class="n">head_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the wrapped model and select its single output head.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args (torch.Tensor): ``2 * n_features`` tensors -- the first</span>
+<span class="sd">                ``n_features`` are ``(B, T, F)`` inputs in ``names`` order,</span>
+<span class="sd">                the second ``n_features`` are their ``(B, T)`` bool masks.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, output_dim)`` raw (unclamped) predictions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">])</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="p">:])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">masks</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_head_name</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="export_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_to_onnx</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">FiLightningModule</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export a trained checkpoint&#39;s model (LinT or LinMulT) to ONNX.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module (FiLightningModule): A loaded module (e.g. via</span>
+<span class="sd">            ``FiLightningModule.load_from_checkpoint``), in eval mode or not</span>
+<span class="sd">            -- this function calls ``.eval()`` itself.</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path. A sidecar</span>
+<span class="sd">            ``.onnx.json`` is written alongside it with the same stem.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">personalitylinmult.train.module</span><span class="w"> </span><span class="kn">import</span> <span class="n">HEAD_NAME</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
+    <span class="n">input_dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">input_feature_dim</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span>
+
+    <span class="c1"># A checkpoint saved from an MPS/CUDA run keeps its weights on that</span>
+    <span class="c1"># device via load_from_checkpoint (unlike FiPredictor.from_checkpoint,</span>
+    <span class="c1"># which passes map_location=&quot;cpu&quot; explicitly) -- ONNX export traces on</span>
+    <span class="c1"># CPU tensors, so the wrapped model must be moved there regardless of</span>
+    <span class="c1"># where its checkpoint was trained.</span>
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">is_lint</span><span class="p">:</span>
+        <span class="n">wrapper</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">_LinTExportWrapper</span><span class="p">(</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">feature_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">head_name</span><span class="o">=</span><span class="n">HEAD_NAME</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_LinMulTExportWrapper</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">head_name</span><span class="o">=</span><span class="n">HEAD_NAME</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+    <span class="c1"># A representative (batch=1, T=50) input for tracing; T is dynamic (see</span>
+    <span class="c1"># dynamic_axes below), so its exact value here does not fix the exported</span>
+    <span class="c1"># graph&#39;s shape.</span>
+    <span class="n">dummy_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">input_dims</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">is_lint</span><span class="p">:</span>
+        <span class="c1"># LinT&#39;s forward nulls the mask only when it is all-False</span>
+        <span class="c1"># (`if mask is not None and not mask.any()`), so an all-True dummy</span>
+        <span class="c1"># mask is still &quot;not null&quot; at trace time and stays a live graph</span>
+        <span class="c1"># input -- this has always worked for the LinT path.</span>
+        <span class="n">dummy_masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)]</span>
+        <span class="n">trace_args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dummy_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dummy_masks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">input_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">]</span>
+        <span class="n">dynamic_axes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;mask&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;predictions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># LinMulT&#39;s `_normalize_masks` does the *opposite*: it nulls a mask</span>
+        <span class="c1"># only when it is all-True (&quot;nothing to mask, skip the overhead&quot;),</span>
+        <span class="c1"># collapsing it to None *individually, per feature* before it</span>
+        <span class="c1"># reaches any op that would consume it as a tensor. Any dummy mask</span>
+        <span class="c1"># that is all-True gets traced away as an unused graph input</span>
+        <span class="c1"># entirely (torch.onnx.export drops inputs the traced computation</span>
+        <span class="c1"># never actually touches) -- a real caller later passing a mask for</span>
+        <span class="c1"># that feature would hit &quot;invalid input name&quot; at session.run time.</span>
+        <span class="c1">#</span>
+        <span class="c1"># A single False *timestep* is not enough either: linmult.core</span>
+        <span class="c1"># .transformer&#39;s `TransformerLayer.forward` has a second, coarser</span>
+        <span class="c1"># data-dependent branch -- `fully_masked_keys = ~key_mask.any(dim=1)`,</span>
+        <span class="c1"># `if fully_masked_keys.any(): ... torch.where(...)` -- that only</span>
+        <span class="c1"># fires when a whole *sample* (not just a timestep) has every key</span>
+        <span class="c1"># masked. Tracing with a merely-partial mask never triggers that</span>
+        <span class="c1"># `if`, so the zero-out `torch.where` guard gets traced away, and a</span>
+        <span class="c1"># real all-False mask fed to the exported graph later silently skips</span>
+        <span class="c1"># it -- caught by test_onnx_all_false_text_masks_match_pytorch as a</span>
+        <span class="c1"># real numeric mismatch (not NaN -- LinearAttention itself doesn&#39;t</span>
+        <span class="c1"># NaN on this input -- but genuinely wrong values), not a</span>
+        <span class="c1"># hypothetical.</span>
+        <span class="c1">#</span>
+        <span class="c1"># Both constraints together mean every dummy mask must be all-False</span>
+        <span class="c1"># at trace time: this keeps every mask_i input alive (none collapse</span>
+        <span class="c1"># to None) AND exercises the fully-masked-branch guard for every</span>
+        <span class="c1"># feature simultaneously, so the guard survives into the exported</span>
+        <span class="c1"># graph and applies correctly regardless of which real feature(s) a</span>
+        <span class="c1"># caller masks out later -- verified against real, varied mask</span>
+        <span class="c1"># patterns (all-True, one feature all-False, mixed) in</span>
+        <span class="c1"># test_onnx_export.py, not assumed safe from tracing alone.</span>
+        <span class="n">dummy_masks</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span>
+        <span class="n">trace_args</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">dummy_inputs</span><span class="p">,</span> <span class="o">*</span><span class="n">dummy_masks</span><span class="p">)</span>
+        <span class="n">input_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;x_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mask_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="c1"># Each feature gets its OWN symbolic time-axis name (&quot;time_0&quot;,</span>
+        <span class="c1"># &quot;time_1&quot;, ...), not a single shared &quot;time&quot; for all 14 inputs.</span>
+        <span class="c1"># ONNX&#39;s dynamic_axes convention treats identically-named symbolic</span>
+        <span class="c1"># dimensions as &quot;must be equal at runtime&quot; -- a shared name across</span>
+        <span class="c1"># every feature would (and, caught by predict_from_media&#39;s real</span>
+        <span class="c1"># end-to-end test, DID) reject the model&#39;s actual, architecturally</span>
+        <span class="c1"># correct input at inference time: each of the 7 AVT features has</span>
+        <span class="c1"># its own independent time length (WavLM ~50 Hz, DINOv2 ~25 fps,</span>
+        <span class="c1"># text one row per token, ...), exactly like training reads them</span>
+        <span class="c1"># (personalitylinmult/data/dataset.py windows each feature from its</span>
+        <span class="c1"># own rate_hz, never a shared T). x_i and mask_i share one symbol</span>
+        <span class="c1"># (their T must agree with each other), but different i&#39;s do not.</span>
+        <span class="n">dynamic_axes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">dynamic_axes</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;x_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;time_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+            <span class="n">dynamic_axes</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mask_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;time_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="n">dynamic_axes</span><span class="p">[</span><span class="s2">&quot;predictions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">}</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="n">trace_args</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="n">input_names</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;predictions&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="n">dynamic_axes</span><span class="p">,</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="c1"># Both LinT and LinMulT branch on a mask tensor&#39;s *content*</span>
+            <span class="c1"># (LinT: `if mask is not None and not mask.any()`; LinMulT&#39;s</span>
+            <span class="c1"># `_normalize_masks`: `mask.all()`), which the new torch.export-</span>
+            <span class="c1"># based exporter (dynamo=True, torch&#39;s own default since 2.11)</span>
+            <span class="c1"># cannot trace -- it requires a fully static graph. The legacy</span>
+            <span class="c1"># TorchScript tracer (dynamo=False) handles data-dependent</span>
+            <span class="c1"># control flow like this correctly.</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported ONNX graph (</span><span class="si">{</span><span class="n">module</span><span class="o">.</span><span class="n">model_config</span><span class="o">.</span><span class="n">family</span><span class="si">}</span><span class="s2">) to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;feature_names&quot;</span><span class="p">:</span> <span class="n">feature_names</span><span class="p">,</span>
+        <span class="s2">&quot;input_dims&quot;</span><span class="p">:</span> <span class="n">input_dims</span><span class="p">,</span>
+        <span class="s2">&quot;traits&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">train_config</span><span class="o">.</span><span class="n">targets</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">metadata_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="n">output_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+    <span class="n">metadata_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrote ONNX metadata to </span><span class="si">{</span><span class="n">metadata_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<span class="n">WAVLM_MODEL_ID</span> <span class="o">=</span> <span class="s2">&quot;microsoft/wavlm-base-plus&quot;</span>
+<span class="sd">&quot;&quot;&quot;HF model id matching ``WavlmWrapper(model_name=&quot;base+&quot;)``, the variant</span>
+<span class="sd">every feature in this project&#39;s ``fi.h5`` was extracted with.&quot;&quot;&quot;</span>
+
+<span class="n">WAVLM_LAYER</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="sd">&quot;&quot;&quot;Which transformer layer&#39;s hidden state to export -- matches</span>
+<span class="sd">``personalitylinmult.inference.audio_features.WAVLM_LAYER``. Indexes into</span>
+<span class="sd">``WavlmWrapper``&#39;s already-sliced ``hidden_states[1:]`` (12 transformer</span>
+<span class="sd">layers, CNN feature-extractor output excluded), so the raw HF model&#39;s</span>
+<span class="sd">``hidden_states[WAVLM_LAYER + 1]`` is the equivalent index -- verified</span>
+<span class="sd">numerically equal to ``WavlmWrapper(...)(waveform)[WAVLM_LAYER]`` before</span>
+<span class="sd">this export was written.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_WavLMLayerWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs WavLM and returns exactly one hidden-state layer.</span>
+
+<span class="sd">    A raw ``transformers.WavLMModel`` returns a</span>
+<span class="sd">    ``Wav2Vec2BaseModelOutput`` (a dataclass of several optional tensors);</span>
+<span class="sd">    ONNX/onnxruntime need a single, fixed tensor output, so this selects the</span>
+<span class="sd">    one layer this project actually uses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">layer_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer_index</span> <span class="o">=</span> <span class="n">layer_index</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run WavLM and select one hidden-state layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_values (torch.Tensor): ``(B, samples)`` mono waveform at</span>
+<span class="sd">                16 kHz.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, T, 768)`` hidden states from the configured</span>
+<span class="sd">            layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">input_values</span><span class="o">=</span><span class="n">input_values</span><span class="p">,</span> <span class="n">output_hidden_states</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span><span class="o">.</span><span class="n">hidden_states</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_layer_index</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="export_wavlm_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_wavlm_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_wavlm_to_onnx</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">WAVLM_MODEL_ID</span><span class="p">,</span>
+    <span class="n">layer_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">WAVLM_LAYER</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export WavLM (one hidden-state layer) to ONNX.</span>
+
+<span class="sd">    Downloads the model from HF Hub (``transformers``) once, at export time</span>
+<span class="sd">    -- the resulting ``.onnx`` graph is self-contained and needs neither</span>
+<span class="sd">    ``transformers`` nor a network connection to run afterward.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_id (str): HF model id to export. Defaults to</span>
+<span class="sd">            :data:`WAVLM_MODEL_ID` (WavLM base+, matching every feature this</span>
+<span class="sd">            project&#39;s ``fi.h5`` was built with).</span>
+<span class="sd">        layer_index (int): Index into the *raw* model&#39;s ``hidden_states``</span>
+<span class="sd">            tuple (13 entries: CNN output + 12 transformer layers). Defaults</span>
+<span class="sd">            to :data:`WAVLM_LAYER` ``+ 1``, the raw-model equivalent of</span>
+<span class="sd">            :data:`WAVLM_LAYER` in ``WavlmWrapper``&#39;s already-sliced list --</span>
+<span class="sd">            see :data:`WAVLM_LAYER`&#39;s docstring for how that offset was</span>
+<span class="sd">            confirmed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WavLMModel</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">WavLMModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_WavLMLayerWrapper</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_index</span><span class="o">=</span><span class="n">layer_index</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative ~1s waveform for tracing; both batch and sample count</span>
+    <span class="c1"># are dynamic (see dynamic_axes below).</span>
+    <span class="n">dummy_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16000</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input</span><span class="p">,),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_values&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hidden_state&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;input_values&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;samples&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;hidden_state&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported WavLM (</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">, layer </span><span class="si">{</span><span class="n">layer_index</span><span class="si">}</span><span class="s2">) ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<span class="n">DINOV2_MODEL_ID</span> <span class="o">=</span> <span class="s2">&quot;facebook/dinov2-base&quot;</span>
+<span class="sd">&quot;&quot;&quot;HF model id matching ``DINOv2Wrapper(model_name=&quot;base&quot;)``, the variant</span>
+<span class="sd">this project&#39;s ``fi.h5`` was built with (768-d).&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_DINOv2Wrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs DINOv2 and returns the L2-normalised CLS token.</span>
+
+<span class="sd">    Replicates :meth:`exordium.video.deep.dinov2.DINOv2Wrapper.inference`</span>
+<span class="sd">    exactly -- a raw-forward-only export that omitted the CLS-token</span>
+<span class="sd">    selection or the L2-normalize step would silently produce wrong</span>
+<span class="sd">    (unnormalized, or pooled-over-all-tokens) features, not just a slightly</span>
+<span class="sd">    different graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_values</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run DINOv2 and select+normalize the CLS token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pixel_values (torch.Tensor): ``(B, 3, 224, 224)`` preprocessed</span>
+<span class="sd">                (resized + ImageNet-normalized) frame tensor -- preprocessing</span>
+<span class="sd">                itself stays outside the graph, matching WavLM&#39;s export</span>
+<span class="sd">                (the ffmpeg decode step stays outside that graph too).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, 768)`` L2-normalized CLS-token embedding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">pixel_values</span><span class="o">=</span><span class="n">pixel_values</span><span class="p">)</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">last_hidden_state</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="bp">cls</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="export_dinov2_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_dinov2_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_dinov2_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DINOV2_MODEL_ID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export DINOv2 (CLS token, L2-normalized) to ONNX.</span>
+
+<span class="sd">    Downloads the model from HF Hub (``transformers``) once, at export time</span>
+<span class="sd">    -- the resulting ``.onnx`` graph is self-contained and needs neither</span>
+<span class="sd">    ``transformers`` nor a network connection to run afterward. Unlike</span>
+<span class="sd">    WavLM (one call per whole clip), a live pipeline calls this graph once</span>
+<span class="sd">    per video frame (or batches several frames into one call via the</span>
+<span class="sd">    dynamic batch axis) -- DINOv2 runs on full, unmodified frames, no face</span>
+<span class="sd">    detection or tracking involved (see</span>
+<span class="sd">    :mod:`personalitylinmult.inference.audio_features_onnx`&#39;s WavLM-decode</span>
+<span class="sd">    pattern for the analogous &quot;preprocessing stays outside the graph&quot;</span>
+<span class="sd">    convention this export also follows).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_id (str): HF model id to export. Defaults to</span>
+<span class="sd">            :data:`DINOV2_MODEL_ID` (DINOv2 base, matching every feature this</span>
+<span class="sd">            project&#39;s ``fi.h5`` was built with).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dinov2Model</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Dinov2Model</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_DINOv2Wrapper</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative frame batch for tracing; batch is dynamic (see</span>
+    <span class="c1"># dynamic_axes below). 224x224 is DINOv2&#39;s fixed input resolution, not</span>
+    <span class="c1"># dynamic -- unlike WavLM&#39;s sample count or LinT/LinMulT&#39;s time axis,</span>
+    <span class="c1"># a ViT&#39;s patch embedding is defined for one input size.</span>
+    <span class="n">dummy_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input</span><span class="p">,),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cls_embedding&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;cls_embedding&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported DINOv2 (</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">) ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<span class="n">MMBERT_MODEL_ID</span> <span class="o">=</span> <span class="s2">&quot;jhu-clsp/mmBERT-base&quot;</span>
+<span class="sd">&quot;&quot;&quot;HF model id matching ``MmbertWrapper()``, the variant this project&#39;s</span>
+<span class="sd">``fi.h5`` (``mmbert_gt`` feature) was built with.&quot;&quot;&quot;</span>
+
+<span class="n">XLM_ROBERTA_MODEL_ID</span> <span class="o">=</span> <span class="s2">&quot;sentence-transformers/paraphrase-multilingual-mpnet-base-v2&quot;</span>
+<span class="sd">&quot;&quot;&quot;HF model id matching ``XlmRobertaWrapper()``&#39;s default ``backbone=&quot;mpnet&quot;``</span>
+<span class="sd">-- confirmed (not assumed) to be what this project&#39;s ``fi.h5``</span>
+<span class="sd">(``xlm_roberta_gt`` feature) was built with by reading</span>
+<span class="sd">``personalitylinmult/preprocess/fi/textual_xlm_roberta.py``, which calls</span>
+<span class="sd">``XlmRobertaWrapper(device_id=device_id)`` with no ``backbone=`` override, so</span>
+<span class="sd">the wrapper&#39;s default applies. Not ``&quot;e5&quot;`` (``intfloat/multilingual-e5-base``),</span>
+<span class="sd">the wrapper&#39;s other supported backbone.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_TokenLevelTextWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs a text encoder and returns its token-level hidden states.</span>
+
+<span class="sd">    Replicates ``PooledTokenTextWrapper.inference(..., pooling=&quot;none&quot;)``</span>
+<span class="sd">    exactly -- ``last_hidden_state``, no pooling. Shared by both the mmBERT</span>
+<span class="sd">    and XLM-RoBERTa exports since both wrappers subclass</span>
+<span class="sd">    ``PooledTokenTextWrapper`` and use this exact same forward contract;</span>
+<span class="sd">    only the underlying HF model id differs.</span>
+
+<span class="sd">    Tokenization stays outside the graph (tokenizers are not cleanly</span>
+<span class="sd">    traceable the way a model forward is) -- the live pipeline calls</span>
+<span class="sd">    ``transformers.AutoTokenizer`` itself and feeds ``input_ids``/</span>
+<span class="sd">    ``attention_mask`` into this graph directly, the same way WavLM&#39;s</span>
+<span class="sd">    export leaves ffmpeg decoding outside its graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the encoder and return token-level hidden states.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_ids (torch.Tensor): ``(B, T)`` int64 token ids.</span>
+<span class="sd">            attention_mask (torch.Tensor): ``(B, T)`` int64, ``1`` = real</span>
+<span class="sd">                token, ``0`` = padding -- the tokenizer&#39;s own convention, the</span>
+<span class="sd">                opposite dtype (not semantic) of LinMulT&#39;s ``(B, T)`` bool</span>
+<span class="sd">                mask. The live pipeline must cast this to bool before</span>
+<span class="sd">                passing it to the trained model&#39;s ONNX graph; this export&#39;s</span>
+<span class="sd">                own graph still takes the tokenizer&#39;s native int64 form,</span>
+<span class="sd">                since that is what ``AutoModel.forward`` itself expects.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, T, 768)`` token-level hidden states.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span><span class="o">.</span><span class="n">last_hidden_state</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_export_text_encoder_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shared export body for mmBERT and XLM-RoBERTa.</span>
+
+<span class="sd">    Both are token-level, ``AutoModel``-based, and share an identical</span>
+<span class="sd">    forward contract -- see :class:`_TokenLevelTextWrapper`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoModel</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_id</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_TokenLevelTextWrapper</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative short token sequence for tracing; T is dynamic (see</span>
+    <span class="c1"># dynamic_axes below).</span>
+    <span class="n">dummy_input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">dummy_attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input_ids</span><span class="p">,</span> <span class="n">dummy_attention_mask</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">,</span> <span class="s2">&quot;attention_mask&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;last_hidden_state&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;input_ids&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;attention_mask&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;last_hidden_state&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported </span><span class="si">{</span><span class="n">log_label</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">model_id</span><span class="si">}</span><span class="s2">) ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span>
+
+
+<div class="viewcode-block" id="export_mmbert_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_mmbert_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_mmbert_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MMBERT_MODEL_ID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export mmBERT (token-level hidden states) to ONNX.</span>
+
+<span class="sd">    Downloads the model from HF Hub (``transformers``) once, at export time.</span>
+<span class="sd">    Tokenization stays outside the graph -- see :class:`_TokenLevelTextWrapper`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_id (str): HF model id to export. Defaults to</span>
+<span class="sd">            :data:`MMBERT_MODEL_ID`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_export_text_encoder_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">log_label</span><span class="o">=</span><span class="s2">&quot;mmBERT&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="export_xlm_roberta_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_xlm_roberta_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_xlm_roberta_to_onnx</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">XLM_ROBERTA_MODEL_ID</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export XLM-RoBERTa (``mpnet`` backbone, token-level) to ONNX.</span>
+
+<span class="sd">    Downloads the model from HF Hub (``transformers``) once, at export time.</span>
+<span class="sd">    Tokenization stays outside the graph -- see :class:`_TokenLevelTextWrapper`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_id (str): HF model id to export. Defaults to</span>
+<span class="sd">            :data:`XLM_ROBERTA_MODEL_ID` (the ``mpnet`` backbone, confirmed to</span>
+<span class="sd">            be what this project&#39;s ``xlm_roberta_gt`` feature actually uses).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_export_text_encoder_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">log_label</span><span class="o">=</span><span class="s2">&quot;XLM-RoBERTa&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="n">EMOTIEFFNET_MODEL_NAME</span> <span class="o">=</span> <span class="s2">&quot;enet_b0_8_best_vgaf&quot;</span>
+<span class="sd">&quot;&quot;&quot;Variant matching ``EmotiEffNetWrapper()``&#39;s default -- ``timm``</span>
+<span class="sd">``tf_efficientnet_b0.ns_jft_in1k``, 224x224 input, 1280-d penultimate</span>
+<span class="sd">features. Matches every feature this project&#39;s ``fi.h5`` was built with.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PassthroughWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Traces an already-fully-built model&#39;s forward as-is.</span>
+
+<span class="sd">    Used for extractors whose ``exordium`` wrapper does non-trivial,</span>
+<span class="sd">    hard-to-replicate setup before its model is ready to run (EmotiEffNet&#39;s</span>
+<span class="sd">    legacy-pickle state_dict remapping; FaRL&#39;s OpenAI-CLIP-to-HF weight</span>
+<span class="sd">    conversion) -- rather than re-implementing that setup here, this</span>
+<span class="sd">    instantiates the real wrapper class at export time (an accepted,</span>
+<span class="sd">    export-time-only dependency, the same precedent WavLM&#39;s own export set:</span>
+<span class="sd">    a heavy `transformers` download at export time, never at inference time)</span>
+<span class="sd">    and traces its already-correctly-loaded ``.model`` attribute directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_values</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the wrapped model&#39;s forward pass unmodified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pixel_values (torch.Tensor): ``(B, 3, H, H)`` preprocessed frame</span>
+<span class="sd">                tensor, ``H`` matching the wrapped model&#39;s expected input</span>
+<span class="sd">                resolution.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, D)`` feature tensor, ``D`` matching the</span>
+<span class="sd">            wrapped model&#39;s output width.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">pixel_values</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="export_emotieffnet_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_emotieffnet_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_emotieffnet_to_onnx</span><span class="p">(</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">EMOTIEFFNET_MODEL_NAME</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export EmotiEffNet (penultimate-layer features) to ONNX.</span>
+
+<span class="sd">    Instantiates the real :class:`exordium.video.deep.emotieffnet</span>
+<span class="sd">    .EmotiEffNetWrapper` at export time (downloads and correctly remaps its</span>
+<span class="sd">    legacy-pickle checkpoint -- see that wrapper&#39;s module docstring for why</span>
+<span class="sd">    a fresh ``timm`` model plus a remapped ``state_dict`` is needed rather</span>
+<span class="sd">    than loading the pickle directly) and traces its ``.model`` -- already</span>
+<span class="sd">    has ``classifier = nn.Identity()`` applied, so the traced graph itself</span>
+<span class="sd">    needs no special output selection, unlike WavLM (must select one</span>
+<span class="sd">    ``hidden_states`` layer) or DINOv2 (must select+normalize the CLS token).</span>
+
+<span class="sd">    Like DINOv2, a live pipeline calls this graph once per face crop (or</span>
+<span class="sd">    batches several into one call via the dynamic batch axis); preprocessing</span>
+<span class="sd">    (resize + ImageNet normalize) stays outside the graph.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_name (str): EmotiEffNet variant to export. Defaults to</span>
+<span class="sd">            :data:`EMOTIEFFNET_MODEL_NAME` (matching every feature this</span>
+<span class="sd">            project&#39;s ``fi.h5`` was built with).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.deep.emotieffnet</span><span class="w"> </span><span class="kn">import</span> <span class="n">EmotiEffNetWrapper</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">exordium_wrapper</span> <span class="o">=</span> <span class="n">EmotiEffNetWrapper</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span> <span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">img_size</span> <span class="o">=</span> <span class="n">exordium_wrapper</span><span class="o">.</span><span class="n">img_size</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_PassthroughWrapper</span><span class="p">(</span><span class="n">exordium_wrapper</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative frame batch for tracing; batch is dynamic (see</span>
+    <span class="c1"># dynamic_axes below). The input resolution itself is fixed per variant</span>
+    <span class="c1"># (224 or 260), not dynamic -- same reasoning as DINOv2&#39;s export.</span>
+    <span class="n">dummy_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input</span><span class="p">,),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported EmotiEffNet (</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">) ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<span class="n">FARL_MODEL_NAME</span> <span class="o">=</span> <span class="s2">&quot;ep64&quot;</span>
+<span class="sd">&quot;&quot;&quot;Variant matching ``FarlWrapper()``&#39;s default -- CLIP ViT-B/16, LAION-Face</span>
+<span class="sd">20M, 64 epochs, 512-d projected embedding. Matches every feature this</span>
+<span class="sd">project&#39;s ``fi.h5`` was built with.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_FaRLWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs FaRL and returns the L2-normalised projected embedding.</span>
+
+<span class="sd">    Replicates :meth:`exordium.video.deep.farl.FarlWrapper.inference`</span>
+<span class="sd">    exactly (select ``image_embeds``, then L2-normalize) -- a</span>
+<span class="sd">    raw-forward-only export that omitted either step would silently produce</span>
+<span class="sd">    wrong (unprojected, or unnormalized) features.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_values</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run FaRL and select+normalize the projected embedding.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pixel_values (torch.Tensor): ``(B, 3, 224, 224)`` preprocessed</span>
+<span class="sd">                (resized + CLIP-normalized, not ImageNet) face-crop tensor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, 512)`` L2-normalized embedding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">pixel_values</span><span class="o">=</span><span class="n">pixel_values</span><span class="p">)</span><span class="o">.</span><span class="n">image_embeds</span>
+        <span class="k">return</span> <span class="n">embeds</span> <span class="o">/</span> <span class="n">embeds</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="export_farl_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_farl_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_farl_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FARL_MODEL_NAME</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export FaRL (L2-normalized projected embedding) to ONNX.</span>
+
+<span class="sd">    Instantiates the real :class:`exordium.video.deep.farl.FarlWrapper` at</span>
+<span class="sd">    export time -- FaRL ships raw OpenAI-CLIP weights with no HF Hub repo to</span>
+<span class="sd">    pull an architecture from, so the wrapper&#39;s own</span>
+<span class="sd">    ``_build_vision_tower()`` + ``_convert_openai_to_hf(...)`` construction</span>
+<span class="sd">    is reused rather than re-implemented here (the same export-time-only</span>
+<span class="sd">    heavy-dependency precedent WavLM&#39;s export set: this only runs once, at</span>
+<span class="sd">    export time, never at inference time).</span>
+
+<span class="sd">    Like DINOv2 and EmotiEffNet, a live pipeline calls this graph once per</span>
+<span class="sd">    face crop (or batches several into one call via the dynamic batch</span>
+<span class="sd">    axis); preprocessing (resize + **CLIP** mean/std -- not ImageNet&#39;s --</span>
+<span class="sd">    normalize) stays outside the graph.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+<span class="sd">        model_name (str): FaRL variant to export. Defaults to</span>
+<span class="sd">            :data:`FARL_MODEL_NAME` (matching every feature this project&#39;s</span>
+<span class="sd">            ``fi.h5`` was built with).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.video.deep.farl</span><span class="w"> </span><span class="kn">import</span> <span class="n">FarlWrapper</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">exordium_wrapper</span> <span class="o">=</span> <span class="n">FarlWrapper</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span> <span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">img_size</span> <span class="o">=</span> <span class="n">exordium_wrapper</span><span class="o">.</span><span class="n">img_size</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_FaRLWrapper</span><span class="p">(</span><span class="n">exordium_wrapper</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative frame batch for tracing; batch is dynamic (see</span>
+    <span class="c1"># dynamic_axes below). 224x224 is FaRL&#39;s fixed input resolution.</span>
+    <span class="n">dummy_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input</span><span class="p">,),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;pixel_values&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported FaRL (</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">) ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Emotion2vecExportWrapper</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs emotion2vec&#39;s ``extract_features`` with ``padding_mask=None``.</span>
+
+<span class="sd">    ``Emotion2vecWrapper.__call__`` (the live single-clip inference path this</span>
+<span class="sd">    export mirrors) never passes a ``padding_mask`` -- only the batch APIs</span>
+<span class="sd">    that align multiple different-length clips into one padded tensor do.</span>
+<span class="sd">    Exposing ``padding_mask`` as a graph input would require tracing</span>
+<span class="sd">    ``_compute_padding_mask``&#39;s own data-dependent branches</span>
+<span class="sd">    (``if not mask.any(): return None``) for no benefit this project&#39;s</span>
+<span class="sd">    single-clip pipeline ever uses, so it is fixed at ``None`` here instead</span>
+<span class="sd">    -- the same &quot;trace only the code path a real caller takes&quot; choice</span>
+<span class="sd">    ``_LinTExportWrapper``/``_LinMulTExportWrapper`` make for their own</span>
+<span class="sd">    mask-content branches, just resolved by omitting the argument entirely</span>
+<span class="sd">    rather than by choosing a specific dummy value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run emotion2vec and return its frame-level feature tensor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source (torch.Tensor): ``(B, samples)`` mono waveform at 16 kHz.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: ``(B, T, 768)`` frame-level features (~50 fps).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.model.extract_features(...) is an attribute access (unlike</span>
+        <span class="c1"># every other wrapper in this file, which calls plain</span>
+        <span class="c1"># self.model(...), i.e. __call__) resolved through</span>
+        <span class="c1"># nn.Module.__getattr__&#39;s stub, typed Tensor | Module -- ty cannot</span>
+        <span class="c1"># statically know `model` is a submodule and not a registered</span>
+        <span class="c1"># parameter/buffer of the same name, so the union survives even a</span>
+        <span class="c1"># locally re-annotated variable.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">padding_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>  <span class="c1"># ty: ignore[call-non-callable]</span>
+
+
+<div class="viewcode-block" id="export_emotion2vec_to_onnx">
+<a class="viewcode-back" href="../../../autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.export_emotion2vec_to_onnx">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_emotion2vec_to_onnx</span><span class="p">(</span><span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export emotion2vec+ (frame-level features) to ONNX.</span>
+
+<span class="sd">    Instantiates the real :class:`exordium.audio.emotion2vec</span>
+<span class="sd">    .Emotion2vecWrapper` at export time -- emotion2vec+ is a fully custom,</span>
+<span class="sd">    vendored architecture (``_Emotion2vecModel``, not a thin wrapper over a</span>
+<span class="sd">    library model), so its own checkpoint download and key-remapping logic</span>
+<span class="sd">    is reused rather than re-implemented here.</span>
+
+<span class="sd">    ALiBi&#39;s relative position bias (``_get_alibi_bias``) is recomputed from</span>
+<span class="sd">    the input&#39;s time dimension on every call, using ``torch.arange`` over a</span>
+<span class="sd">    shape-derived count -- traced correctly under a dynamic time axis (see</span>
+<span class="sd">    ``test_onnx_export_emotion2vec.py``&#39;s explicit different-length check,</span>
+<span class="sd">    added specifically because a shape-dependent internal computation like</span>
+<span class="sd">    this is a plausible way for the tracer to silently bake in a constant</span>
+<span class="sd">    instead of staying dynamic, the same class of risk already documented</span>
+<span class="sd">    for LinMulT&#39;s mask-content branching in this module&#39;s docstring).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output_path (str | Path): Destination ``.onnx`` path.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: The written ``.onnx`` path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">exordium.audio.emotion2vec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Emotion2vecWrapper</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">exordium_wrapper</span> <span class="o">=</span> <span class="n">Emotion2vecWrapper</span><span class="p">(</span><span class="n">device_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">wrapper</span> <span class="o">=</span> <span class="n">_Emotion2vecExportWrapper</span><span class="p">(</span><span class="n">exordium_wrapper</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># A representative ~1s waveform for tracing; both batch and sample count</span>
+    <span class="c1"># are dynamic (see dynamic_axes below) -- same convention as WavLM&#39;s</span>
+    <span class="c1"># export.</span>
+    <span class="n">dummy_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16000</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">onnx</span><span class="o">.</span><span class="n">export</span><span class="p">(</span>
+            <span class="n">wrapper</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">dummy_input</span><span class="p">,),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span>
+            <span class="n">input_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">],</span>
+            <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;features&quot;</span><span class="p">],</span>
+            <span class="n">dynamic_axes</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;samples&quot;</span><span class="p">},</span>
+                <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;batch&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="n">opset_version</span><span class="o">=</span><span class="n">ONNX_OPSET</span><span class="p">,</span>
+            <span class="n">dynamo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported emotion2vec+ ONNX graph to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Ádám Fodor
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

@@ -1,0 +1,66 @@
+personalitylinmult.data.collate
+===============================
+
+.. py:module:: personalitylinmult.data.collate
+
+.. autoapi-nested-parse::
+
+   Batching for FI samples, producing the model's feature+mask input pairs.
+
+   The dataset already fixes every feature's time dimension, so collation is a
+   stack rather than a pad. What this module owns is the shape of the model call:
+   :func:`unpack_batch` turns a batch dict into the ``(inputs, masks, names)``
+   triple LinMulT expects, keeping the mask contract (``True`` = valid) in one
+   place instead of spread through the training step.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.data.collate.collate_fi
+   personalitylinmult.data.collate.unpack_batch
+
+
+Module Contents
+---------------
+
+.. py:function:: collate_fi(samples: list[dict[str, Any]]) -> dict[str, Any]
+
+   Collate FI samples into a batch.
+
+   :param samples: Per-clip dicts from
+                   :class:`~personalitylinmult.data.dataset.FiHdf5Dataset`.
+   :type samples: list[dict]
+
+   :returns: Every tensor key stacked to a leading batch axis; ``video_id``
+             collected into a list.
+   :rtype: dict
+
+   :raises ValueError: If the batch is empty.
+
+
+.. py:function:: unpack_batch(batch: dict[str, Any], feature_names: collections.abc.Sequence[str]) -> tuple[list[torch.Tensor], list[torch.Tensor], list[str]]
+
+   Split a batch into the ``(inputs, masks, names)`` LinMulT expects.
+
+   Every feature is passed with its mask. LinMulT drops all-``True`` masks
+   internally, so a dense feature costs one ``.all()`` check and nothing more —
+   which is why the contract stays uniform rather than special-casing which
+   features "need" a mask.
+
+   :param batch: A collated batch.
+   :type batch: dict
+   :param feature_names: Features in model input order.
+   :type feature_names: Sequence[str]
+
+   :returns: ``inputs`` of ``(B, T, F)`` (or ``(B, L, T, F)`` for a
+             multi-layer feature), ``masks`` of ``(B, T)`` with ``True`` = valid, and
+             the feature names, which LinMulT needs to route special handling.
+   :rtype: tuple
+
+   :raises KeyError: If a named feature or its mask is absent from the batch.
+
+

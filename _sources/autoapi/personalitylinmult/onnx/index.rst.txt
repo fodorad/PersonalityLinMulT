@@ -1,0 +1,245 @@
+personalitylinmult.onnx
+=======================
+
+.. py:module:: personalitylinmult.onnx
+
+.. autoapi-nested-parse::
+
+   The ONNX Runtime-backed counterpart to :class:`~personalitylinmult.model.PersonalityModel`.
+
+   A separate class, not a ``backend=`` flag on ``PersonalityModel``: the two
+   back ends have genuinely different runtimes (``torch``/``lightning`` vs.
+   ``onnxruntime``) and this keeps a plain ``pip install personalitylinmult``
+   free of ``onnxruntime`` for callers who only want the PyTorch-native path
+   (e.g. loading the trained weights as an ``nn.Module`` inside another PyTorch
+   project). Install the ``onnx`` extra to use this class::
+
+       pip install personalitylinmult[onnx]
+
+   Both single-feature (LinT) and multi-feature (LinMulT, e.g. the AVT champion)
+   checkpoints have an ONNX export path -- see
+   :mod:`personalitylinmult.inference.onnx_export` for how each is traced.
+   :meth:`predict` handles any number of features transparently, reading
+   ``feature_names`` from the ``.onnx.json`` sidecar (always plural, regardless
+   of family -- a LinT sidecar simply has length-1 lists). Model ids for this
+   class carry a ``.onnx`` suffix by HF Hub filename convention (see
+   :func:`_onnx_filenames`), the same repo as the ``.ckpt`` files
+   :class:`~personalitylinmult.model.PersonalityModel` downloads.
+
+   Two full raw-media pipelines are offered, matched to the champion they serve:
+
+   - :meth:`predict_from_audio` -- audio only (``wavlm``-only champions): raw
+     audio/video in, Big Five out, on ONNX Runtime **alone**, no
+     ``torch``/``transformers``/``exordium`` at inference time. WavLM's own
+     ONNX export (:data:`WAVLM_ONNX_FILENAME`) downloads lazily.
+   - :meth:`predict_from_media` -- the full multimodal (AVT) champion: every
+     learned feature extractor (WavLM, emotion2vec, DINOv2, EmotiEffNet, FaRL,
+     mmBERT, XLM-RoBERTa) and the trained head itself run on ONNX Runtime, with
+     two narrowly-scoped, explicitly-documented exceptions that stay
+     ``torch``/``exordium``-based: face detection/tracking (EmotiEffNet/FaRL
+     need a face crop, not a raw frame -- exordium's existing offline-pipeline
+     detector/tracker, reused for a single already-complete video file, not a
+     live/streaming input) and Whisper ASR (an encoder-decoder model with no
+     ONNX export in this project, used only when ``transcript=None``). Both
+     are dependencies of this method specifically, not of the class or of
+     ``predict``/``predict_from_audio`` -- a caller who never calls
+     ``predict_from_media`` never needs ``torch``/``exordium`` installed.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.onnx.logger
+   personalitylinmult.onnx.WAVLM_ONNX_FILENAME
+   personalitylinmult.onnx.EXTRACTOR_ONNX_FILENAMES
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.onnx.PersonalityModelONNX
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: WAVLM_ONNX_FILENAME
+   :value: 'wavlm-base-plus.onnx'
+
+
+   Shared WavLM ONNX graph filename in the HF model repo -- one file, reused
+   by every champion whose feature is ``wavlm``, not tied to a specific
+   champion id (unlike the trained-model graphs, which are one file per
+   champion).
+
+.. py:data:: EXTRACTOR_ONNX_FILENAMES
+   :type:  dict[str, str]
+
+   Shared ONNX graph filename per AVT feature, matching the Makefile's
+   ``push-<name>-onnx`` targets exactly -- one file per extractor, reused
+   across every champion that consumes that feature, not tied to one champion
+   id (unlike the trained-model graph, which is).
+
+.. py:class:: PersonalityModelONNX(session, feature_names: list[str], traits: list[str])
+
+   A champion FI model, running on ONNX Runtime instead of PyTorch.
+
+   :param session: An ``onnxruntime.InferenceSession`` over the exported graph.
+   :param feature_names: Features this model consumes, in input
+                         order (length 1 for a LinT graph, more for a LinMulT graph).
+   :type feature_names: list[str]
+   :param traits: Trait names, in output-column order.
+   :type traits: list[str]
+
+
+   .. py:method:: from_pretrained(model_id: str, revision: str | None = None) -> PersonalityModelONNX
+      :classmethod:
+
+
+      Download (or reuse the cached) ONNX graph and load it.
+
+      :param model_id: A champion id, e.g. ``"wavlm_best-ccc"``. See the
+                       module docstring for which ids have an ONNX export available.
+      :type model_id: str
+      :param revision: HF Hub revision (branch/tag/commit);
+                       ``None`` uses the repo's default branch.
+      :type revision: str | None
+
+      :returns: Ready to predict.
+      :rtype: PersonalityModelONNX
+
+
+
+   .. py:method:: predict(features: dict[str, numpy.ndarray], masks: dict[str, numpy.ndarray] | None = None) -> dict[str, float]
+
+      Predict Big Five scores for one sample.
+
+      :param features: ``{feature_name: (T, F) array}``
+                       -- one entry per :attr:`feature_names`.
+      :type features: dict[str, np.ndarray]
+      :param masks: Optional per-feature
+                    ``(T,)`` bool override mask (``True`` = valid). Features not
+                    present here default to an all-``True`` mask, matching every
+                    caller before this parameter existed. Used by
+                    :meth:`predict_from_media` to mark a whole feature as
+                    genuinely missing (all-``False``) when, e.g., no transcript
+                    is available and ASR/skip-text mode was requested -- verified
+                    NaN-safe end-to-end for this project's champion architecture,
+                    see ``tests/inference/test_linmult_mask_validation.py`` and
+                    ``tests/inference/test_onnx_export.py``'s
+                    ``test_onnx_all_false_text_masks_match_pytorch``. The
+                    feature's own *content* does not matter once masked
+                    all-``False`` -- only the mask does.
+      :type masks: dict[str, np.ndarray] | None
+
+      :returns: ``{trait: score}``, clamped to ``[0, 1]``, in
+                the model's trait order.
+      :rtype: dict[str, float]
+
+      :raises KeyError: If ``features`` is missing a required feature.
+
+
+
+   .. py:method:: predict_from_audio(audio_path: str, revision: str | None = None) -> dict[str, float]
+
+      Predict Big Five scores directly from an audio/video file.
+
+      The full pipeline (decode -> WavLM -> LinT -> scores) on ONNX Runtime
+      alone -- no ``torch``, ``transformers``, or ``exordium`` needed.
+      ``ffmpeg`` is still required as an external binary for decoding
+      (a subprocess call, not a Python dependency).
+
+      The shared WavLM ONNX graph (:data:`WAVLM_ONNX_FILENAME`) downloads
+      on first use and is cached on this instance for later calls.
+
+      :param audio_path: An audio or video file.
+      :type audio_path: str
+      :param revision: HF Hub revision for the WavLM graph
+                       download; ``None`` uses the default branch. Ignored on
+                       subsequent calls once the WavLM session is cached.
+      :type revision: str | None
+
+      :returns: ``{trait: score}``, in the model's trait order.
+      :rtype: dict[str, float]
+
+      :raises ValueError: If this model's only feature is not ``"wavlm"`` -- the
+          only feature this method currently knows how to extract from
+          raw audio. A multi-feature (AVT) champion needs
+          ``predict_from_media`` instead (in progress).
+
+
+
+   .. py:attribute:: AVT_FEATURE_NAMES
+      :value: ('wavlm', 'emotion2vec', 'dinov2', 'emotieffnet', 'farl', 'xlm_roberta_gt', 'mmbert_gt')
+
+
+      Feature order the full multimodal (AVT) champion expects -- matches
+      ``config/FI/data/avt.yaml``'s ``features:`` list, which is what
+      ``avt_best-ccc``'s checkpoint was actually trained and exported with.
+
+
+   .. py:method:: predict_from_media(video_path: str, transcript: str | None = None, revision: str | None = None) -> dict[str, float]
+
+      Predict Big Five scores from a video file, for the full AVT champion.
+
+      Runs every extractor this champion needs (:attr:`feature_names`,
+      expected to be :data:`AVT_FEATURE_NAMES`) on ONNX Runtime, except for
+      two narrowly-scoped, explicitly-documented exceptions that stay
+      ``torch``/``exordium``-based -- see this method's own steps below and
+      the module docstring's "Dependencies" note:
+
+      - **Face detection/tracking** (for ``emotieffnet``/``farl``, which
+        need a face crop, not a full frame): exordium's
+        ``YoloFace11Detector`` + ``FaceClusterTracker`` + ``AdaFaceWrapper``
+        stack, the same one this project's own offline dataset-build
+        (``personalitylinmult/preprocess/fi/create_vdets.py``,
+        ``create_tracks.py``) already uses per-clip -- this is a *batch*
+        call over one already-complete video file, not a live/streaming
+        use case, so the existing offline-oriented API is exactly the
+        right fit, not a mismatch to work around.
+      - **ASR** (when ``transcript is None``): exordium's
+        ``WhisperWrapper``, lazily loaded, since Whisper's encoder-decoder
+        architecture with beam-search ``generate()`` has no ONNX export in
+        this project (see ``onnx_export.py``'s module docstring).
+
+      The video is only decoded/detected/tracked once and every extractor
+      reuses that single pass -- not once per feature.
+
+      :param video_path: A video file (audio + visual features are both
+                         extracted from it).
+      :type video_path: str
+      :param transcript: Controls how the two text features
+                         (``xlm_roberta_gt``, ``mmbert_gt``) are resolved:
+
+                         - A non-empty string -- used directly, no ASR.
+                         - ``None`` (default) -- run Whisper ASR on the video's audio
+                           track to obtain a transcript.
+                         - ``""`` (empty string) -- skip text entirely: both text
+                           features get a zero placeholder tensor with an all-``False``
+                           mask, verified NaN-safe and content-independent for this
+                           champion's architecture (see :meth:`predict`'s docstring).
+      :type transcript: str | None
+      :param revision: HF Hub revision for every extractor graph
+                       download; ``None`` uses the default branch. Ignored for
+                       already-cached sessions.
+      :type revision: str | None
+
+      :returns: ``{trait: score}``, in the model's trait order.
+      :rtype: dict[str, float]
+
+      :raises ValueError: If this model's features are not exactly
+          :data:`AVT_FEATURE_NAMES` (in any order) -- this method is
+          specific to the full multimodal champion, not the audio-only
+          one (use :meth:`predict_from_audio` there instead).
+
+
+

@@ -1,0 +1,60 @@
+personalitylinmult.inference.cli
+================================
+
+.. py:module:: personalitylinmult.inference.cli
+
+.. autoapi-nested-parse::
+
+   Command-line inference: features in, Big Five scores out.
+
+   .. rubric:: Example
+
+   Predict with the audio-only model from an ``.npz`` of features::
+
+       uv run python -m personalitylinmult.inference             --checkpoint results/FI/bigfive/checkpoints/best.ckpt             --features clip_features.npz
+
+   The ``.npz`` holds one ``(T, F)`` array per feature the model expects, keyed by
+   feature name (``wavlm``, ``emotion2vec``, ...).
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.cli.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.cli.load_features
+   personalitylinmult.inference.cli.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:function:: load_features(path: pathlib.Path) -> dict[str, numpy.ndarray]
+
+   Load a ``{feature_name: (T, F)}`` mapping from an ``.npz`` file.
+
+   :param path: Path to a ``.npz`` with one array per feature.
+   :type path: Path
+
+   :returns: The feature mapping.
+   :rtype: dict[str, np.ndarray]
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+

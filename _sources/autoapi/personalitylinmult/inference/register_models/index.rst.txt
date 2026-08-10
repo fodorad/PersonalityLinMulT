@@ -1,0 +1,113 @@
+personalitylinmult.inference.register_models
+============================================
+
+.. py:module:: personalitylinmult.inference.register_models
+
+.. autoapi-nested-parse::
+
+   Register the trained FI models into the MLflow Model Registry.
+
+   Reads the best checkpoint each training run logged (under its ``model/`` artifact
+   path), wraps it as a ``pyfunc`` model, and registers it under a stable name so it
+   can be served or containerised. Run after training; idempotent in the sense that
+   re-running adds a new version rather than clobbering the old one.
+
+   .. rubric:: Example
+
+   Register the three audio models (LinMulT fusion + two LinT unimodal arms)::
+
+       uv run python -m personalitylinmult.inference.register_models
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.register_models.logger
+   personalitylinmult.inference.register_models.DEFAULT_TRACKING_URI
+   personalitylinmult.inference.register_models.REGISTRATIONS
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.register_models.Registration
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.register_models.register_all
+   personalitylinmult.inference.register_models.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: DEFAULT_TRACKING_URI
+   :value: 'sqlite:///mlflow.db'
+
+
+   Where the training runs were logged.
+
+.. py:class:: Registration
+
+   One model to register.
+
+   :param experiment: MLflow experiment holding the trained run.
+   :type experiment: str
+   :param registered_name: Name to register under, e.g.
+                           ``fi_linmult_wavlm-emotion2vec``.
+   :type registered_name: str
+   :param run_id: Exact run to register. ``None`` falls back to the
+                  experiment's most recently *started* run -- convenient while
+                  iterating, but not a deliberate choice of "the best run", so a
+                  promotion decision should pin this explicitly (see
+                  :func:`set_champion` for the separate, deliberate promotion step).
+   :type run_id: str | None
+
+
+.. py:data:: REGISTRATIONS
+   :type:  list[Registration]
+
+   LinMulT fusion (wavlm+emotion2vec) plus the two LinT
+   unimodal arms (wavlm only, emotion2vec only).
+
+   :type: The audio models
+
+.. py:function:: register_all(registrations: list[Registration] | None = None, tracking_uri: str = DEFAULT_TRACKING_URI) -> dict[str, str]
+
+   Register every configured model, returning ``{name: version}``.
+
+   :param registrations: Models to register; the
+                         module default when ``None``.
+   :type registrations: list[Registration] | None
+   :param tracking_uri: MLflow backend store.
+   :type tracking_uri: str
+
+   :returns: Registered name to version.
+   :rtype: dict[str, str]
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+   With no arguments, registers every model in :data:`REGISTRATIONS`. Passing
+   ``--experiment``/``--registered-name`` registers exactly that one model
+   instead -- the deliberate, ad hoc path for a run that is not (yet, or
+   ever) part of the standing registration list. ``--alias`` additionally
+   promotes the newly registered version, so a single command can both
+   register and mark a version as the champion.
+
+

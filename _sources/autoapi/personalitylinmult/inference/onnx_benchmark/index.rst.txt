@@ -1,0 +1,77 @@
+personalitylinmult.inference.onnx_benchmark
+===========================================
+
+.. py:module:: personalitylinmult.inference.onnx_benchmark
+
+.. autoapi-nested-parse::
+
+   Compare a champion's PyTorch and ONNX Runtime paths: speed and accuracy.
+
+   Answers the two questions ONNX export exists to answer: is it actually
+   faster, and how much (if any) test-set accuracy does the export cost. Runs
+   both paths over the real test split from a built ``fi.h5``, using the exact
+   metrics suite training reports (1-MAE, Pearson r, CCC, R2, std_ratio) so the
+   comparison is apples-to-apples against the numbers already recorded for the
+   champion in README.md's "Pretrained models" table.
+
+   Usage::
+
+       uv run python -m personalitylinmult.inference.onnx_benchmark \\
+           --checkpoint results/FI/bigfive/fi_lint_wavlm-ccc-bs256/checkpoints/best.ckpt \\
+           --onnx results/FI/bigfive/fi_lint_wavlm-ccc-bs256/checkpoints/best.onnx \\
+           --data config/FI/data/wavlm.yaml
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.onnx_benchmark.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.inference.onnx_benchmark.run_benchmark
+   personalitylinmult.inference.onnx_benchmark.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:function:: run_benchmark(checkpoint_path: str, onnx_path: str, data_path: str, n_timing_runs: int = 20) -> dict
+
+   Benchmark a champion's PyTorch vs. ONNX Runtime paths.
+
+   :param checkpoint_path: Path to the trained ``.ckpt``.
+   :type checkpoint_path: str
+   :param onnx_path: Path to the exported ``.onnx`` (with a
+                     ``.onnx.json`` metadata sidecar alongside it).
+   :type onnx_path: str
+   :param data_path: Path to the data config (e.g.
+                     ``config/FI/data/wavlm.yaml``) whose ``fi.h5``/test split this
+                     benchmark evaluates against.
+   :type data_path: str
+   :param n_timing_runs: Forward passes averaged for the per-sample
+                         latency numbers (accuracy always runs over the full test split
+                         regardless of this value).
+   :type n_timing_runs: int
+
+   :returns: ``{"pytorch": {...}, "onnx": {...}}``, each with ``latency_ms``
+             and the metrics suite (``mean_one_minus_mae``, ``mean_ccc``, etc.).
+   :rtype: dict
+
+
+.. py:function:: main() -> None
+
+   CLI entry point.
+
+

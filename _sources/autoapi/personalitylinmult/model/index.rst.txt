@@ -1,0 +1,112 @@
+personalitylinmult.model
+========================
+
+.. py:module:: personalitylinmult.model
+
+.. autoapi-nested-parse::
+
+   The public, pip-install-only entry point: load a champion model by id.
+
+   ``PersonalityModel.from_pretrained(model_id)`` downloads a champion checkpoint
+   from the public HF Hub model repo and wraps it for prediction -- no MLflow, no
+   repo clone, no external config. This is deliberately the *only* public model
+   class: a checkpoint already knows whether it is a single-stream LinT or a
+   cross-modal LinMulT (see
+   :class:`~personalitylinmult.inference.predictor.FiPredictor`), so exposing
+   separate ``PersonalityLinT``/``PersonalityLinMulT`` classes would force a
+   caller to track architecture per id for no benefit -- this class reads it off
+   the checkpoint instead.
+
+   Model ids follow ``{features joined by "_", multiword feature names use "-"}_best-{metric}``,
+   e.g. ``"wavlm_best-ccc"`` (LinT, audio only) or
+   ``"wavlm-emotion2vec_best-ccc"`` (LinMulT, audio fusion) -- the same convention
+   used for the MLflow registered-model names (see
+   :mod:`personalitylinmult.inference.register_models`) and the HF model repo
+   filenames.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.model.logger
+   personalitylinmult.model.HF_MODEL_REPO
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.model.PersonalityModel
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: HF_MODEL_REPO
+   :value: 'fodorad/personalitylinmult-fi-models'
+
+
+   The public HF Hub model repo champion checkpoints are published to.
+
+.. py:class:: PersonalityModel(predictor: personalitylinmult.inference.predictor.FiPredictor)
+
+   A champion FI model, loaded by id from the public HF Hub repo.
+
+   :param predictor: The loaded predictor to wrap.
+   :type predictor: FiPredictor
+
+
+   .. py:property:: feature_names
+      :type: list[str]
+
+
+      Features this model consumes, in input order.
+
+
+   .. py:property:: traits
+      :type: list[str]
+
+
+      Trait names, in output-column order.
+
+
+   .. py:method:: from_pretrained(model_id: str, revision: str | None = None) -> PersonalityModel
+      :classmethod:
+
+
+      Download (or reuse the cached) champion checkpoint and load it.
+
+      :param model_id: A champion id, e.g. ``"wavlm_best-ccc"`` or
+                       ``"avt_best-ccc"``. See the module docstring for the naming
+                       convention.
+      :type model_id: str
+      :param revision: HF Hub revision (branch/tag/commit);
+                       ``None`` uses the repo's default branch.
+      :type revision: str | None
+
+      :returns: Ready to predict.
+      :rtype: PersonalityModel
+
+
+
+   .. py:method:: predict(features: dict[str, numpy.ndarray]) -> dict[str, float]
+
+      Predict Big Five scores for one sample.
+
+      :param features: One ``(T, F)`` array per feature
+                       the model expects (see :attr:`feature_names`).
+      :type features: dict[str, np.ndarray]
+
+      :returns: ``{trait: score}``, in the model's trait order.
+      :rtype: dict[str, float]
+
+
+
