@@ -1,0 +1,77 @@
+# Big Five apparent-personality regression.
+#
+# Targets default to the five traits with emotional_stability in place of
+# neuroticism, so every trait points the same way (higher = more of the named
+# quality). Naming 'neuroticism' here is rejected by TrainConfig.
+task: bigfive
+targets:
+  - openness
+  - conscientiousness
+  - extraversion
+  - agreeableness
+  - emotional_stability
+
+# ccc, not bell_l2_l1: bell_l2_l1 (an elementwise loss) collapses prediction
+# variance well below the true targets' (std_ratio ~0.62-0.65 across every
+# elementwise-loss run so far), silently hedging toward the training mean
+# even while scoring a deceptively fine 1-MAE. ccc's loss formula penalises
+# variance mismatch directly, and the fi_lint_wavlm-ccc-bs256 run (batch=256,
+# fixing ccc's own per-batch noise problem at small batch sizes) reached
+# std_ratio ~1.00 with better CCC and Pearson r than every bell_l2_l1 run,
+# at an equal 1-MAE. See results/FI/bigfive/fi_lint_wavlm-ccc-bs256.
+# 1-MAE-focused work should pass --set train.loss=bell_l2_l1 explicitly.
+loss: ccc
+# 50 is a ceiling, not a target: early_stopping (patience 20 on
+# valid/mean_ccc) halts the run once the metric plateaus, so the extra
+# headroom above 30 only costs epochs if the model is still genuinely improving.
+max_epochs: 50
+
+accelerator: auto
+devices: auto
+# precision: fp32 is the only mode proven to train stably here. Both mixed
+# modes were tested and rejected on real multi-epoch runs:
+#   - 16-mixed (fp16): the AMP loss scale collapsed mid-epoch-4, all losses went
+#     to exactly 0.0 and the model degenerated. Short smoke runs did not expose
+#     it; a full run did. Unstable on this model/MPS.
+#   - bf16-mixed: crashes at test time -- the prediction/plot callbacks call
+#     .numpy(), and numpy has no bfloat16 dtype ("unsupported ScalarType").
+# Revisit mixed precision only with a stability guard (e.g. detect-anomaly, or a
+# clamped/fixed loss scale) if epoch time becomes the binding constraint.
+precision: 32-true
+seed: 42
+deterministic: false
+output_dir: results/FI
+
+# Switched from onecycle to cosine (+ linear warmup) following the
+# fi_lint_wavlm HPO search (30 trials, TPE+Hyperband) and its earlier
+# comparison run: onecycle's schedule is sized for max_epochs and gets cut off
+# mid-anneal by early stopping, leaving LR still near peak when training stops.
+# Cosine degrades more gracefully under an unknown stopping point. lr is the
+# peak reached at the end of warmup (linear ramp-up), which cosine then anneals
+# down from; weight_decay raised from 0.01 to compensate for the higher peak lr.
+optimizer:
+  name: adamw
+  lr: 0.005
+  weight_decay: 0.05
+  scheduler: cosine
+  warmup_ratio: 0.15
+  gradient_clip_val: 1.0
+
+# Model selection tracks the primary metric: the mean of the five independent
+# trait-wise CCC scores, not 1-MAE -- 1-MAE cannot detect regression-to-the-mean
+# (a model predicting the population mean on every clip still scores well on
+# it), while CCC requires the target's variance to be reproduced, not just its
+# mean approximated. patience raised from 10 to 20 to give cosine's longer,
+# gentler anneal enough room before stopping.
+early_stopping:
+  enabled: true
+  monitor: valid/mean_ccc
+  mode: max
+  patience: 20
+  min_delta: 0.0
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: FI-BigFive
+  run_name: null
+  log_model: true

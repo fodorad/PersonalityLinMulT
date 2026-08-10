@@ -1,0 +1,16 @@
+# EmotiEffNet (EfficientNet-B0, VGAF-trained) over the protagonist's face
+# track. Unlike DINOv2 -- which runs on full frames and is therefore dense --
+# this is track-based: the protagonist is not detected on every frame, so the
+# stored mask is genuinely mixed and must be honoured. Frames with no detection
+# hold a zero vector and mask=False.
+name: emotieffnet
+source_dir: data/processed/FI/emotieffnet_enet_b0_8_best_vgaf
+source_format: safetensors
+# 1280, not 768: this is EfficientNet-B0's penultimate width, wider than the
+# ViT-based encoders it sits alongside.
+dim: 1280
+# Same 25 fps grid as DINOv2 by construction -- both index the video timeline
+# directly -- so the two visual streams are natively time-aligned.
+rate_hz: 25.0
+max_time_dim: 375
+dtype: float16

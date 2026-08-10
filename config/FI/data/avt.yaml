@@ -1,0 +1,51 @@
+# The full FI training set: WavLM + Emotion2vec + DINOv2 + EmotiEffNet + FaRL +
+# XLM-RoBERTa + mmBERT, using the ground-truth transcript for each text model.
+#
+# Text is token-level (T, 768), not pooled: LinMulT is a cross-modal sequence
+# model and attends token-by-token. RoBERTa and the ASR text variants are
+# intentionally NOT in this file -- the first experiment uses the multilingual,
+# modern XLM-RoBERTa and mmBERT streams over the ground-truth transcript only;
+# the roberta and *_asr extractors/files remain on disk but are unused here.
+#
+# Only the features listed here are read from disk and written into the h5 --
+# nothing else enters the file. The builder hard-fails on a missing id rather
+# than zero-filling, so a shortfall aborts the build instead of silently
+# poisoning a split.
+#
+# MARLIN is absent and stays absent until extracted: it is a 16-frame video
+# transformer, an order of magnitude slower than the per-frame face encoders,
+# and `make visual-marlin-fi` has never been run.
+#
+# Every feature lives in ONE file even though a given run may use a subset (the
+# modality ablations use audio only). An unused feature costs nothing to read:
+# chunks are (1, T, D), one per sample per feature, so each feature occupies
+# disjoint byte ranges that a read of another feature never touches -- measured
+# at -0.0% overhead on a file 33% larger. One file also means every ablation
+# provably saw identical data, which five per-modality files could not promise.
+#
+# data/processed/FI/h5 is a symlink to an NVMe SSD; the source feature dirs are
+# on a USB HDD. Training does random access, which is what punishes spinning
+# disks, so the artifact lives on the fast device even though it is built from
+# the slow one.
+h5_path: data/processed/FI/h5/fi.h5
+label_csv: data/processed/FI/label.csv
+features:
+  - wavlm
+  - emotion2vec
+  - dinov2
+  - emotieffnet
+  - farl
+  - xlm_roberta_gt
+  - mmbert_gt
+
+# Clips are 15.32-15.36 s. The h5 stores whole clips; this window is applied on
+# read, so 10.0 or 5.0 needs no rebuild.
+window_seconds: 15.0
+crop_mode: head
+
+batch_size: 16
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+seed: 42

@@ -1,0 +1,11 @@
+# DINOv2 Base visual features over full frames (no face tracking), so they are
+# dense for every clip -- unlike the track-based extractors.
+name: dinov2
+source_dir: data/processed/FI/dinov2_base
+source_format: safetensors
+dim: 768
+# 25 fps by construction; the measured 25.02 Hz (384 frames / 15.345 s) is the
+# clip overrun past 15 s. Rounded so windows stay whole: 375 / 250 / 125.
+rate_hz: 25.0
+max_time_dim: 375
+dtype: float16

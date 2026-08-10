@@ -1,0 +1,35 @@
+# LinT: single-stream linear-complexity transformer (one feature only).
+#
+# The single-modality half of the linmult 2.x package -- same building blocks
+# as LinMulT (attention, TCN, head) but no cross-modal fusion branches, so it
+# takes exactly one feature. Used for the unimodal ablation arms.
+name: LinT
+family: lint
+d_model: 32
+num_heads: 8
+cmt_num_layers: 5
+
+attention_type: linear
+
+# dropout_attention raised from 0.0 (default) to 0.2, following the HPO search
+# on fi_lint_wavlm (30 trials, TPE+Hyperband): dropout_attention was the most
+# influential parameter searched (importance 0.35, vs 0.06-0.22 for the rest),
+# every completed trial used it in ~0.11-0.25, and the un-regularized 0.0
+# baseline showed the clearest train/valid divergence (overfitting) late in
+# training. See results/FI/bigfive/fi-lint-wavlm-hpo/optuna.db for the study.
+dropout_input: 0.0
+dropout_output: 0.2
+dropout_pe: 0.1
+dropout_ffn: 0.2
+dropout_attention: 0.2
+
+# linmult 2.x defaults add_module_tcn to true; the published 1.5.2 results had
+# no TCN, so parity is the explicit false. Flip to run the TCN experiment.
+add_module_tcn: false
+
+time_dim_reducer: gap
+add_module_ffn_fusion: true
+
+head_type: simple
+head_dropout: 0.2
+head_hidden_dim: 256

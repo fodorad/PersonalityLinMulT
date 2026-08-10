@@ -1,0 +1,43 @@
+# LinMulT: linear-complexity cross-modal attention.
+#
+# Keys track linmult 2.x. The 1.5.2 names the old configs used (n_heads,
+# n_layers, dropout_qkv/relu/residual, output_dim, ffn_fusion) no longer exist
+# upstream and are rejected with a rename hint rather than silently ignored.
+# input_feature_dim is absent by design: it is read from the h5's feature attrs
+# so the model cannot disagree with its data.
+name: LinMulT
+family: linmult
+d_model: 32
+num_heads: 8
+cmt_num_layers: 5
+branch_sat_num_layers: 5
+
+attention_type: linear  # the only architectural difference from MulT
+
+dropout_input: 0.0
+dropout_output: 0.2
+dropout_pe: 0.1
+dropout_ffn: 0.2
+# Raised from 0.0 to 0.2, carried over from lint.yaml's HPO search (30 trials,
+# TPE+Hyperband on fi_lint_wavlm): dropout_attention was the most influential
+# parameter there (importance 0.35) and every completed trial preferred
+# ~0.11-0.25 over 0.0. That search ran on the single-stream LinT model, not
+# this cross-modal LinMulT one -- treat this as a reasonable starting point
+# carried across architectures, not as validated on fusion specifically, until
+# an HPO search or ablation confirms it here too.
+dropout_attention: 0.2
+
+# Baseline = plain cross-modal transformer: both optional modules OFF so the
+# ablation can measure what each adds. linmult 2.x defaults add_module_tcn to
+# true; the published 1.5.2 results had no TCN, so parity is the explicit false.
+# Flip either to run its experiment.
+add_module_tcn: false
+add_module_multimodal_signal: false
+mms_num_layers: 6
+
+time_dim_reducer: gap
+add_module_ffn_fusion: true
+
+head_type: simple
+head_dropout: 0.2
+head_hidden_dim: 256

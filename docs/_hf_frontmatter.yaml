@@ -1,0 +1,17 @@
+---
+license: other
+license_name: chalearn-fi-derived
+license_link: https://chalearnlap.cvc.uab.cat/dataset/24/description/
+pretty_name: PersonalityLinMulT — FI Extracted Features (fi.h5)
+tags:
+- personality
+- big-five
+- multimodal
+- affective-computing
+- feature-extraction
+task_categories:
+- audio-classification
+- video-classification
+size_categories:
+- 10K<n<100K
+---

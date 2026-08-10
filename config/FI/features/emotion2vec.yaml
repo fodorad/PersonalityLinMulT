@@ -1,0 +1,9 @@
+# emotion2vec+ acoustic features: purpose-built for emotion, single-layer.
+# Shares WavLM's ~50 Hz grid, so the two audio streams are natively aligned.
+name: emotion2vec
+source_dir: data/processed/FI/emotion2vecplus
+source_format: npy
+dim: 768
+rate_hz: 50.0
+max_time_dim: 750  # see wavlm.yaml: same 20 ms grid, same rounding
+dtype: float16

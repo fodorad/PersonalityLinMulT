@@ -1,0 +1,14 @@
+{
+  "video_id": "nLuAoNAOGcQ.005.mp4",
+  "split": "test",
+  "source": "ChaLearn First Impressions V2 (FI), official test split",
+  "note": "emotional_stability is read directly from the raw pickle's 'neuroticism' field, which ChaLearn already inverted (1 - original_neuroticism) despite the old name -- see personalitylinmult/preprocess/fi/preprocess.py for the full explanation. All values are ground-truth annotator ratings in [0, 1].",
+  "traits": {
+    "openness": 0.855556,
+    "conscientiousness": 0.883495,
+    "extraversion": 0.88785,
+    "agreeableness": 0.857143,
+    "emotional_stability": 0.84375
+  },
+  "interview": 0.82243
+}

@@ -1,0 +1,19 @@
+# WavLM-only unimodal arm: single-stream LinT.
+#
+# Reads the wavlm subset from the same shared fi.h5 as avt.yaml -- no rebuild.
+# One feature, so this is LinT (single-stream), not LinMulT.
+h5_path: data/processed/FI/h5/fi.h5
+label_csv: data/processed/FI/label.csv
+features:
+  - wavlm
+
+# Clips are 15.32-15.36 s; the window is applied on read (no rebuild to change).
+window_seconds: 15.0
+crop_mode: head
+
+batch_size: 16
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+seed: 42
