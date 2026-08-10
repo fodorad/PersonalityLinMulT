@@ -11,13 +11,12 @@ authors = [
   { name = "fodorad", email = "fodorad201@gmail.com" },
 ]
 readme = {"file" = "README.md", "content-type" = "text/markdown"}
-requires-python = ">=3.12"
+requires-python = ">=3.12, <3.14"  # 3.14 segfaults in the ML dependency stack (torch/lightning); drop support to 3.13
 license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]

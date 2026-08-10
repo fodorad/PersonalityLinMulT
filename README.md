@@ -12,7 +12,7 @@
 [![Coverage](https://codecov.io/gh/fodorad/PersonalityLinMulT/branch/main/graph/badge.svg)](https://codecov.io/gh/fodorad/PersonalityLinMulT)
 [![Docs](https://img.shields.io/badge/docs-online-blue?logo=githubpages)](https://fodorad.github.io/PersonalityLinMulT/)
 <br/>
-[![Python](https://img.shields.io/badge/python-3.13%2B-3776AB?logo=python&logoColor=white)](https://www.python.org)
+[![Python](https://img.shields.io/badge/python-3.12%7C3.13-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.11.0-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org)
 [![ONNX](https://img.shields.io/badge/ONNX%20-supported-6b6b6b?logo=onnx&logoColor=white)](https://onnxruntime.ai)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)

@@ -7,10 +7,14 @@ name: CodeQL
 # workflow can run, default setup must be disabled in the repo's code-security
 # settings, otherwise the two configurations conflict.
 
+# Runs on push to main + weekly cron only. Deliberately NOT on pull_request:
+# the code-scanning PR check fails whenever the PR adds any new alert, and
+# there is no supported way to make it advisory (the AlertSuppression query is
+# excluded from the security-extended suite and the action has no fail-on
+# knob). Scanning main still surfaces findings in the Security tab for
+# triage -- CodeQL is an information provider here, not a merge gate.
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
   schedule:
     # Weekly deep scan (Mondays 06:17 UTC) catches newly published queries
