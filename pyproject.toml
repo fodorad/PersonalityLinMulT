@@ -22,7 +22,7 @@ classifiers = [
 ]
 dependencies = [
   "numpy",
-  "torch>=2.11",
+  "torch>=2.13.0",
   "lightning",
   "torchmetrics",
   "linmult>=2.1.2",
@@ -117,7 +117,7 @@ serve = [
 onnx = [
   "onnx",
   "onnxruntime",
-  # torch>=2.11's torch.onnx.export defaults to dynamo=True (its own stated
+  # torch>=2.13.0's torch.onnx.export defaults to dynamo=True (its own stated
   # "recommended and default way"), which requires onnxscript to translate
   # the traced graph -- not needed for onnxruntime to *run* an already
   # exported graph, only for torch to *produce* one.
