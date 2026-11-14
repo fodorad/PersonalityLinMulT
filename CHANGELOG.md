@@ -11,6 +11,22 @@ Conventional Commits.
 
 ---
 
+## [3.0.0](https://github.com/fodorad/PersonalityLinMulT/compare/v2.1.4...v3.0.0) (2026-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor to two-champion multimodal architecture with ONNX deployment ([#1](https://github.com/fodorad/PersonalityLinMulT/issues/1))
+
+### Features
+
+* refactor to two-champion multimodal architecture with ONNX deployment ([#1](https://github.com/fodorad/PersonalityLinMulT/issues/1)) ([9ce770a](https://github.com/fodorad/PersonalityLinMulT/commit/9ce770a75051ca2b5ac435bfcbe8b0cd5dd7cd7f))
+
+
+### Bug Fixes
+
+* **ci:** run release-please in manifest mode so it versions from 2.1.4 ([#12](https://github.com/fodorad/PersonalityLinMulT/issues/12)) ([8eee224](https://github.com/fodorad/PersonalityLinMulT/commit/8eee224bf7bdc78af26eff172ef253ad64397fd6))
+
 ## [3.0.0] - 2026-06-28
 
 This is a major release that modernizes the project's tooling, dependencies, and
