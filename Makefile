@@ -1,6 +1,7 @@
 .PHONY: install dev install-docs train preprocess fix lint type-check test docs docs-serve docs-deploy check clean help \
         preprocess-fi vdets-fi tracks-fi transcript-fi \
         acoustic-wavlm-fi acoustic-emotion2vec-fi acoustic-fi \
+        acoustic-egemaps-fi normalize-egemaps-fi hdf5-fi-exp-egemaps \
         textual-xlm-roberta-fi textual-mmbert-fi textual-fi \
         visual-marlin-fi visual-dinov2-fi visual-emotieffnet-fi visual-farl-fi visual-fi \
         features-fi hdf5-fi hdf5-fi-smoke pipeline-fi push-fi-h5 pull-fi-h5 push-hf-card \
@@ -29,6 +30,7 @@ help:
 	@echo "                     visual-marlin-fi | visual-dinov2-fi | visual-emotieffnet-fi |"
 	@echo "                     visual-farl-fi | visual-fi |"
 	@echo "                     features-fi | hdf5-fi | hdf5-fi-smoke | pipeline-fi"
+	@echo "FI eGeMAPS exp:      acoustic-egemaps-fi | normalize-egemaps-fi | hdf5-fi-exp-egemaps"
 	@echo "FI artifact (HF):    push-fi-h5 | pull-fi-h5"
 	@echo "FI model weights (HF): push-champion-model MODEL_ID=... CKPT=... |"
 	@echo "                     pull-champion-model MODEL_ID=... | push-hf-model-card"
@@ -134,6 +136,19 @@ acoustic-emotion2vec-fi:
 	uv run python personalitylinmult/preprocess/fi/acoustic_emotion2vec.py
 
 acoustic-fi: acoustic-wavlm-fi acoustic-emotion2vec-fi
+
+# ── FI eGeMAPS experiment (not part of acoustic-fi / pipeline-fi) ─────────────
+# Raw LLDs -> train-only z-score -> separate exp_egemaps.h5 (gitignored, never
+# published). Run in this order; fi.h5 is never modified.
+acoustic-egemaps-fi:
+	uv run python personalitylinmult/preprocess/fi/acoustic_egemaps.py $(ARGS)
+
+normalize-egemaps-fi:
+	uv run python -m personalitylinmult.data.egemaps \
+		--names-file data/processed/FI/egemaps_names.json $(ARGS)
+
+hdf5-fi-exp-egemaps:
+	$(MAKE) hdf5-fi FI_DATA_CONFIG=config/FI/data/wavlm_egemaps.yaml
 
 textual-xlm-roberta-fi:
 	uv run python personalitylinmult/preprocess/fi/textual_xlm_roberta.py

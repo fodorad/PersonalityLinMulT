@@ -1,0 +1,21 @@
+# WavLM + eGeMAPS fusion arm: two-stream LinMulT.
+#
+# This is also the config that BUILDS the experiment h5 (both features), so
+# egemaps.yaml can read its egemaps subset. exp_egemaps.h5 is separate from
+# fi.h5, gitignored under data/, and never pushed to Hugging Face.
+h5_path: data/processed/FI/h5/exp_egemaps.h5
+label_csv: data/processed/FI/label.csv
+features:
+  - wavlm
+  - egemaps
+
+# Clips are 15.32-15.36 s; the window is applied on read (no rebuild to change).
+window_seconds: 15.0
+crop_mode: head
+
+batch_size: 16
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+seed: 42
