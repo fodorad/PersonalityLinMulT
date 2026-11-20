@@ -80,7 +80,8 @@ preprocess = [
   # text features use `pooling="none"` for token-level (T, 768) sequences, the
   # literature-correct representation for a cross-modal sequence model like
   # LinMulT (a pooled sentence vector under-uses cross-modal attention).
-  "exordium[video,text]>=2.11.0",
+  # audio extra: opensmile, for the eGeMAPS LLD extractor (acoustic_egemaps.py).
+  "exordium[audio,video,text]>=2.11.0",
   "opencv-python",
   "safetensors",
   "pandas",
