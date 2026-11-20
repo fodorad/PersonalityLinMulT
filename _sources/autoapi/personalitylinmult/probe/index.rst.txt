@@ -1,0 +1,20 @@
+personalitylinmult.probe
+========================
+
+.. py:module:: personalitylinmult.probe
+
+.. autoapi-nested-parse::
+
+   Linear probing utilities.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/personalitylinmult/probe/ridge/index
+
+

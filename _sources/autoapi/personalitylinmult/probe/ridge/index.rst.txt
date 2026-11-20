@@ -1,0 +1,185 @@
+personalitylinmult.probe.ridge
+==============================
+
+.. py:module:: personalitylinmult.probe.ridge
+
+.. autoapi-nested-parse::
+
+   Streaming closed-form ridge regression for linear probing.
+
+   Sufficient statistics (``XᵀX``, ``XᵀY``, sums) are accumulated chunk by chunk in
+   float64, so frame-level probes never need the full design matrix in memory.
+   Inputs are standardised with the accumulated train mean/std; the intercept
+   comes from centring. Evaluation is streaming too and reports per-output R² and
+   Pearson r plus the variance-weighted R².
+
+   Typical use::
+
+       acc = RidgeAccumulator(d_in, d_out)
+       for x, y in train_chunks:
+           acc.update(x, y)
+       probe, alpha = select_alpha(acc, ALPHA_GRID, valid_chunks)
+       metrics = evaluate(probe, test_chunks)
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.ridge.logger
+   personalitylinmult.probe.ridge.ALPHA_GRID
+   personalitylinmult.probe.ridge.STD_FLOOR
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.ridge.RidgeProbe
+   personalitylinmult.probe.ridge.ProbeMetrics
+   personalitylinmult.probe.ridge.RidgeAccumulator
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.ridge.evaluate
+   personalitylinmult.probe.ridge.select_alpha
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: ALPHA_GRID
+   :type:  tuple[float, Ellipsis]
+
+   log grid 1e-2 ... 1e4.
+
+   :type: Default ridge penalties
+
+.. py:data:: STD_FLOOR
+   :type:  float
+   :value: 1e-08
+
+
+   Floor on input std so constant input dimensions do not divide by zero.
+
+.. py:class:: RidgeProbe
+
+   Fitted linear map on standardised inputs.
+
+   .. attribute:: weight
+
+      Weights, shape ``(d_in, d_out)``, in standardised-input space.
+
+   .. attribute:: x_mean
+
+      Train input mean, shape ``(d_in,)``.
+
+   .. attribute:: x_std
+
+      Train input std (floored), shape ``(d_in,)``.
+
+   .. attribute:: y_mean
+
+      Train output mean (the intercept), shape ``(d_out,)``.
+
+
+   .. py:method:: predict(x: torch.Tensor) -> torch.Tensor
+
+      Predict outputs.
+
+      :param x: Inputs, shape ``(N, d_in)``.
+
+      :returns: Float64 predictions, shape ``(N, d_out)``.
+
+
+
+.. py:class:: ProbeMetrics
+
+   Probe quality on one split.
+
+   .. attribute:: r2
+
+      Per-output R² (1 - SSres/SStot over all frames), shape ``(d_out,)``.
+
+   .. attribute:: pearson_r
+
+      Per-output Pearson r, shape ``(d_out,)``.
+
+   .. attribute:: mean_r2
+
+      Unweighted mean of ``r2``.
+
+   .. attribute:: mean_pearson_r
+
+      Unweighted mean of ``pearson_r``.
+
+   .. attribute:: weighted_r2
+
+      ``1 - sum(SSres) / sum(SStot)``, i.e. variance-weighted R².
+
+
+.. py:class:: RidgeAccumulator(d_in: int, d_out: int)
+
+   Accumulates sufficient statistics for ridge regression in float64.
+
+   :param d_in: Input dimension.
+   :param d_out: Output dimension.
+
+
+   .. py:method:: update(x: torch.Tensor, y: torch.Tensor) -> None
+
+      Add a chunk of frames.
+
+      :param x: Inputs, shape ``(N, d_in)``.
+      :param y: Targets, shape ``(N, d_out)``.
+
+      :raises ValueError: If shapes do not match the accumulator.
+
+
+
+   .. py:method:: solve(alphas: collections.abc.Iterable[float]) -> dict[float, RidgeProbe]
+
+      Solve the ridge problem for several penalties at once.
+
+      One eigendecomposition of the standardised Gram matrix serves all alphas.
+
+      :param alphas: Non-negative ridge penalties.
+
+      :returns: Mapping ``alpha -> RidgeProbe``.
+
+      :raises ValueError: If no frames were accumulated.
+
+
+
+.. py:function:: evaluate(probe: RidgeProbe, chunks: collections.abc.Iterable[tuple[torch.Tensor, torch.Tensor]]) -> ProbeMetrics
+
+   Evaluate a probe on a stream of ``(x, y)`` chunks.
+
+   Outputs with constant targets get R² 0 and Pearson r 0 (finite).
+
+   :param probe: Fitted probe.
+   :param chunks: Iterable of ``(x, y)`` with shapes ``(N, d_in)``, ``(N, d_out)``.
+
+   :returns: Metrics over all frames of all chunks.
+
+
+.. py:function:: select_alpha(acc: RidgeAccumulator, alphas: collections.abc.Iterable[float], valid_chunks: collections.abc.Iterable[tuple[torch.Tensor, torch.Tensor]]) -> tuple[RidgeProbe, float]
+
+   Pick the alpha with the best mean R² on validation chunks.
+
+   :param acc: Train statistics.
+   :param alphas: Candidate penalties.
+   :param valid_chunks: Validation ``(x, y)`` chunks (materialised once).
+
+   :returns: ``(probe, alpha)`` for the best alpha; ties go to the larger alpha.
+
+

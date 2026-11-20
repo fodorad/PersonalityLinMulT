@@ -14,6 +14,7 @@ Submodules
    /autoapi/personalitylinmult/inference/index
    /autoapi/personalitylinmult/model/index
    /autoapi/personalitylinmult/onnx/index
+   /autoapi/personalitylinmult/probe/index
 
 
 Attributes
