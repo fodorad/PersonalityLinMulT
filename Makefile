@@ -16,7 +16,7 @@
         export-mmbert-onnx push-mmbert-onnx export-xlm-roberta-onnx push-xlm-roberta-onnx \
         export-emotieffnet-onnx push-emotieffnet-onnx export-farl-onnx push-farl-onnx \
         export-emotion2vec-onnx push-emotion2vec-onnx \
-        baseline-fi-mean
+        baseline-fi-mean acoustic-wavlm-random-fi probe-fi-egemaps
 
 help:
 	@echo "Dev (modify files):  fix"
@@ -36,6 +36,7 @@ help:
 	@echo "                     train-fi-windows | train-fi-smoke | mlflow-ui"
 	@echo "FI audio group:      train-fi-a | train-fi-wavlm | train-fi-emotion2vec | train-fi-audio-group"
 	@echo "FI baselines:        baseline-fi-mean | train-fi-random-l1"
+	@echo "FI eGeMAPS probe:    acoustic-wavlm-random-fi | probe-fi-egemaps"
 	@echo "FI LR range test:    lr-find-fi-wavlm"
 	@echo "FI ablation:         ablation-smoke | ablation"
 	@echo "Model deployment:    register-models | promote-champion MODEL=... VERSION=... |"
@@ -132,6 +133,17 @@ acoustic-wavlm-fi:
 
 acoustic-emotion2vec-fi:
 	uv run python personalitylinmult/preprocess/fi/acoustic_emotion2vec.py
+
+# Random-init WavLM layer 9 on the probe control subset (run `make probe-fi-egemaps`
+# once first: it writes the subset CSV). Control for the eGeMAPS linear probe.
+acoustic-wavlm-random-fi:
+	uv run python personalitylinmult/preprocess/fi/acoustic_wavlm.py --random-init --seed 42 \
+		--label-csv data/processed/FI/label_probe_subset.csv \
+		--wavlm-dir data/processed/FI/wavlm_baseplus_l9_random $(ARGS)
+
+# WavLM layer 9 <-> eGeMAPS ridge probe with controls; results in results/FI/probe/.
+probe-fi-egemaps:
+	uv run python -m personalitylinmult.probe.egemaps_probe $(ARGS)
 
 acoustic-fi: acoustic-wavlm-fi acoustic-emotion2vec-fi
 
