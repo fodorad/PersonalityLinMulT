@@ -1,0 +1,301 @@
+personalitylinmult.probe.egemaps_probe
+======================================
+
+.. py:module:: personalitylinmult.probe.egemaps_probe
+
+.. autoapi-nested-parse::
+
+   Probe how much of eGeMAPS WavLM layer 9 encodes, and the reverse.
+
+   Frame-level closed-form ridge regression (see :mod:`personalitylinmult.probe.ridge`)
+   from WavLM layer-9 frames (50 Hz) to the 25 z-scored eGeMAPS LLDs, average-pooled
+   2:1 from 100 Hz to 50 Hz. Controls give R² a floor: the train mean, a randomly
+   initialised WavLM, and real WavLM on the same clip subset the random-init control
+   uses. A reverse probe maps the 25 LLDs to the 768 WavLM dimensions.
+
+   Every clip contributes its first ``min(T_wavlm, T_egemaps // 2, 750)`` frames
+   (15 s, the training window); all kept frames are real, unvoiced ones included.
+
+   .. rubric:: Example
+
+   ``uv run python -m personalitylinmult.probe.egemaps_probe``
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.egemaps_probe.logger
+   personalitylinmult.probe.egemaps_probe.WAVLM_LAYER
+   personalitylinmult.probe.egemaps_probe.MAX_FRAMES
+   personalitylinmult.probe.egemaps_probe.POOL
+   personalitylinmult.probe.egemaps_probe.SEED
+   personalitylinmult.probe.egemaps_probe.N_SUBSET_TRAIN
+   personalitylinmult.probe.egemaps_probe.N_SUBSET_VALID
+   personalitylinmult.probe.egemaps_probe.DEFAULT_PROCESSED
+   personalitylinmult.probe.egemaps_probe.DEFAULT_OUT_DIR
+   personalitylinmult.probe.egemaps_probe.SUBSET_CSV_NAME
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.egemaps_probe.ProbeResult
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.probe.egemaps_probe.pool_time
+   personalitylinmult.probe.egemaps_probe.align
+   personalitylinmult.probe.egemaps_probe.load_clip
+   personalitylinmult.probe.egemaps_probe.select_subset
+   personalitylinmult.probe.egemaps_probe.write_subset_csv
+   personalitylinmult.probe.egemaps_probe.iter_chunks
+   personalitylinmult.probe.egemaps_probe.run_probe
+   personalitylinmult.probe.egemaps_probe.run_mean_control
+   personalitylinmult.probe.egemaps_probe.result_to_dict
+   personalitylinmult.probe.egemaps_probe.format_table
+   personalitylinmult.probe.egemaps_probe.write_results
+   personalitylinmult.probe.egemaps_probe.split_ids
+   personalitylinmult.probe.egemaps_probe.run_all
+   personalitylinmult.probe.egemaps_probe.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: WAVLM_LAYER
+   :value: 9
+
+
+   WavLM layer probed.
+
+.. py:data:: MAX_FRAMES
+   :value: 750
+
+
+   Frames kept per clip at 50 Hz (the first 15 s).
+
+.. py:data:: POOL
+   :value: 2
+
+
+   Average-pooling factor taking eGeMAPS from 100 Hz to WavLM's 50 Hz.
+
+.. py:data:: SEED
+   :value: 42
+
+
+   Seed for subset selection.
+
+.. py:data:: N_SUBSET_TRAIN
+   :value: 1000
+
+
+   Train clips in the control subset.
+
+.. py:data:: N_SUBSET_VALID
+   :value: 200
+
+
+   Valid clips in the control subset.
+
+.. py:data:: DEFAULT_PROCESSED
+
+   Processed FI directory, relative to the repository root.
+
+.. py:data:: DEFAULT_OUT_DIR
+
+   Where results land, relative to the repository root.
+
+.. py:data:: SUBSET_CSV_NAME
+   :value: 'label_probe_subset.csv'
+
+
+   Subset ids in ``label.csv`` schema, consumable by the WavLM extractor.
+
+.. py:function:: pool_time(x: numpy.ndarray, factor: int = POOL) -> numpy.ndarray
+
+   Average-pool along time in non-overlapping groups.
+
+   :param x: Array of shape ``(T, D)``.
+   :param factor: Group size.
+
+   :returns: Array of shape ``(T // factor, D)``; a trailing partial group is dropped.
+
+
+.. py:function:: align(wavlm: numpy.ndarray, egemaps: numpy.ndarray, max_frames: int = MAX_FRAMES) -> tuple[torch.Tensor, torch.Tensor]
+
+   Pool eGeMAPS to 50 Hz and trim both streams to a common length.
+
+   :param wavlm: WavLM frames, ``(T_w, 768)``.
+   :param egemaps: z-scored LLDs at 100 Hz, ``(T_e, 25)``.
+   :param max_frames: Upper bound on the kept frames.
+
+   :returns: ``(wavlm, egemaps)`` float32 tensors of shape ``(T, 768)`` and ``(T, 25)``
+             with ``T = min(T_w, T_e // 2, max_frames)``.
+
+
+.. py:function:: load_clip(video_id: str, wavlm_dir: pathlib.Path, egemaps_dir: pathlib.Path, layer: int = WAVLM_LAYER) -> tuple[torch.Tensor, torch.Tensor]
+
+   Load and align one clip.
+
+   :param video_id: Clip id.
+   :param wavlm_dir: Directory of ``{video_id}.pkl`` WavLM pickles.
+   :param egemaps_dir: Directory of ``{video_id}.npy`` z-scored LLDs.
+   :param layer: WavLM layer to read.
+
+   :returns: Aligned ``(wavlm, egemaps)`` tensors, see :func:`align`.
+
+
+.. py:function:: select_subset(video_ids: collections.abc.Sequence[str], subsets: collections.abc.Sequence[str], n_train: int = N_SUBSET_TRAIN, n_valid: int = N_SUBSET_VALID, seed: int = SEED) -> list[str]
+
+   Sample a fixed number of train and valid clips; test is not involved.
+
+   :param video_ids: All clip ids.
+   :param subsets: Split name per clip.
+   :param n_train: Train clips to draw (capped at availability).
+   :param n_valid: Valid clips to draw (capped at availability).
+   :param seed: Sampling seed.
+
+   :returns: Sorted ids of the drawn clips, deterministic for a given seed.
+
+
+.. py:function:: write_subset_csv(label_csv: pathlib.Path, out_path: pathlib.Path, subset_ids: collections.abc.Sequence[str]) -> None
+
+   Write the control subset plus every test clip in ``label.csv`` schema.
+
+   :param label_csv: Full ``label.csv``.
+   :param out_path: Destination CSV.
+   :param subset_ids: Chosen train and valid ids, see :func:`select_subset`.
+
+
+.. py:function:: iter_chunks(ids: collections.abc.Sequence[str], wavlm_dir: pathlib.Path, egemaps_dir: pathlib.Path, reverse: bool = False) -> collections.abc.Iterator[tuple[torch.Tensor, torch.Tensor]]
+
+   Stream aligned ``(x, y)`` frames, one clip per chunk.
+
+   :param ids: Clip ids.
+   :param wavlm_dir: WavLM pickle directory.
+   :param egemaps_dir: z-scored LLD directory.
+   :param reverse: ``False`` for WavLM -> eGeMAPS, ``True`` for eGeMAPS -> WavLM.
+
+   :Yields: ``(x, y)`` frame matrices of one clip.
+
+
+.. py:class:: ProbeResult
+
+   Outcome of one probe experiment.
+
+   .. attribute:: alpha
+
+      Selected ridge penalty.
+
+   .. attribute:: valid_mean_r2
+
+      Mean R² on the validation split at ``alpha``.
+
+   .. attribute:: test
+
+      Metrics on the test split.
+
+
+.. py:function:: run_probe(splits: collections.abc.Mapping[str, collections.abc.Sequence[str]], wavlm_dir: pathlib.Path, egemaps_dir: pathlib.Path, reverse: bool = False, alphas: collections.abc.Sequence[float] = ALPHA_GRID) -> ProbeResult
+
+   Fit on train, pick alpha on valid, score on test.
+
+   :param splits: Clip ids for ``"train"``, ``"valid"`` and ``"test"``.
+   :param wavlm_dir: WavLM pickle directory.
+   :param egemaps_dir: z-scored LLD directory.
+   :param reverse: Probe eGeMAPS -> WavLM instead of WavLM -> eGeMAPS.
+   :param alphas: Candidate ridge penalties.
+
+   :returns: The :class:`ProbeResult`.
+
+
+.. py:function:: run_mean_control(splits: collections.abc.Mapping[str, collections.abc.Sequence[str]], wavlm_dir: pathlib.Path, egemaps_dir: pathlib.Path) -> ProbeResult
+
+   Score the train-mean predictor (a probe with zero weights).
+
+   :param splits: Clip ids for ``"train"``, ``"valid"`` and ``"test"``.
+   :param wavlm_dir: WavLM pickle directory.
+   :param egemaps_dir: z-scored LLD directory.
+
+   :returns: A :class:`ProbeResult` with ``alpha=inf``; test R² is about 0.
+
+
+.. py:function:: result_to_dict(result: ProbeResult, names: collections.abc.Sequence[str] | None = None) -> dict
+
+   Convert a result to a JSON-serialisable dict.
+
+   :param result: Probe result.
+   :param names: Optional output names; when given, per-output ``r2`` and
+                 ``pearson_r`` are included keyed by name.
+
+   :returns: Dict with ``alpha``, ``valid_mean_r2``, test summary metrics and, with
+             ``names``, per-output values.
+
+
+.. py:function:: format_table(results: dict[str, dict]) -> str
+
+   Render the summary of several experiments as a markdown table.
+
+   :param results: Experiment name -> :func:`result_to_dict` output.
+
+   :returns: Markdown table text.
+
+
+.. py:function:: write_results(results: dict[str, dict], out_dir: pathlib.Path) -> None
+
+   Write ``probe_results.json`` and ``probe_results.md``.
+
+   :param results: Experiment name -> :func:`result_to_dict` output.
+   :param out_dir: Destination directory (created).
+
+
+.. py:function:: split_ids(video_ids: collections.abc.Sequence[str], subsets: collections.abc.Sequence[str]) -> dict[str, list[str]]
+
+   Group clip ids by split.
+
+   :param video_ids: Clip ids.
+   :param subsets: Split name per clip.
+
+   :returns: Mapping ``split -> ids`` for train, valid and test.
+
+
+.. py:function:: run_all(label_csv: pathlib.Path, wavlm_dir: pathlib.Path, egemaps_dir: pathlib.Path, out_dir: pathlib.Path, subset_csv: pathlib.Path, random_wavlm_dir: pathlib.Path | None = None, names: collections.abc.Sequence[str] | None = None, n_train: int = N_SUBSET_TRAIN, n_valid: int = N_SUBSET_VALID, seed: int = SEED) -> dict[str, dict]
+
+   Run the forward probe, controls and reverse probe, and write results.
+
+   :param label_csv: Full ``label.csv``.
+   :param wavlm_dir: Real WavLM layer-9 pickles.
+   :param egemaps_dir: z-scored LLD ``.npy`` files.
+   :param out_dir: Results directory.
+   :param subset_csv: Where the control subset ids are written.
+   :param random_wavlm_dir: Random-init WavLM pickles; that control is skipped
+                            when ``None`` or missing.
+   :param names: LLD names for per-LLD results.
+   :param n_train: Control-subset train clips.
+   :param n_valid: Control-subset valid clips.
+   :param seed: Subset seed.
+
+   :returns: Experiment name -> result dict, as written to disk.
+
+
+.. py:function:: main(argv: list[str] | None = None) -> None
+
+   CLI entry point.
+
+   :param argv: Arguments; defaults to ``sys.argv[1:]``.
+
+

@@ -226,6 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="autoapi/personalitylinmult/model/index.html">personalitylinmult.model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="autoapi/personalitylinmult/onnx/index.html">personalitylinmult.onnx</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/personalitylinmult/probe/index.html">personalitylinmult.probe</a><input aria-label="Toggle navigation of personalitylinmult.probe" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/personalitylinmult/probe/egemaps_probe/index.html">personalitylinmult.probe.egemaps_probe</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autoapi/personalitylinmult/probe/ridge/index.html">personalitylinmult.probe.ridge</a></li>
 </ul>
 </li>
@@ -302,18 +303,22 @@
   <h2>A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.align">align() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.ALL_TRAITS">ALL_TRAITS (in module personalitylinmult.data.schema)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/datamodule/index.html#personalitylinmult.data.datamodule.FiDataModule.allow_zero_length_dataloader_with_multiple_devices">allow_zero_length_dataloader_with_multiple_devices (personalitylinmult.data.datamodule.FiDataModule attribute)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.ProbeResult.alpha">alpha (personalitylinmult.probe.egemaps_probe.ProbeResult attribute)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.ALPHA_GRID">ALPHA_GRID (in module personalitylinmult.probe.ridge)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/egemaps/index.html#personalitylinmult.data.egemaps.apply_zscore">apply_zscore() (in module personalitylinmult.data.egemaps)</a>
 </li>
-        <li><a href="autoapi/personalitylinmult/inference/audio_features/index.html#personalitylinmult.inference.audio_features.AUDIO_SAMPLE_RATE">AUDIO_SAMPLE_RATE (in module personalitylinmult.inference.audio_features)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/personalitylinmult/inference/audio_features/index.html#personalitylinmult.inference.audio_features.AUDIO_SAMPLE_RATE">AUDIO_SAMPLE_RATE (in module personalitylinmult.inference.audio_features)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/inference/audio_features/index.html#personalitylinmult.inference.audio_features.AUDIO_SUFFIXES">AUDIO_SUFFIXES (in module personalitylinmult.inference.audio_features)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/audio_features_onnx/index.html#personalitylinmult.inference.audio_features_onnx.AudioDecodeError">AudioDecodeError</a>
@@ -374,10 +379,16 @@
 </li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.DatasetSpec">DatasetSpec (class in personalitylinmult.data.schema)</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.DEFAULT_OUT_DIR">DEFAULT_OUT_DIR (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/personalitylinmult/data/egemaps/index.html#personalitylinmult.data.egemaps.DEFAULT_PROCESSED">DEFAULT_PROCESSED (in module personalitylinmult.data.egemaps)</a>
+
+        <ul>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.DEFAULT_PROCESSED">(in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
+        </ul></li>
         <li><a href="autoapi/personalitylinmult/data/builder/index.html#personalitylinmult.data.builder.DEFAULT_ROOT">DEFAULT_ROOT (in module personalitylinmult.data.builder)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/register_models/index.html#personalitylinmult.inference.register_models.DEFAULT_TRACKING_URI">DEFAULT_TRACKING_URI (in module personalitylinmult.inference.register_models)</a>
@@ -476,6 +487,8 @@
 </li>
         <li><a href="autoapi/personalitylinmult/data/egemaps/index.html#personalitylinmult.data.egemaps.fit_zscore_stats">fit_zscore_stats() (in module personalitylinmult.data.egemaps)</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.format_table">format_table() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/inference/predictor/index.html#personalitylinmult.inference.predictor.FiPredictor.from_checkpoint">from_checkpoint() (personalitylinmult.inference.predictor.FiPredictor class method)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/registry/index.html#personalitylinmult.inference.registry.ModelRegistry.from_checkpoints">from_checkpoints() (personalitylinmult.inference.registry.ModelRegistry class method)</a>
@@ -526,15 +539,17 @@
 </li>
         <li><a href="autoapi/personalitylinmult/data/sources/index.html#personalitylinmult.data.sources.is_hidden_sidecar">is_hidden_sidecar() (in module personalitylinmult.data.sources)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/personalitylinmult/data/dataset/index.html#personalitylinmult.data.dataset.FeatureView.is_multi_layer">is_multi_layer (personalitylinmult.data.dataset.FeatureView property)</a>
 
         <ul>
           <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.FeatureSpec.is_multi_layer">(personalitylinmult.data.schema.FeatureSpec property)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/personalitylinmult/data/dataset/index.html#personalitylinmult.data.dataset.FeatureView.is_windowed">is_windowed (personalitylinmult.data.dataset.FeatureView property)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.iter_chunks">iter_chunks() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/sources/index.html#personalitylinmult.data.sources.iter_feature_files">iter_feature_files() (in module personalitylinmult.data.sources)</a>
 </li>
@@ -552,6 +567,8 @@
           <li><a href="autoapi/personalitylinmult/inference/registry/index.html#personalitylinmult.inference.registry.ModelRegistry.load">(personalitylinmult.inference.registry.ModelRegistry method)</a>
 </li>
         </ul></li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.load_clip">load_clip() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html#personalitylinmult.inference.mlflow_pyfunc.FiPyfunc.load_context">load_context() (personalitylinmult.inference.mlflow_pyfunc.FiPyfunc method)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/cli/index.html#personalitylinmult.inference.cli.load_features">load_features() (in module personalitylinmult.inference.cli)</a>
@@ -593,6 +610,8 @@
 </li>
           <li><a href="autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.logger">(in module personalitylinmult.onnx)</a>
 </li>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.logger">(in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
           <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.logger">(in module personalitylinmult.probe.ridge)</a>
 </li>
         </ul></li>
@@ -615,7 +634,11 @@
 </li>
           <li><a href="autoapi/personalitylinmult/inference/register_models/index.html#personalitylinmult.inference.register_models.main">(in module personalitylinmult.inference.register_models)</a>
 </li>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.main">(in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         </ul></li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.MAX_FRAMES">MAX_FRAMES (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.ProbeMetrics.mean_pearson_r">mean_pearson_r (personalitylinmult.probe.ridge.ProbeMetrics attribute)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.ProbeMetrics.mean_r2">mean_r2 (personalitylinmult.probe.ridge.ProbeMetrics attribute)</a>
@@ -674,6 +697,8 @@
 </li>
           <li><a href="autoapi/personalitylinmult/probe/index.html#module-personalitylinmult.probe">personalitylinmult.probe</a>
 </li>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#module-personalitylinmult.probe.egemaps_probe">personalitylinmult.probe.egemaps_probe</a>
+</li>
           <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#module-personalitylinmult.probe.ridge">personalitylinmult.probe.ridge</a>
 </li>
         </ul></li>
@@ -685,10 +710,14 @@
   <h2>N</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="autoapi/personalitylinmult/inference/registry/index.html#personalitylinmult.inference.registry.ModelRegistry.names">names (personalitylinmult.inference.registry.ModelRegistry property)</a>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.N_SUBSET_TRAIN">N_SUBSET_TRAIN (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.N_SUBSET_VALID">N_SUBSET_VALID (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/personalitylinmult/inference/registry/index.html#personalitylinmult.inference.registry.ModelRegistry.names">names (personalitylinmult.inference.registry.ModelRegistry property)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/data/dataset/index.html#personalitylinmult.data.dataset.NO_RATE_SENTINEL">NO_RATE_SENTINEL (in module personalitylinmult.data.dataset)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/egemaps/index.html#personalitylinmult.data.egemaps.normalize_directory">normalize_directory() (in module personalitylinmult.data.egemaps)</a>
@@ -811,8 +840,6 @@
           <li><a href="autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html#module-personalitylinmult.inference.mlflow_pyfunc">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     personalitylinmult.inference.onnx_benchmark
 
@@ -827,6 +854,8 @@
           <li><a href="autoapi/personalitylinmult/inference/onnx_export/index.html#module-personalitylinmult.inference.onnx_export">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     personalitylinmult.inference.predictor
 
@@ -870,6 +899,13 @@
 </li>
         </ul></li>
         <li>
+    personalitylinmult.probe.egemaps_probe
+
+        <ul>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#module-personalitylinmult.probe.egemaps_probe">module</a>
+</li>
+        </ul></li>
+        <li>
     personalitylinmult.probe.ridge
 
         <ul>
@@ -879,6 +915,10 @@
         <li><a href="autoapi/personalitylinmult/model/index.html#personalitylinmult.model.PersonalityModel">PersonalityModel (class in personalitylinmult.model)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/onnx/index.html#personalitylinmult.onnx.PersonalityModelONNX">PersonalityModelONNX (class in personalitylinmult.onnx)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.POOL">POOL (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.pool_time">pool_time() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html#personalitylinmult.inference.mlflow_pyfunc.FiPyfunc.predict">predict() (personalitylinmult.inference.mlflow_pyfunc.FiPyfunc method)</a>
 
@@ -902,6 +942,8 @@
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.ProbeMetrics">ProbeMetrics (class in personalitylinmult.probe.ridge)</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.ProbeResult">ProbeResult (class in personalitylinmult.probe.egemaps_probe)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -924,21 +966,29 @@
 </li>
         <li><a href="autoapi/personalitylinmult/inference/register_models/index.html#personalitylinmult.inference.register_models.register_all">register_all() (in module personalitylinmult.inference.register_models)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/personalitylinmult/inference/register_models/index.html#personalitylinmult.inference.register_models.Registration">Registration (class in personalitylinmult.inference.register_models)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html#personalitylinmult.inference.mlflow_pyfunc.REGISTRATION_EXPERIMENT">REGISTRATION_EXPERIMENT (in module personalitylinmult.inference.mlflow_pyfunc)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="autoapi/personalitylinmult/inference/register_models/index.html#personalitylinmult.inference.register_models.REGISTRATIONS">REGISTRATIONS (in module personalitylinmult.inference.register_models)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/builder/index.html#personalitylinmult.data.builder.resolve_coverage">resolve_coverage() (in module personalitylinmult.data.builder)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.result_to_dict">result_to_dict() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.RidgeAccumulator">RidgeAccumulator (class in personalitylinmult.probe.ridge)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.RidgeProbe">RidgeProbe (class in personalitylinmult.probe.ridge)</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.run_all">run_all() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/inference/onnx_benchmark/index.html#personalitylinmult.inference.onnx_benchmark.run_benchmark">run_benchmark() (in module personalitylinmult.inference.onnx_benchmark)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.run_mean_control">run_mean_control() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.run_probe">run_probe() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -954,9 +1004,13 @@
 </li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.SchemaError">SchemaError</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.SEED">SEED (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/data/datamodule/index.html#personalitylinmult.data.datamodule.seed_worker">seed_worker() (in module personalitylinmult.data.datamodule)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.select_alpha">select_alpha() (in module personalitylinmult.probe.ridge)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.select_subset">select_subset() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/inference/mlflow_pyfunc/index.html#personalitylinmult.inference.mlflow_pyfunc.set_champion">set_champion() (in module personalitylinmult.inference.mlflow_pyfunc)</a>
 </li>
@@ -972,6 +1026,8 @@
 </li>
         <li><a href="autoapi/personalitylinmult/inference/registry/index.html#personalitylinmult.inference.registry.ModelRegistry.spec">spec() (personalitylinmult.inference.registry.ModelRegistry method)</a>
 </li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.split_ids">split_ids() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/data/egemaps/index.html#personalitylinmult.data.egemaps.STD_FLOOR">STD_FLOOR (in module personalitylinmult.data.egemaps)</a>
 
         <ul>
@@ -979,6 +1035,8 @@
 </li>
         </ul></li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.SUBSET_CODES">SUBSET_CODES (in module personalitylinmult.data.schema)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.SUBSET_CSV_NAME">SUBSET_CSV_NAME (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.SUBSETS">SUBSETS (in module personalitylinmult.data.schema)</a>
 </li>
@@ -990,6 +1048,8 @@
   <h2>T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.ProbeResult.test">test (personalitylinmult.probe.egemaps_probe.ProbeResult attribute)</a>
+</li>
         <li><a href="autoapi/personalitylinmult/data/datamodule/index.html#personalitylinmult.data.datamodule.FiDataModule.test_dataloader">test_dataloader() (personalitylinmult.data.datamodule.FiDataModule method)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/sources/index.html#personalitylinmult.data.sources.FeatureSample.time_dim">time_dim (personalitylinmult.data.sources.FeatureSample property)</a>
@@ -1029,6 +1089,10 @@
         <li><a href="autoapi/personalitylinmult/data/datamodule/index.html#personalitylinmult.data.datamodule.FiDataModule.val_dataloader">val_dataloader() (personalitylinmult.data.datamodule.FiDataModule method)</a>
 </li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.ProbeResult.valid_mean_r2">valid_mean_r2 (personalitylinmult.probe.egemaps_probe.ProbeResult attribute)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -1040,6 +1104,8 @@
 
         <ul>
           <li><a href="autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.WAVLM_LAYER">(in module personalitylinmult.inference.onnx_export)</a>
+</li>
+          <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.WAVLM_LAYER">(in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
         </ul></li>
         <li><a href="autoapi/personalitylinmult/inference/onnx_export/index.html#personalitylinmult.inference.onnx_export.WAVLM_MODEL_ID">WAVLM_MODEL_ID (in module personalitylinmult.inference.onnx_export)</a>
@@ -1055,6 +1121,10 @@
         <li><a href="autoapi/personalitylinmult/probe/ridge/index.html#personalitylinmult.probe.ridge.ProbeMetrics.weighted_r2">weighted_r2 (personalitylinmult.probe.ridge.ProbeMetrics attribute)</a>
 </li>
         <li><a href="autoapi/personalitylinmult/data/schema/index.html#personalitylinmult.data.schema.FeatureSpec.window_frames">window_frames() (personalitylinmult.data.schema.FeatureSpec method)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.write_results">write_results() (in module personalitylinmult.probe.egemaps_probe)</a>
+</li>
+        <li><a href="autoapi/personalitylinmult/probe/egemaps_probe/index.html#personalitylinmult.probe.egemaps_probe.write_subset_csv">write_subset_csv() (in module personalitylinmult.probe.egemaps_probe)</a>
 </li>
     </ul></td>
   </tr></table>

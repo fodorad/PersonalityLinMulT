@@ -15,6 +15,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /autoapi/personalitylinmult/probe/egemaps_probe/index
    /autoapi/personalitylinmult/probe/ridge/index
 
 
