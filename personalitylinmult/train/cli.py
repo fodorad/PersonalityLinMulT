@@ -183,6 +183,7 @@ def run(
     fast_dev_run: bool = False,
     resume: bool = False,
     extra_callbacks: list[L.Callback] | None = None,
+    datamodule: FiDataModule | None = None,
 ) -> dict[str, Any]:
     """Train, then test, one configured experiment.
 
@@ -195,6 +196,9 @@ def run(
         extra_callbacks (list[L.Callback] | None): Additional Lightning
             callbacks appended after the standard set, e.g. an Optuna pruning
             callback during a hyperparameter search. ``None`` adds nothing.
+        datamodule (FiDataModule | None): Data module to train on, e.g. the
+            random-input baseline's. ``None`` builds the standard
+            :class:`FiDataModule` from ``config.data``.
 
     Returns:
         dict[str, float]: The test metrics.
@@ -241,7 +245,8 @@ def run(
         run_id = run_id_file.read_text().strip() if run_id_file.is_file() else None
         logger.info(f"Resuming from {ckpt_path} (mlflow run_id={run_id}).")
 
-    datamodule = FiDataModule(config.data, target_names=config.train.targets)
+    if datamodule is None:
+        datamodule = FiDataModule(config.data, target_names=config.train.targets)
     datamodule.setup("fit")
 
     # Lightning's Trainer counts accumulate_grad_batches *forward* passes as

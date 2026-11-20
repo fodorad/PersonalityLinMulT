@@ -7,7 +7,7 @@
         push-champion-model pull-champion-model push-hf-model-card \
         train-fi-bigfive train-fi-interview train-fi-bigfive-mult \
         train-fi-a train-fi-wavlm train-fi-emotion2vec train-fi-audio-group lr-find-fi-wavlm \
-        train-fi-windows train-fi-smoke ablation ablation-smoke mlflow-ui \
+        train-fi-windows train-fi-smoke train-fi-random-l1 ablation ablation-smoke mlflow-ui \
         register-models promote-champion serve-model \
         build-serve-docker run-serve-docker \
         gcloud-setup push-serve-gcloud deploy-serve-cloudrun \
@@ -35,7 +35,7 @@ help:
 	@echo "FI training:         train-fi-bigfive | train-fi-interview | train-fi-bigfive-mult |"
 	@echo "                     train-fi-windows | train-fi-smoke | mlflow-ui"
 	@echo "FI audio group:      train-fi-a | train-fi-wavlm | train-fi-emotion2vec | train-fi-audio-group"
-	@echo "FI baselines:       baseline-fi-mean"
+	@echo "FI baselines:        baseline-fi-mean | train-fi-random-l1"
 	@echo "FI LR range test:    lr-find-fi-wavlm"
 	@echo "FI ablation:         ablation-smoke | ablation"
 	@echo "Model deployment:    register-models | promote-champion MODEL=... VERSION=... |"
@@ -476,6 +476,17 @@ train-fi-emotion2vec:
 		ARGS="--set train.mlflow.experiment_name=fi_lint_emotion2vec $(ARGS)"
 
 train-fi-audio-group: train-fi-a train-fi-wavlm train-fi-emotion2vec
+
+# Random-input baseline: the wavlm LinT recipe, but features are N(0,1) noise
+# (resampled on every train access) and the loss is l1. Experiment, not promoted.
+train-fi-random-l1:
+	PYTORCH_MPS_HIGH_WATERMARK_RATIO=$(PYTORCH_MPS_HIGH_WATERMARK_RATIO) \
+	PYTORCH_MPS_LOW_WATERMARK_RATIO=$(PYTORCH_MPS_LOW_WATERMARK_RATIO) \
+	uv run python -m personalitylinmult.train.noise_baseline \
+		--data config/FI/data/wavlm.yaml --model config/FI/model/lint.yaml \
+		--train config/FI/train/bigfive.yaml \
+		--set train.loss=l1 --set data.batch_size=256 \
+		--set train.mlflow.experiment_name=fi_lint_random-l1 $(ARGS)
 
 # LR range test: probes a wide LR sweep and suggests a peak learning rate for
 # a run, saving a loss-vs-lr plot under that run's own results dir (does not
