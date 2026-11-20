@@ -1,0 +1,15 @@
+# eGeMAPS low-level descriptors (openSMILE eGeMAPSv02 LLD, 25-d, 100 Hz).
+#
+# Reads the per-clip z-scored arrays written by `personalitylinmult.data.egemaps`
+# (train-only per-LLD mean/std over valid frames). The builder post-pads to
+# max_time_dim and marks padding invalid in the mask, so padded frames are
+# exactly 0, which is the train mean after z-scoring.
+#
+# 1500 frames = 15 s at 100 Hz, matching the WavLM analysis window (750 @ 50 Hz).
+name: egemaps
+source_dir: data/processed/FI/egemaps_z
+source_format: npy
+dim: 25
+rate_hz: 100.0
+max_time_dim: 1500
+dtype: float16
