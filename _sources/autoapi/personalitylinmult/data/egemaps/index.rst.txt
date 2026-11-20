@@ -1,0 +1,207 @@
+personalitylinmult.data.egemaps
+===============================
+
+.. py:module:: personalitylinmult.data.egemaps
+
+.. autoapi-nested-parse::
+
+   Train-only per-LLD z-score normalisation for eGeMAPS features.
+
+   eGeMAPS low-level descriptors (LLDs) live on very different scales (Hz, dB,
+   unitless ratios), so they are z-scored before they reach a network. The
+   statistics are fitted on **train clips only** and over **valid frames only**, so
+   neither padding nor validation/test data leaks into the normalisation. After
+   z-scoring, the train mean is 0, which makes the builder's zero padding neutral.
+
+   The core functions (:func:`fit_zscore_stats`, :func:`apply_zscore`) do no I/O so
+   they run on random arrays; :func:`normalize_directory` and :func:`main` are the
+   thin file layer.
+
+   .. rubric:: Example
+
+   ``uv run python -m personalitylinmult.data.egemaps``
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.egemaps.logger
+   personalitylinmult.data.egemaps.STD_FLOOR
+   personalitylinmult.data.egemaps.EPS
+   personalitylinmult.data.egemaps.DEFAULT_PROCESSED
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   personalitylinmult.data.egemaps.EgemapsError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   personalitylinmult.data.egemaps.EgemapsStats
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   personalitylinmult.data.egemaps.fit_zscore_stats
+   personalitylinmult.data.egemaps.apply_zscore
+   personalitylinmult.data.egemaps.normalize_directory
+   personalitylinmult.data.egemaps.main
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+   Module-level logger.
+
+.. py:data:: STD_FLOOR
+   :value: 1e-06
+
+
+   Lower bound for a fitted std, so a constant LLD never divides by ~0.
+
+.. py:data:: EPS
+   :value: 1e-08
+
+
+   Added to the std when normalising, as in exordium's ``standardization``.
+
+.. py:data:: DEFAULT_PROCESSED
+
+   Processed FI directory, relative to the repository root.
+
+.. py:exception:: EgemapsError
+
+   Bases: :py:obj:`ValueError`
+
+
+   Raised when eGeMAPS statistics cannot be fitted or applied.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:class:: EgemapsStats
+
+   Per-LLD z-score statistics.
+
+   :param names: LLD names, one per feature column.
+   :type names: tuple[str, ...]
+   :param mean: ``(D,)`` float64 per-LLD mean.
+   :type mean: np.ndarray
+   :param std: ``(D,)`` float64 per-LLD std, floored at
+               :data:`STD_FLOOR`.
+   :type std: np.ndarray
+
+   :raises EgemapsError: If the three fields disagree on the feature count.
+
+
+   .. py:method:: __post_init__() -> None
+
+      Validate that names, mean and std share one length.
+
+
+
+   .. py:method:: save(path: pathlib.Path) -> None
+
+      Write the statistics as JSON (``names``, ``mean``, ``std``).
+
+      :param path: Destination file; parent directories are created.
+      :type path: Path
+
+
+
+   .. py:method:: load(path: pathlib.Path) -> EgemapsStats
+      :classmethod:
+
+
+      Read statistics written by :meth:`save`.
+
+      :param path: JSON file.
+      :type path: Path
+
+      :returns: The loaded statistics.
+      :rtype: EgemapsStats
+
+
+
+.. py:function:: fit_zscore_stats(clips: collections.abc.Iterable[numpy.ndarray], names: collections.abc.Iterable[str] | None = None, masks: collections.abc.Iterable[numpy.ndarray] | None = None) -> EgemapsStats
+
+   Fit per-LLD mean and std over valid frames, one clip at a time.
+
+   Clips are merged with the parallel (Chan) update in float64, so no giant
+   concatenated matrix is held and the result is numerically stable.
+
+   :param clips: ``(T_i, D)`` arrays, train clips only.
+   :type clips: Iterable[np.ndarray]
+   :param names: LLD names. Defaults to ``lld_00``, ...
+   :type names: Iterable[str] | None
+   :param masks: ``(T_i,)`` boolean arrays aligned
+                 with ``clips``; ``False`` frames (padding) are ignored. ``None``
+                 treats every frame as valid.
+   :type masks: Iterable[np.ndarray] | None
+
+   :returns: Statistics with the std floored at :data:`STD_FLOOR`.
+   :rtype: EgemapsStats
+
+   :raises EgemapsError: If there are no valid frames, shapes are inconsistent, or
+       ``masks`` and ``clips`` differ in length.
+
+
+.. py:function:: apply_zscore(x: numpy.ndarray, stats: EgemapsStats) -> numpy.ndarray
+
+   Z-score a clip: ``(x - mean) / (std + EPS)``.
+
+   :param x: ``(T, D)`` raw LLDs.
+   :type x: np.ndarray
+   :param stats: Fitted statistics.
+   :type stats: EgemapsStats
+
+   :returns: ``(T, D)`` float32 normalised LLDs.
+   :rtype: np.ndarray
+
+   :raises EgemapsError: If ``x`` does not have ``len(stats.names)`` columns.
+
+
+.. py:function:: normalize_directory(video_ids: list[str], train_ids: list[str], raw_dir: pathlib.Path, out_dir: pathlib.Path, stats_path: pathlib.Path, names: list[str] | None = None) -> EgemapsStats
+
+   Fit train-only statistics, then write a z-scored copy of every clip.
+
+   :param video_ids: All clips to write to ``out_dir``.
+   :type video_ids: list[str]
+   :param train_ids: The train subset the statistics are fitted on.
+   :type train_ids: list[str]
+   :param raw_dir: Directory of raw ``{video_id}.npy`` ``(T, D)`` arrays.
+   :type raw_dir: Path
+   :param out_dir: Destination for ``{video_id}.npy`` z-scored arrays.
+   :type out_dir: Path
+   :param stats_path: Where the statistics JSON is written.
+   :type stats_path: Path
+   :param names: LLD names to record in the stats file.
+   :type names: list[str] | None
+
+   :returns: The fitted statistics.
+   :rtype: EgemapsStats
+
+
+.. py:function:: main(argv: list[str] | None = None) -> None
+
+   CLI entry point: fit train-only stats and write ``egemaps_z/``.
+
+   :param argv: Arguments; defaults to ``sys.argv[1:]``.
+   :type argv: list[str] | None
+
+

@@ -35,6 +35,7 @@ Submodules
    /autoapi/personalitylinmult/data/collate/index
    /autoapi/personalitylinmult/data/datamodule/index
    /autoapi/personalitylinmult/data/dataset/index
+   /autoapi/personalitylinmult/data/egemaps/index
    /autoapi/personalitylinmult/data/schema/index
    /autoapi/personalitylinmult/data/sources/index
 
