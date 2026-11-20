@@ -1,5 +1,6 @@
 """Tests for the random-input baseline, run against a real tiny HDF5 file."""
 
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,7 +15,7 @@ from personalitylinmult.data.dataset import FiHdf5Dataset
 from personalitylinmult.data.schema import DatasetSpec
 from personalitylinmult.train.cli import run
 from personalitylinmult.train.config import DataConfig, ExperimentConfig
-from personalitylinmult.train.noise_baseline import NoiseDataModule, NoiseHdf5Dataset
+from personalitylinmult.train.noise_baseline import NoiseDataModule, NoiseHdf5Dataset, main
 
 VIDEO_IDS = [f"clip{i}" for i in range(12)]
 SUBSETS = ["train"] * 6 + ["valid"] * 3 + ["test"] * 3
@@ -91,44 +92,45 @@ class TestNoiseDataModule(NoiseTestCase):
 
 
 class TestRunWithNoise(NoiseTestCase):
+    def write_configs(self, out):
+        (out / "data.yaml").write_text(
+            yaml.safe_dump(
+                {
+                    "h5_path": str(self.h5_path),
+                    "features": ["wavlm"],
+                    "batch_size": 2,
+                    "num_workers": 0,
+                    "pin_memory": False,
+                    "persistent_workers": False,
+                    "window_seconds": 1.0,
+                }
+            )
+        )
+        (out / "model.yaml").write_text(
+            yaml.safe_dump({"family": "lint", "d_model": 8, "num_heads": 2, "cmt_num_layers": 1})
+        )
+        (out / "train.yaml").write_text(
+            yaml.safe_dump(
+                {
+                    "task": "bigfive",
+                    "max_epochs": 1,
+                    "loss": "l1",
+                    "accelerator": "cpu",
+                    "output_dir": str(out / "results"),
+                    "early_stopping": {"enabled": False},
+                    "mlflow": {
+                        "tracking_uri": f"sqlite:///{out / 'mlflow.db'}",
+                        "experiment_name": "noise-test",
+                        "log_model": False,
+                    },
+                }
+            )
+        )
+
     def test_run_completes_and_writes_metrics(self):
         with tempfile.TemporaryDirectory() as out_name:
             out = Path(out_name)
-            (out / "data.yaml").write_text(
-                yaml.safe_dump(
-                    {
-                        "h5_path": str(self.h5_path),
-                        "features": ["wavlm"],
-                        "batch_size": 2,
-                        "num_workers": 0,
-                        "pin_memory": False,
-                        "persistent_workers": False,
-                        "window_seconds": 1.0,
-                    }
-                )
-            )
-            (out / "model.yaml").write_text(
-                yaml.safe_dump(
-                    {"family": "lint", "d_model": 8, "num_heads": 2, "cmt_num_layers": 1}
-                )
-            )
-            (out / "train.yaml").write_text(
-                yaml.safe_dump(
-                    {
-                        "task": "bigfive",
-                        "max_epochs": 1,
-                        "loss": "l1",
-                        "accelerator": "cpu",
-                        "output_dir": str(out / "results"),
-                        "early_stopping": {"enabled": False},
-                        "mlflow": {
-                            "tracking_uri": f"sqlite:///{out / 'mlflow.db'}",
-                            "experiment_name": "noise-test",
-                            "log_model": False,
-                        },
-                    }
-                )
-            )
+            self.write_configs(out)
             config = ExperimentConfig.from_files(
                 out / "data.yaml", out / "model.yaml", out / "train.yaml"
             )
@@ -138,6 +140,23 @@ class TestRunWithNoise(NoiseTestCase):
             self.assertIn("test/mean_ccc", metrics)
             run_dir = out / "results" / "bigfive" / "noise-test"
             self.assertTrue((run_dir / "metrics_test.json").is_file())
+
+    def test_cli_main_runs_a_fast_dev_run(self):
+        with tempfile.TemporaryDirectory() as out_name:
+            out = Path(out_name)
+            self.write_configs(out)
+            argv = sys.argv
+            sys.argv = [
+                "noise_baseline",
+                "--data", str(out / "data.yaml"),
+                "--model", str(out / "model.yaml"),
+                "--train", str(out / "train.yaml"),
+                "--set", "train.loss=l1",
+                "--fast-dev-run",
+            ]  # fmt: skip
+            self.addCleanup(setattr, sys, "argv", argv)
+            main()
+            self.assertTrue((out / "results" / "bigfive" / "noise-test").is_dir())
 
 
 if __name__ == "__main__":
