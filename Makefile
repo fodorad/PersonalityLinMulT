@@ -15,7 +15,8 @@
         export-wavlm-onnx push-wavlm-onnx export-dinov2-onnx push-dinov2-onnx \
         export-mmbert-onnx push-mmbert-onnx export-xlm-roberta-onnx push-xlm-roberta-onnx \
         export-emotieffnet-onnx push-emotieffnet-onnx export-farl-onnx push-farl-onnx \
-        export-emotion2vec-onnx push-emotion2vec-onnx
+        export-emotion2vec-onnx push-emotion2vec-onnx \
+        baseline-fi-mean
 
 help:
 	@echo "Dev (modify files):  fix"
@@ -34,7 +35,7 @@ help:
 	@echo "FI training:         train-fi-bigfive | train-fi-interview | train-fi-bigfive-mult |"
 	@echo "                     train-fi-windows | train-fi-smoke | mlflow-ui"
 	@echo "FI audio group:      train-fi-a | train-fi-wavlm | train-fi-emotion2vec | train-fi-audio-group"
-	@echo "FI random baseline:  train-fi-random-l1"
+	@echo "FI baselines:        baseline-fi-mean | train-fi-random-l1"
 	@echo "FI LR range test:    lr-find-fi-wavlm"
 	@echo "FI ablation:         ablation-smoke | ablation"
 	@echo "Model deployment:    register-models | promote-champion MODEL=... VERSION=... |"
@@ -436,6 +437,10 @@ train-fi-interview:
 	uv run python -m personalitylinmult.train.cli \
 		--data $(FI_DATA_CONFIG) --model $(FI_MODEL_CONFIG) \
 		--train config/FI/train/interview.yaml $(ARGS)
+
+# Train-mean predictor: what "learn nothing" scores on test (no training).
+baseline-fi-mean:
+	uv run python -m personalitylinmult.train.mean_baseline $(ARGS)
 
 # The MulT baseline: identical to LinMulT but for softmax attention.
 train-fi-bigfive-mult:
