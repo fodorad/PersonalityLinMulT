@@ -1,0 +1,20 @@
+# eGeMAPS-only arm: single-stream LinT on z-scored LLDs.
+#
+# Reads the egemaps subset of the experiment file built from
+# wavlm_egemaps.yaml (`make hdf5-fi-exp-egemaps`); it never touches fi.h5.
+# exp_egemaps.h5 lives under the gitignored data/ tree and is not published.
+h5_path: data/processed/FI/h5/exp_egemaps.h5
+label_csv: data/processed/FI/label.csv
+features:
+  - egemaps
+
+# Clips are 15.32-15.36 s; the window is applied on read (no rebuild to change).
+window_seconds: 15.0
+crop_mode: head
+
+batch_size: 16
+num_workers: 8
+pin_memory: true
+persistent_workers: true
+prefetch_factor: 2
+seed: 42
