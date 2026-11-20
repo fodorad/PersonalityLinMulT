@@ -32,6 +32,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import torch
 from exordium.audio.wavlm import WavlmWrapper
 from tqdm import tqdm
 
@@ -194,6 +195,18 @@ def main() -> None:
         help="On-disk dtype. The h5 builder casts to float16 regardless.",
     )
     parser.add_argument(
+        "--random-init",
+        action="store_true",
+        help="Use a randomly initialised WavLM (control for linear probing). "
+        "Point --wavlm-dir at a separate directory.",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Seed for the random initialisation (only with --random-init).",
+    )
+    parser.add_argument(
         "--gpu-id",
         type=int,
         default=0,
@@ -219,7 +232,12 @@ def main() -> None:
     device_id = args.gpu_id if args.gpu_id >= 0 else -1
     layers = tuple(args.layers)
     logger.info(f"Loading WavLM ({args.wavlm_model}) on gpu={device_id}...")
-    wavlm_extractor = WavlmWrapper(device_id=device_id, model_name=args.wavlm_model)
+    if args.random_init:
+        torch.manual_seed(args.seed)
+        logger.info(f"Random-init WavLM, seed={args.seed}.")
+    wavlm_extractor = WavlmWrapper(
+        device_id=device_id, model_name=args.wavlm_model, pretrained=not args.random_init
+    )
 
     args.wavlm_dir.mkdir(parents=True, exist_ok=True)
     logger.info(
