@@ -26,7 +26,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from exordium.audio.smile import OpensmileWrapper
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -132,6 +131,11 @@ def main() -> None:
     if not video_ids:
         logger.warning(f"No video_ids in {args.label_csv}; nothing to do.")
         return
+
+    # Imported here, not at module level: openSMILE ships only with the
+    # preprocess extra, and the pure helpers above must stay importable (and
+    # testable) in environments that lack it, such as CI.
+    from exordium.audio.smile import OpensmileWrapper
 
     extractor = OpensmileWrapper("egemaps", "lld")
     names = list(extractor.smile.feature_names)
