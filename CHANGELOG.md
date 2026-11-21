@@ -11,6 +11,30 @@ Conventional Commits.
 
 ---
 
+## [3.1.0](https://github.com/fodorad/PersonalityLinMulT/compare/v3.0.0...v3.1.0) (2026-11-21)
+
+
+### Features
+
+* **data:** add eGeMAPS train-only z-score normalisation ([#23](https://github.com/fodorad/PersonalityLinMulT/issues/23)) ([eb7700a](https://github.com/fodorad/PersonalityLinMulT/commit/eb7700ab87127ce42a7de8e73c889d6ca8fdf7dd))
+* **preprocess:** extract eGeMAPS LLDs and build the experiment h5 ([#25](https://github.com/fodorad/PersonalityLinMulT/issues/25)) ([2988cb3](https://github.com/fodorad/PersonalityLinMulT/commit/2988cb3f263a01042aae16acedd9853857c31a8b))
+* **preprocess:** shard eGeMAPS extraction across parallel workers ([#27](https://github.com/fodorad/PersonalityLinMulT/issues/27)) ([0cd701e](https://github.com/fodorad/PersonalityLinMulT/commit/0cd701e794062fdf43478a10fd86fa67c3e3297d))
+* **probe:** add streaming ridge-regression probe ([#24](https://github.com/fodorad/PersonalityLinMulT/issues/24)) ([c15e3aa](https://github.com/fodorad/PersonalityLinMulT/commit/c15e3aa7936a573c5f4a5c09945a02559ca5f30b))
+* **probe:** probe eGeMAPS from WavLM layer 9 with controls ([#26](https://github.com/fodorad/PersonalityLinMulT/issues/26)) ([4c89d87](https://github.com/fodorad/PersonalityLinMulT/commit/4c89d87c24d1125686bb63aeaec7da0edf47b991))
+* **train:** add random-input baseline with resampled noise ([#22](https://github.com/fodorad/PersonalityLinMulT/issues/22)) ([7b9076d](https://github.com/fodorad/PersonalityLinMulT/commit/7b9076d9d889e01166b91ff2b7a8d083c3d5df02))
+* **train:** add train-mean predictor baseline ([#21](https://github.com/fodorad/PersonalityLinMulT/issues/21)) ([7dd0157](https://github.com/fodorad/PersonalityLinMulT/commit/7dd0157043e3b8be76193a4325eb5c6662be54a2))
+
+
+### Bug Fixes
+
+* harden the eGeMAPS probe and pin mlflow to the version that matches mlflow.db ([#29](https://github.com/fodorad/PersonalityLinMulT/issues/29)) ([d916506](https://github.com/fodorad/PersonalityLinMulT/commit/d916506b11545a43aad2227332e93f44dd7eeff0))
+
+
+### Documentation
+
+* add baseline, eGeMAPS and WavLM probe experiment results ([#28](https://github.com/fodorad/PersonalityLinMulT/issues/28)) ([61afd56](https://github.com/fodorad/PersonalityLinMulT/commit/61afd565b841b6b231cbc286f37f2a661fc4721a))
+* curate 3.0.0 changelog ([#19](https://github.com/fodorad/PersonalityLinMulT/issues/19)) ([56cf73d](https://github.com/fodorad/PersonalityLinMulT/commit/56cf73dd13c76c05166ad83cb1dc2051b7cfa125))
+
 ## [3.0.0](https://github.com/fodorad/PersonalityLinMulT/compare/v2.1.4...v3.0.0) (2026-08-10)
 
 Two promoted, deployed champions ship with this release: `wavlm_best-ccc`
