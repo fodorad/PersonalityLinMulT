@@ -15,8 +15,10 @@ from data.fixtures import write_label_csv
 
 from personalitylinmult.probe.egemaps_probe import (
     align,
+    clips_available,
     iter_chunks,
     load_clip,
+    main,
     pool_time,
     result_to_dict,
     run_all,
@@ -198,6 +200,52 @@ class ProbeTest(unittest.TestCase):
     def test_run_all_skips_missing_random_dir(self) -> None:
         results = self._run_all(self.root / "nope")
         self.assertNotIn("forward_subset_random_init", results)
+
+    def test_run_all_skips_incomplete_random_dir(self) -> None:
+        # A random-init extraction still in progress: the directory exists but a
+        # test clip is missing. The control must be skipped, not crash the run.
+        _write_clips(self.root / "rand", self.ids, seed=5, plant=False)
+        (self.root / "rand" / "wavlm" / f"{self.ids[-1]}.pkl").unlink()
+        results = self._run_all(self.root / "rand" / "wavlm")
+        self.assertNotIn("forward_subset_random_init", results)
+        self.assertIn("reverse_full", results)
+        self.assertTrue((self.root / "res" / "probe_results.json").is_file())
+
+
+class ClipsAvailableTest(unittest.TestCase):
+    def test_reports_missing_clips(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            (directory / "a.pkl").write_bytes(b"")
+            self.assertTrue(clips_available(directory, ["a"]))
+            self.assertFalse(clips_available(directory, ["a", "b"]))
+            self.assertFalse(clips_available(directory / "nope", ["a"]))
+            self.assertTrue(clips_available(directory, []))
+
+
+class MainTest(unittest.TestCase):
+    def test_main_runs_on_a_processed_tree(self) -> None:
+        ids = [f"c{i:02d}" for i in range(18)]
+        subsets = ["train"] * 10 + ["valid"] * 4 + ["test"] * 4
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_clips(root, ids)
+            (root / "wavlm").rename(root / "wavlm_baseplus_l9")
+            (root / "egemaps").rename(root / "egemaps_z")
+            write_label_csv(root / "label.csv", ids, subsets)
+            main(
+                [
+                    "--root", str(root),
+                    "--processed", ".",
+                    "--out-dir", "res",
+                    "--n-train", "6",
+                    "--n-valid", "2",
+                ]
+            )  # fmt: skip
+            results = json.loads((root / "res" / "probe_results.json").read_text())
+            self.assertIn("forward_full", results)
+            self.assertNotIn("forward_subset_random_init", results)
+            self.assertTrue((root / "label_probe_subset.csv").is_file())
 
 
 if __name__ == "__main__":

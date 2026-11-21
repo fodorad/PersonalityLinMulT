@@ -43,7 +43,7 @@ dependencies = [
 # `data.collate` deliberately need none of this: reading a built h5 and feeding
 # a model works from a core install alone.
 train = [
-  "mlflow",
+  "mlflow>=3.14",
   # Hyperparameter search: TPE (Bayesian, tree-structured Parzen estimator)
   # sampler + ASHA/Hyperband pruning on partial training curves -- the current
   # field-standard default combination for small (<10 dim) search spaces,
@@ -92,7 +92,7 @@ preprocess = [
 # gradio plus the inference stack (mlflow) and the acoustic extractors (exordium).
 demo = [
   "gradio",
-  "mlflow",
+  "mlflow>=3.14",
   "exordium[video,text]>=2.11.0",
 ]
 # The REST serving app (deploy/serve.py): a minimal FastAPI wrapper around
