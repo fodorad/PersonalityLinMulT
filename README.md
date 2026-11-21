@@ -253,6 +253,11 @@ is a config field (`model.family`), validated against the feature count.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `avt_best-ccc` | acoustic + visual + textual (all 7 features) | LinMulT | **0.9074** | **0.6901** | **0.7086** | 0.9924 | **available, deployed** — see [Deployments](#deployments) |
 | `wavlm_best-ccc` | acoustic (WavLM) only | LinT | 0.8918 | 0.5604 | 0.5609 | **1.0013** | **available, deployed** — see [Deployments](#deployments) |
+| `wavlm-egemaps_ccc` | acoustic (WavLM + eGeMAPS LLD) | LinMulT | 0.8856 | 0.5543 | 0.5600 | 1.0929 | experiment, not promoted — see [Experiments](https://fodorad.github.io/PersonalityLinMulT/experiments.html) |
+| `egemaps_ccc` | acoustic (eGeMAPS LLD, 25-d @ 100 Hz) | LinT | 0.8710 | 0.4908 | 0.5062 | 1.1519 | experiment, not promoted |
+| `egemaps_l1` | acoustic (eGeMAPS LLD, 25-d @ 100 Hz) | LinT | 0.8973 | 0.4461 | 0.4932 | 0.6378 | experiment, not promoted |
+| `random-input_l1` | none (random N(0, 1) noise, resampled on every access) | LinT | 0.8810 | 0.0005 | 0.0039 | 0.0657 | baseline: the network learns the mean |
+| `train-mean` | none (constant: train-set mean per trait) | — | 0.8814 | 0.0000 | n/a | 0.0000 | baseline: no model, r is undefined for a constant prediction |
 
 Both are promoted, real champions, and both are fully wired into every live surface (public API, ONNX export, Docker/Cloud Run server, HF Space, showcase notebook). Full multimodal fusion (`avt_best-ccc`) beats audio-only on every accuracy metric (1-MAE, CCC, Pearson r), confirming visual and textual signal genuinely add information beyond speech alone; audio-only edges it out on `std_ratio` (prediction-vs-target variance ratio — 1.0013 vs. 0.9924, both close to the ideal of 1.0). `avt_best-ccc`'s live-extraction path (`PersonalityModelONNX.predict_from_media`, ONNX-only — see [ONNX optimization](#onnx-optimization)) runs face detection/tracking plus six ONNX feature extractors, with an optional Whisper ASR step when no transcript is supplied.
 
