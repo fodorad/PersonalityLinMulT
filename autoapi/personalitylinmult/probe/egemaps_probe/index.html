@@ -359,31 +359,34 @@ uses. A reverse probe maps the 25 LLDs to the 768 WavLM dimensions.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.write_subset_csv" title="personalitylinmult.probe.egemaps_probe.write_subset_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_subset_csv</span></code></a>(→ None)</p></td>
 <td><p>Write the control subset plus every test clip in <code class="docutils literal notranslate"><span class="pre">label.csv</span></code> schema.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.iter_chunks" title="personalitylinmult.probe.egemaps_probe.iter_chunks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_chunks</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.clips_available" title="personalitylinmult.probe.egemaps_probe.clips_available"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clips_available</span></code></a>(→ bool)</p></td>
+<td><p>Tell whether a pickle directory holds a <code class="docutils literal notranslate"><span class="pre">{id}.pkl</span></code> for every clip.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.iter_chunks" title="personalitylinmult.probe.egemaps_probe.iter_chunks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_chunks</span></code></a>(...)</p></td>
 <td><p>Stream aligned <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> frames, one clip per chunk.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_probe" title="personalitylinmult.probe.egemaps_probe.run_probe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_probe</span></code></a>(→ ProbeResult)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_probe" title="personalitylinmult.probe.egemaps_probe.run_probe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_probe</span></code></a>(→ ProbeResult)</p></td>
 <td><p>Fit on train, pick alpha on valid, score on test.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_mean_control" title="personalitylinmult.probe.egemaps_probe.run_mean_control"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_mean_control</span></code></a>(→ ProbeResult)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_mean_control" title="personalitylinmult.probe.egemaps_probe.run_mean_control"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_mean_control</span></code></a>(→ ProbeResult)</p></td>
 <td><p>Score the train-mean predictor (a probe with zero weights).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.result_to_dict" title="personalitylinmult.probe.egemaps_probe.result_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result_to_dict</span></code></a>(→ dict)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.result_to_dict" title="personalitylinmult.probe.egemaps_probe.result_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result_to_dict</span></code></a>(→ dict)</p></td>
 <td><p>Convert a result to a JSON-serialisable dict.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.format_table" title="personalitylinmult.probe.egemaps_probe.format_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_table</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.format_table" title="personalitylinmult.probe.egemaps_probe.format_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_table</span></code></a>(→ str)</p></td>
 <td><p>Render the summary of several experiments as a markdown table.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.write_results" title="personalitylinmult.probe.egemaps_probe.write_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_results</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.write_results" title="personalitylinmult.probe.egemaps_probe.write_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_results</span></code></a>(→ None)</p></td>
 <td><p>Write <code class="docutils literal notranslate"><span class="pre">probe_results.json</span></code> and <code class="docutils literal notranslate"><span class="pre">probe_results.md</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.split_ids" title="personalitylinmult.probe.egemaps_probe.split_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_ids</span></code></a>(→ dict[str, list[str]])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.split_ids" title="personalitylinmult.probe.egemaps_probe.split_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_ids</span></code></a>(→ dict[str, list[str]])</p></td>
 <td><p>Group clip ids by split.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_all" title="personalitylinmult.probe.egemaps_probe.run_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_all</span></code></a>(→ dict[str, dict])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.run_all" title="personalitylinmult.probe.egemaps_probe.run_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_all</span></code></a>(→ dict[str, dict])</p></td>
 <td><p>Run the forward probe, controls and reverse probe, and write results.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.main" title="personalitylinmult.probe.egemaps_probe.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.main" title="personalitylinmult.probe.egemaps_probe.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>(→ None)</p></td>
 <td><p>CLI entry point.</p></td>
 </tr>
 </tbody>
@@ -538,6 +541,25 @@ with <code class="docutils literal notranslate"><span class="pre">T</span> <span
 <li><p><strong>out_path</strong> – Destination CSV.</p></li>
 <li><p><strong>subset_ids</strong> – Chosen train and valid ids, see <a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.select_subset" title="personalitylinmult.probe.egemaps_probe.select_subset"><code class="xref py py-func docutils literal notranslate"><span class="pre">select_subset()</span></code></a>.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="personalitylinmult.probe.egemaps_probe.clips_available">
+<span class="sig-prename descclassname"><span class="pre">personalitylinmult.probe.egemaps_probe.</span></span><span class="sig-name descname"><span class="pre">clips_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#personalitylinmult.probe.egemaps_probe.clips_available" title="Link to this definition">¶</a></dt>
+<dd><p>Tell whether a pickle directory holds a <code class="docutils literal notranslate"><span class="pre">{id}.pkl</span></code> for every clip.</p>
+<p>A control directory that is still being extracted exists but is incomplete;
+probing it would fail deep into a long run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> – Directory of <code class="docutils literal notranslate"><span class="pre">{video_id}.pkl</span></code> files.</p></li>
+<li><p><strong>ids</strong> – Clip ids that must all be present.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="docutils literal notranslate"><span class="pre">directory</span></code> exists and contains every clip.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -700,7 +722,7 @@ with <code class="docutils literal notranslate"><span class="pre">T</span> <span
 <li><p><strong>out_dir</strong> – Results directory.</p></li>
 <li><p><strong>subset_csv</strong> – Where the control subset ids are written.</p></li>
 <li><p><strong>random_wavlm_dir</strong> – Random-init WavLM pickles; that control is skipped
-when <code class="docutils literal notranslate"><span class="pre">None</span></code> or missing.</p></li>
+when <code class="docutils literal notranslate"><span class="pre">None</span></code>, missing, or lacking any clip it needs.</p></li>
 <li><p><strong>names</strong> – LLD names for per-LLD results.</p></li>
 <li><p><strong>n_train</strong> – Control-subset train clips.</p></li>
 <li><p><strong>n_valid</strong> – Control-subset valid clips.</p></li>
@@ -802,6 +824,7 @@ when <code class="docutils literal notranslate"><span class="pre">None</span></c
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.load_clip"><code class="docutils literal notranslate"><span class="pre">load_clip()</span></code></a></li>
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.select_subset"><code class="docutils literal notranslate"><span class="pre">select_subset()</span></code></a></li>
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.write_subset_csv"><code class="docutils literal notranslate"><span class="pre">write_subset_csv()</span></code></a></li>
+<li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.clips_available"><code class="docutils literal notranslate"><span class="pre">clips_available()</span></code></a></li>
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.iter_chunks"><code class="docutils literal notranslate"><span class="pre">iter_chunks()</span></code></a></li>
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.ProbeResult"><code class="docutils literal notranslate"><span class="pre">ProbeResult</span></code></a><ul>
 <li><a class="reference internal" href="#personalitylinmult.probe.egemaps_probe.ProbeResult.alpha"><code class="docutils literal notranslate"><span class="pre">ProbeResult.alpha</span></code></a></li>
