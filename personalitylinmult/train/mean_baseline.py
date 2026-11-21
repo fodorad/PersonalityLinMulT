@@ -105,12 +105,16 @@ def run_mean_baseline(h5_path: Path, output_dir: Path = DEFAULT_OUTPUT_DIR) -> d
     return metrics
 
 
-def main() -> None:
-    """CLI entry point."""
+def main(argv: list[str] | None = None) -> None:
+    """CLI entry point.
+
+    Args:
+        argv (list[str] | None): Arguments; defaults to ``sys.argv[1:]``.
+    """
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--h5", type=Path, default=Path("data/processed/FI/h5/fi.h5"))
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
     run_mean_baseline(args.h5, args.output_dir)

@@ -15,6 +15,7 @@ from personalitylinmult.data.schema import BIG_FIVE_TRAITS, DatasetSpec
 from personalitylinmult.train.mean_baseline import (
     METRICS_FILE,
     evaluate_mean_baseline,
+    main,
     read_split_labels,
     run_mean_baseline,
 )
@@ -88,6 +89,12 @@ class MeanBaselineTestCase(unittest.TestCase):
             self.assertIn(f"test/mean_{name}", written)
             for trait in BIG_FIVE_TRAITS:
                 self.assertIn(f"test/{name}/{trait}", written)
+
+    def test_main_writes_metrics_from_argv(self):
+        out = self.root / "cli_out"
+        main(["--h5", str(self.h5_path), "--output-dir", str(out)])
+        written = json.loads((out / METRICS_FILE).read_text())
+        self.assertEqual(written["test/mean_ccc"], 0.0)
 
 
 if __name__ == "__main__":

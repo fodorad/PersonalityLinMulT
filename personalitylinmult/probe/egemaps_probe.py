@@ -169,6 +169,22 @@ def write_subset_csv(label_csv: Path, out_path: Path, subset_ids: Sequence[str])
     logger.info(f"Wrote {int(keep.sum())} clips to {out_path}.")
 
 
+def clips_available(directory: Path, ids: Sequence[str]) -> bool:
+    """Tell whether a pickle directory holds a ``{id}.pkl`` for every clip.
+
+    A control directory that is still being extracted exists but is incomplete;
+    probing it would fail deep into a long run.
+
+    Args:
+        directory: Directory of ``{video_id}.pkl`` files.
+        ids: Clip ids that must all be present.
+
+    Returns:
+        ``True`` when ``directory`` exists and contains every clip.
+    """
+    return directory.is_dir() and all((directory / f"{v}.pkl").is_file() for v in ids)
+
+
 def iter_chunks(
     ids: Sequence[str], wavlm_dir: Path, egemaps_dir: Path, reverse: bool = False
 ) -> Iterator[tuple[Tensor, Tensor]]:
@@ -366,7 +382,7 @@ def run_all(
         out_dir: Results directory.
         subset_csv: Where the control subset ids are written.
         random_wavlm_dir: Random-init WavLM pickles; that control is skipped
-            when ``None`` or missing.
+            when ``None``, missing, or lacking any clip it needs.
         names: LLD names for per-LLD results.
         n_train: Control-subset train clips.
         n_valid: Control-subset valid clips.
@@ -395,10 +411,11 @@ def run_all(
     record("train_mean", run_mean_control(full, wavlm_dir, egemaps_dir))
     record("forward_full", run_probe(full, wavlm_dir, egemaps_dir))
     record("forward_subset", run_probe(sub, wavlm_dir, egemaps_dir))
-    if random_wavlm_dir is not None and random_wavlm_dir.is_dir():
+    control_ids = [v for ids in sub.values() for v in ids]
+    if random_wavlm_dir is not None and clips_available(random_wavlm_dir, control_ids):
         record("forward_subset_random_init", run_probe(sub, random_wavlm_dir, egemaps_dir))
     else:
-        logger.warning("Random-init WavLM directory missing; skipping that control.")
+        logger.warning("Random-init WavLM directory missing or incomplete; skipping that control.")
     record("reverse_full", run_probe(full, wavlm_dir, egemaps_dir, reverse=True), per_output=False)
     write_results(results, out_dir)
     return results
