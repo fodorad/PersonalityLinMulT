@@ -331,6 +331,12 @@ actually succeed.
    dataset
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Experiments
+
+   experiments
+
+.. toctree::
    :maxdepth: 2
    :caption: API Reference
    :hidden:
