@@ -18,6 +18,7 @@ from personalitylinmult.preprocess.fi.acoustic_egemaps import (
     load_video_ids,
     save_array,
     save_names,
+    select_shard,
 )
 
 CONFIG_DIR = Path(__file__).resolve().parents[2] / "config/FI/data"
@@ -54,6 +55,23 @@ class TestSaveArray(unittest.TestCase):
             self.assertEqual(loaded.dtype, np.float32)
             np.testing.assert_allclose(loaded, array, rtol=1e-6)
             self.assertEqual([p.name for p in Path(tmp).iterdir()], ["a.npy"])
+
+
+class TestSelectShard(unittest.TestCase):
+    def test_shards_partition_without_overlap(self):
+        ids = [f"clip{i}" for i in range(11)]
+        shards = [select_shard(ids, i, 4) for i in range(4)]
+        self.assertEqual(sorted(sum(shards, [])), sorted(ids))
+        self.assertLessEqual(max(map(len, shards)) - min(map(len, shards)), 1)
+
+    def test_single_shard_is_identity(self):
+        self.assertEqual(select_shard(["a", "b"], 0, 1), ["a", "b"])
+
+    def test_invalid_shard_raises(self):
+        with self.assertRaises(ValueError):
+            select_shard(["a"], 2, 2)
+        with self.assertRaises(ValueError):
+            select_shard(["a"], 0, 0)
 
 
 class TestSaveNames(unittest.TestCase):

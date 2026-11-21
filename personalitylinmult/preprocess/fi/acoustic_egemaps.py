@@ -104,6 +104,29 @@ def save_names(names: list[str], path: Path) -> None:
     path.write_text(json.dumps(list(names), indent=2))
 
 
+def select_shard(items: list[str], shard: int, num_shards: int) -> list[str]:
+    """Return the round-robin slice of ``items`` owned by one worker.
+
+    Workers given the same ``num_shards`` and distinct ``shard`` indices
+    partition ``items`` without overlap, so extraction can run in parallel
+    processes. Round-robin keeps the shards balanced.
+
+    Args:
+        items (list[str]): Items to split, e.g. video ids.
+        shard (int): This worker's index in ``[0, num_shards)``.
+        num_shards (int): Total number of workers.
+
+    Returns:
+        list[str]: The items assigned to ``shard``.
+
+    Raises:
+        ValueError: If ``num_shards < 1`` or ``shard`` is out of range.
+    """
+    if num_shards < 1 or not 0 <= shard < num_shards:
+        raise ValueError(f"Invalid shard {shard} of {num_shards}.")
+    return items[shard::num_shards]
+
+
 def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -118,6 +141,13 @@ def main() -> None:
         help="Process only the first N clips (smoke test).",
     )
     parser.add_argument(
+        "--shard",
+        type=int,
+        default=0,
+        help="Worker index in [0, --num-shards); run one process per shard to parallelise.",
+    )
+    parser.add_argument("--num-shards", type=int, default=1, help="Total number of workers.")
+    parser.add_argument(
         "--overwrite",
         action="store_true",
         help="Recompute features even if the output file already exists.",
@@ -127,6 +157,7 @@ def main() -> None:
     logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
 
     video_ids = load_video_ids(args.label_csv)[: args.limit]
+    video_ids = select_shard(video_ids, args.shard, args.num_shards)
     logger.info(f"Found {len(video_ids)} video_ids in {args.label_csv}")
     if not video_ids:
         logger.warning(f"No video_ids in {args.label_csv}; nothing to do.")
